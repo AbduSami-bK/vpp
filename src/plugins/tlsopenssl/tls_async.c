@@ -342,7 +342,7 @@ event_handler (void *tls_async)
 
   openssl_resume_handler *handler;
   openssl_evt_t *callback;
-  session_t *tls_session;
+  stream_session_t *tls_session;
   int thread_index;
   tls_ctx_t *ctx;
 

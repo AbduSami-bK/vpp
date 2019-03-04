@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2015-2019 Cisco and/or its affiliates.
+* Copyright (c) 2015-2017 Cisco and/or its affiliates.
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
 * You may obtain a copy of the License at:
@@ -16,7 +16,6 @@
 #include <vnet/vnet.h>
 #include <vnet/session/application.h>
 #include <vnet/session/application_interface.h>
-#include <vnet/session/session.h>
 
 typedef enum
 {
@@ -476,7 +475,7 @@ session_rx_request (http_session_t * hs)
 }
 
 static int
-http_server_rx_callback (session_t * s)
+http_server_rx_callback (stream_session_t * s)
 {
   http_server_args *args;
   http_session_t *hs;
@@ -508,7 +507,7 @@ http_server_rx_callback (session_t * s)
 }
 
 static int
-http_server_rx_callback_static (session_t * s)
+http_server_rx_callback_static (stream_session_t * s)
 {
   http_server_main_t *hsm = &http_server_main;
   vnet_disconnect_args_t _a = { 0 }, *a = &_a;
@@ -579,7 +578,7 @@ wait_for_data:
 }
 
 static int
-http_server_session_accept_callback (session_t * s)
+http_server_session_accept_callback (stream_session_t * s)
 {
   http_server_main_t *hsm = &http_server_main;
   http_session_t *hs;
@@ -593,8 +592,8 @@ http_server_session_accept_callback (session_t * s)
   hs = http_server_session_alloc (s->thread_index);
   http_server_session_lookup_add (s->thread_index, s->session_index,
 				  hs->session_index);
-  hs->rx_fifo = s->rx_fifo;
-  hs->tx_fifo = s->tx_fifo;
+  hs->rx_fifo = s->server_rx_fifo;
+  hs->tx_fifo = s->server_tx_fifo;
   hs->vpp_session_index = s->session_index;
   hs->vpp_session_handle = session_handle (s);
   hs->session_state = HTTP_STATE_ESTABLISHED;
@@ -607,7 +606,7 @@ http_server_session_accept_callback (session_t * s)
 }
 
 static void
-http_server_session_disconnect_callback (session_t * s)
+http_server_session_disconnect_callback (stream_session_t * s)
 {
   http_server_main_t *hsm = &http_server_main;
   vnet_disconnect_args_t _a = { 0 }, *a = &_a;
@@ -628,7 +627,7 @@ http_server_session_disconnect_callback (session_t * s)
 }
 
 static void
-http_server_session_reset_callback (session_t * s)
+http_server_session_reset_callback (stream_session_t * s)
 {
   http_server_main_t *hsm = &http_server_main;
   vnet_disconnect_args_t _a = { 0 }, *a = &_a;
@@ -650,7 +649,7 @@ http_server_session_reset_callback (session_t * s)
 
 static int
 http_server_session_connected_callback (u32 app_index, u32 api_context,
-					session_t * s, u8 is_fail)
+					stream_session_t * s, u8 is_fail)
 {
   clib_warning ("called...");
   return -1;
@@ -728,7 +727,7 @@ static int
 http_server_listen ()
 {
   http_server_main_t *hsm = &http_server_main;
-  vnet_listen_args_t _a, *a = &_a;
+  vnet_bind_args_t _a, *a = &_a;
   clib_memset (a, 0, sizeof (*a));
   a->app_index = hsm->app_index;
   a->uri = "tcp://0.0.0.0/80";

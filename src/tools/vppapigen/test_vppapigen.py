@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 
 import unittest
 from vppapigen import VPPAPI, Option, ParseError
@@ -60,8 +60,7 @@ class TestDefine(unittest.TestCase):
         test_string = '''
           nonexisting_flag define foo { u8 foo; };
         '''
-        with self.assertRaises(ParseError):
-            self.parser.parse_string(test_string)
+        self.assertRaises(ParseError, self.parser.parse_string, test_string)
 
 
 class TestService(unittest.TestCase):

@@ -102,7 +102,6 @@ typedef struct
   u32 *bufs;
   u16 n_enqueued;
   u8 int_mode;
-  u8 buffer_pool_index;
 } avf_rxq_t;
 
 typedef struct
@@ -168,7 +167,7 @@ typedef struct
 
 #define AVF_RX_VECTOR_SZ VLIB_FRAME_SIZE
 
-typedef enum
+enum
 {
   AVF_PROCESS_EVENT_START = 1,
   AVF_PROCESS_EVENT_STOP = 2,

@@ -27,6 +27,7 @@ vlib_buffer_append (vlib_buffer_t * b, uword l)
 static vlib_buffer_t *
 igmp_pkt_get_buffer (igmp_pkt_build_t * bk)
 {
+  vlib_buffer_free_list_t *fl;
   vlib_main_t *vm;
   vlib_buffer_t *b;
   u32 bi;
@@ -37,6 +38,8 @@ igmp_pkt_get_buffer (igmp_pkt_build_t * bk)
     return (NULL);
 
   b = vlib_get_buffer (vm, bi);
+  fl = vlib_buffer_get_free_list (vm, VLIB_BUFFER_DEFAULT_FREE_LIST_INDEX);
+  vlib_buffer_init_for_free_list (b, fl);
   VLIB_BUFFER_TRACE_TRAJECTORY_INIT (b);
 
   b->flags |= VNET_BUFFER_F_LOCALLY_ORIGINATED;

@@ -20,7 +20,7 @@ macro(add_vpp_library lib)
   )
 
   add_library(${lib} SHARED ${ARG_SOURCES})
-  target_compile_options(${lib} PRIVATE -Wall -fno-common)
+  target_compile_options(${lib} PRIVATE -Wall)
   if(VPP_LIB_VERSION)
     set_target_properties(${lib} PROPERTIES SOVERSION ${VPP_LIB_VERSION})
   endif()

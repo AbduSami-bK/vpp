@@ -1177,7 +1177,6 @@ lisp_add_del_locator_set_command_fn (vlib_main_t * vm,
 			 &locator.weight))
 	{
 	  locator.local = 1;
-	  locator.state = 1;
 	  vec_add1 (locators, locator);
 	}
       else

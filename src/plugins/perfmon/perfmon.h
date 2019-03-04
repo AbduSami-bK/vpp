@@ -97,11 +97,8 @@ typedef struct
   perfmon_cpuid_and_table_t *perfmon_tables;
   uword *perfmon_table;
 
-  /* vector of single events to collect */
-  perfmon_event_config_t *single_events_to_collect;
-
-  /* vector of paired events to collect */
-  perfmon_event_config_t *paired_events_to_collect;
+  /* vector of events to collect */
+  perfmon_event_config_t *events_to_collect;
 
   /* Base indices of synthetic event tuples */
   u32 ipc_event_index;
@@ -112,17 +109,13 @@ typedef struct
 
   /* Current event (index) being collected */
   u32 current_event;
-  int n_active;
-  u32 **rdpmc_indices;
+  u32 *rdpmc_indices;
   /* mmap base / size of (mapped) struct perf_event_mmap_page */
-  u8 ***perf_event_pages;
+  u8 **perf_event_pages;
   u32 page_size;
 
   /* Current perf_event file descriptors, per thread */
-  int **pm_fds;
-
-  /* thread bitmap */
-  uword *thread_bitmap;
+  int *pm_fds;
 
   /* Logging */
   vlib_log_class_t log_class;

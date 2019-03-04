@@ -250,7 +250,6 @@ class TestIPIP6(VppTestCase):
         cls.interfaces = list(cls.pg_interfaces)
 
     def setUp(self):
-        super(TestIPIP6, self).setUp()
         for i in self.interfaces:
             i.admin_up()
             i.config_ip4()

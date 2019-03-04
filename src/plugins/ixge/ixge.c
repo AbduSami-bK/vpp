@@ -2238,6 +2238,8 @@ VLIB_REGISTER_NODE (ixge_input_node, static) = {
   },
 };
 
+VLIB_NODE_FUNCTION_MULTIARCH_CLONE (ixge_input)
+CLIB_MULTIARCH_SELECT_FN (ixge_input)
 /* *INDENT-ON* */
 
 static u8 *
@@ -2849,7 +2851,7 @@ ixge_pci_init (vlib_main_t * vm, vlib_pci_dev_handle_t h)
 
   if (vec_len (xm->devices) == 1)
     {
-      ixge_input_node.function = ixge_input;
+      ixge_input_node.function = ixge_input_multiarch_select ();
     }
 
   xd->pci_dev_handle = h;

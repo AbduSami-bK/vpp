@@ -19,9 +19,15 @@ from vpp_papi import mac_pton
 
 def ppp(headline, packet):
     """ Return string containing the output of scapy packet.show() call. """
-    return '%s\n%s\n\n%s\n' % (headline,
-                               hexdump(packet, dump=True),
-                               packet.show(dump=True))
+    o = BytesIO()
+    old_stdout = sys.stdout
+    sys.stdout = o
+    print(headline)
+    hexdump(packet)
+    print("")
+    packet.show()
+    sys.stdout = old_stdout
+    return o.getvalue()
 
 
 def ppc(headline, capture, limit=10):

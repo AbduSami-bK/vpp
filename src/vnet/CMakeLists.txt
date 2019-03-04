@@ -434,11 +434,7 @@ list(APPEND VNET_API_FILES
   ip/punt.api
 )
 
-list(APPEND VNET_MULTIARCH_SOURCES
-  ip/ip4_forward.c
-  ip/ip6_forward.c
-  ip/ip4_input.c
-)
+list(APPEND VNET_MULTIARCH_SOURCES ip/ip4_forward.c ip/ip4_input.c)
 
 ##############################################################################
 # Layer 2/3 ARP
@@ -484,9 +480,6 @@ list(APPEND VNET_SOURCES
   ipsec/ipsec_input.c
   ipsec/ipsec_if.c
   ipsec/ipsec_if_in.c
-  ipsec/ipsec_sa.c
-  ipsec/ipsec_spd.c
-  ipsec/ipsec_spd_policy.c
   ipsec/esp_format.c
   ipsec/esp_encrypt.c
   ipsec/esp_decrypt.c
@@ -505,9 +498,6 @@ list(APPEND VNET_MULTIARCH_SOURCES
   ipsec/esp_decrypt.c
   ipsec/ah_decrypt.c
   ipsec/ah_encrypt.c
-  ipsec/ipsec_if_in.c
-  ipsec/ipsec_output.c
-  ipsec/ipsec_input.c
 )
 
 list(APPEND VNET_API_FILES ipsec/ipsec.api)
@@ -981,13 +971,9 @@ list(APPEND VNET_SOURCES
   devices/virtio/vhost_user_output.c
   devices/virtio/vhost_user_api.c
   devices/virtio/virtio.c
-  devices/virtio/virtio_api.c
-  devices/virtio/cli.c
-  devices/virtio/pci.c
 )
 
 list(APPEND VNET_HEADERS
-  devices/virtio/pci.h
   devices/virtio/virtio.h
   devices/virtio/vhost_user.h
 )
@@ -997,10 +983,7 @@ list(APPEND VNET_MULTIARCH_SOURCES
   devices/virtio/vhost_user_output.c
 )
 
-list(APPEND VNET_API_FILES
-  devices/virtio/vhost_user.api
-  devices/virtio/virtio.api
-)
+list(APPEND VNET_API_FILES devices/virtio/vhost_user.api)
 
 ##############################################################################
 # tap interface (with virtio backend)
@@ -1045,7 +1028,6 @@ list(APPEND VNET_SOURCES
   session/session_node.c
   session/transport.c
   session/application.c
-  session/application_worker.c
   session/session_cli.c
   session/application_interface.c
   session/application_namespace.c
@@ -1057,11 +1039,11 @@ list(APPEND VNET_HEADERS
   session/session.h
   session/session_table.h
   session/session_rules_table.h
-  session/session_types.h
+  session/stream_session.h
   session/session_lookup.h
   session/application.h
   session/transport.h
-  session/transport_types.h
+  session/transport_interface.h
   session/application_interface.h
   session/application_namespace.h
   session/session_debug.h
@@ -1100,7 +1082,6 @@ list(APPEND VNET_SOURCES
 
 list(APPEND VNET_HEADERS
   tls/tls.h
-  tls/tls_test.h
 )
 
 ##############################################################################
@@ -1163,12 +1144,17 @@ list(APPEND VNET_API_FILES feature/feature.api)
 
 list(APPEND VNET_SOURCES
   unix/gdb_funcs.c
+  unix/tap_api.c
+  unix/tapcli.c
   unix/tuntap.c
 )
 
 list(APPEND VNET_HEADERS
   unix/tuntap.h
+  unix/tapcli.h
 )
+
+list(APPEND VNET_API_FILES unix/tap.api)
 
 ##############################################################################
 # FIB

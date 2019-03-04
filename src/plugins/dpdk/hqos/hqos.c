@@ -100,7 +100,7 @@ static dpdk_device_config_hqos_t hqos_params_default = {
 	   .n_pipes_per_subport = 4096,
 	   .qsize = {64, 64, 64, 64},
 	   .pipe_profiles = NULL,	/* Set at config */
-	   .n_pipe_profiles = 1,
+	   .n_pipe_profiles = 2,
 
 #ifdef RTE_SCHED_RED
 	   .red_params = {
@@ -152,6 +152,17 @@ static struct rte_sched_pipe_params hqos_pipe_params_default = {
   .tb_size = 1000000,
   .tc_rate = {305175, 305175, 305175, 305175},
   .tc_period = 40,
+#ifdef RTE_SCHED_SUBPORT_TC_OV
+  .tc_ov_weight = 1,
+#endif
+  .wrr_weights = {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+};
+
+static struct rte_sched_pipe_params hqos_pipe_params_5MB = {
+  .tb_rate = 5000000,		/* 10GbE line rate divided by 4K pipes */
+  .tb_size = 1000000,
+  .tc_rate = {5000000,5000000,5000000,5000000},
+  .tc_period = 150 ,
 #ifdef RTE_SCHED_SUBPORT_TC_OV
   .tc_ov_weight = 1,
 #endif
@@ -214,9 +225,9 @@ dpdk_device_config_hqos_default (dpdk_device_config_hqos_t * hqos)
   /* pipe */
   vec_add2 (hqos->pipe, pipe_params, hqos->port.n_pipe_profiles);
 
-  for (i = 0; i < vec_len (hqos->pipe); i++)
-    memcpy (&pipe_params[i],
-	    &hqos_pipe_params_default, sizeof (hqos_pipe_params_default));
+  //for (i = 0; i < vec_len (hqos->pipe); i++)
+    memcpy (&pipe_params[0], &hqos_pipe_params_default, sizeof (hqos_pipe_params_default));
+    memcpy (&pipe_params[1], &hqos_pipe_params_5MB, sizeof(hqos_pipe_params_5MB));
 
   hqos->port.pipe_profiles = hqos->pipe;
 

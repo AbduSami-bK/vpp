@@ -19,13 +19,11 @@
 #include <vlib/node_funcs.h>
 
 #include <dpdk/device/dpdk.h>
-#include <dpdk/buffer.h>
 #include <dpdk/ipsec/ipsec.h>
 
 dpdk_crypto_main_t dpdk_crypto_main;
 
 #define EMPTY_STRUCT {0}
-#define NUM_CRYPTO_MBUFS 16384
 
 static void
 algos_init (u32 n_mains)
@@ -252,7 +250,7 @@ crypto_set_aead_xform (struct rte_crypto_sym_xform *xform,
 
   xform->type = RTE_CRYPTO_SYM_XFORM_AEAD;
   xform->aead.algo = c->alg;
-  xform->aead.key.data = sa->crypto_key.data;
+  xform->aead.key.data = sa->crypto_key;
   xform->aead.key.length = c->key_len;
   xform->aead.iv.offset =
     crypto_op_get_priv_offset () + offsetof (dpdk_op_priv_t, cb);
@@ -280,7 +278,7 @@ crypto_set_cipher_xform (struct rte_crypto_sym_xform *xform,
 
   xform->type = RTE_CRYPTO_SYM_XFORM_CIPHER;
   xform->cipher.algo = c->alg;
-  xform->cipher.key.data = sa->crypto_key.data;
+  xform->cipher.key.data = sa->crypto_key;
   xform->cipher.key.length = c->key_len;
   xform->cipher.iv.offset =
     crypto_op_get_priv_offset () + offsetof (dpdk_op_priv_t, cb);
@@ -306,7 +304,7 @@ crypto_set_auth_xform (struct rte_crypto_sym_xform *xform,
 
   xform->type = RTE_CRYPTO_SYM_XFORM_AUTH;
   xform->auth.algo = a->alg;
-  xform->auth.key.data = sa->integ_key.data;
+  xform->auth.key.data = sa->integ_key;
   xform->auth.key.length = a->key_len;
   xform->auth.digest_length = a->trunc_size;
   xform->next = NULL;
@@ -331,7 +329,7 @@ create_sym_session (struct rte_cryptodev_sym_session **session,
   struct rte_crypto_sym_xform auth_xform = { 0 };
   struct rte_crypto_sym_xform *xfs;
   struct rte_cryptodev_sym_session **s;
-  clib_error_t *error = 0;
+  clib_error_t *erorr = 0;
 
 
   sa = pool_elt_at_index (im->sad, sa_idx);
@@ -376,7 +374,7 @@ create_sym_session (struct rte_cryptodev_sym_session **session,
       if (!session[0])
 	{
 	  data->session_h_failed += 1;
-	  error = clib_error_return (0, "failed to create session header");
+	  erorr = clib_error_return (0, "failed to create session header");
 	  goto done;
 	}
       hash_set (data->session_by_sa_index, sa_idx, session[0]);
@@ -393,7 +391,7 @@ create_sym_session (struct rte_cryptodev_sym_session **session,
   if (ret)
     {
       data->session_drv_failed[res->drv_id] += 1;
-      error = clib_error_return (0, "failed to init session for drv %u",
+      erorr = clib_error_return (0, "failed to init session for drv %u",
 				 res->drv_id);
       goto done;
     }
@@ -402,7 +400,7 @@ create_sym_session (struct rte_cryptodev_sym_session **session,
 
 done:
   clib_spinlock_unlock_if_init (&data->lockp);
-  return error;
+  return erorr;
 }
 
 static void __attribute__ ((unused)) clear_and_free_obj (void *obj)
@@ -419,14 +417,7 @@ static inline void *
 get_session_private_data (const struct rte_cryptodev_sym_session *sess,
 			  uint8_t driver_id)
 {
-#if RTE_VERSION < RTE_VERSION_NUM(19, 2, 0, 0)
   return sess->sess_private_data[driver_id];
-#else
-  if (unlikely (sess->nb_drivers <= driver_id))
-    return 0;
-
-  return sess->sess_data[driver_id].data;
-#endif
 }
 
 /* This is from rte_cryptodev_pmd.h */
@@ -434,13 +425,7 @@ static inline void
 set_session_private_data (struct rte_cryptodev_sym_session *sess,
 			  uint8_t driver_id, void *private_data)
 {
-#if RTE_VERSION < RTE_VERSION_NUM(19, 2, 0, 0)
   sess->sess_private_data[driver_id] = private_data;
-#else
-  if (unlikely (sess->nb_drivers <= driver_id))
-    return;
-  sess->sess_data[driver_id].data = private_data;
-#endif
 }
 
 static clib_error_t *
@@ -511,8 +496,7 @@ add_del_sa_session (u32 sa_index, u8 is_add)
 	case IPSEC_CRYPTO_ALG_AES_GCM_128:
 	case IPSEC_CRYPTO_ALG_AES_GCM_192:
 	case IPSEC_CRYPTO_ALG_AES_GCM_256:
-	  clib_memcpy (&sa->salt,
-		       &sa->crypto_key.data[sa->crypto_key.len - 4], 4);
+	  clib_memcpy (&sa->salt, &sa->crypto_key[sa->crypto_key_len - 4], 4);
 	  break;
 	default:
 	  seed = (u32) clib_cpu_time_now ();
@@ -645,8 +629,8 @@ crypto_parse_capabilities (crypto_dev_t * dev,
 static clib_error_t *
 crypto_dev_conf (u8 dev, u16 n_qp, u8 numa)
 {
-  struct rte_cryptodev_config dev_conf = { 0 };
-  struct rte_cryptodev_qp_conf qp_conf = { 0 };
+  struct rte_cryptodev_config dev_conf;
+  struct rte_cryptodev_qp_conf qp_conf;
   i32 ret;
   u16 qp;
   char *error_str;
@@ -663,11 +647,7 @@ crypto_dev_conf (u8 dev, u16 n_qp, u8 numa)
   qp_conf.nb_descriptors = DPDK_CRYPTO_N_QUEUE_DESC;
   for (qp = 0; qp < n_qp; qp++)
     {
-#if RTE_VERSION < RTE_VERSION_NUM(19, 2, 0, 0)
       ret = rte_cryptodev_queue_pair_setup (dev, qp, &qp_conf, numa, NULL);
-#else
-      ret = rte_cryptodev_queue_pair_setup (dev, qp, &qp_conf, numa);
-#endif
       if (ret < 0)
 	return clib_error_return (0, error_str, dev, qp);
     }
@@ -684,7 +664,7 @@ crypto_scan_devs (u32 n_mains)
 {
   dpdk_crypto_main_t *dcm = &dpdk_crypto_main;
   struct rte_cryptodev *cryptodev;
-  struct rte_cryptodev_info info = { 0 };
+  struct rte_cryptodev_info info;
   crypto_dev_t *dev;
   crypto_resource_t *res;
   clib_error_t *error;
@@ -724,7 +704,7 @@ crypto_scan_devs (u32 n_mains)
 	  continue;
 	}
 
-      max_res_idx = dev->max_qp - 1;
+      max_res_idx = (dev->max_qp / 2) - 1;
 
       vec_validate (dev->free_resources, max_res_idx);
 
@@ -733,13 +713,13 @@ crypto_scan_devs (u32 n_mains)
 				       (crypto_resource_t) EMPTY_STRUCT,
 				       CLIB_CACHE_LINE_BYTES);
 
-      for (j = 0; j <= max_res_idx; j++)
+      for (j = 0; j <= max_res_idx; j++, res_idx++)
 	{
-	  vec_elt (dev->free_resources, max_res_idx - j) = res_idx + j;
-	  res = &dcm->resource[res_idx + j];
+	  vec_elt (dev->free_resources, max_res_idx - j) = res_idx;
+	  res = &dcm->resource[res_idx];
 	  res->dev_id = i;
 	  res->drv_id = drv_id;
-	  res->qp_id = j;
+	  res->qp_id = j * 2;
 	  res->numa = dev->numa;
 	  res->thread_idx = (u16) ~ 0;
 	}
@@ -855,12 +835,11 @@ crypto_create_crypto_op_pool (vlib_main_t * vm, u8 numa)
 
   pool_name = format (0, "crypto_pool_numa%u%c", numa, 0);
 
-  if (conf->num_crypto_mbufs == 0)
-    conf->num_crypto_mbufs = NUM_CRYPTO_MBUFS;
-
-  mp = rte_mempool_create ((char *) pool_name, conf->num_crypto_mbufs,
-			   crypto_op_len (), 512, pool_priv_size, NULL, NULL,
-			   crypto_op_init, NULL, numa, 0);
+  mp =
+    rte_mempool_create ((char *) pool_name,
+			conf->num_mbufs,
+			crypto_op_len (), 512, pool_priv_size, NULL, NULL,
+			crypto_op_init, NULL, numa, 0);
 
   vec_free (pool_name);
 
@@ -896,15 +875,10 @@ crypto_create_session_h_pool (vlib_main_t * vm, u8 numa)
 
   elt_size = rte_cryptodev_sym_get_header_session_size ();
 
-#if RTE_VERSION < RTE_VERSION_NUM(19, 2, 0, 0)
-  mp = rte_mempool_create ((char *) pool_name, DPDK_CRYPTO_NB_SESS_OBJS,
-			   elt_size, 512, 0, NULL, NULL, NULL, NULL, numa, 0);
-#else
-  /* XXX Experimental tag in DPDK 19.02 */
-  mp = rte_cryptodev_sym_session_pool_create ((char *) pool_name,
-					      DPDK_CRYPTO_NB_SESS_OBJS,
-					      elt_size, 512, 0, numa);
-#endif
+  mp =
+    rte_mempool_create ((char *) pool_name, DPDK_CRYPTO_NB_SESS_OBJS,
+			elt_size, 512, 0, NULL, NULL, NULL, NULL, numa, 0);
+
   vec_free (pool_name);
 
   if (!mp)
@@ -1067,15 +1041,12 @@ dpdk_ipsec_process (vlib_main_t * vm, vlib_node_runtime_t * rt,
     }
 
 
-  u32 idx = ipsec_register_esp_backend (vm, im, "dpdk backend",
-					"dpdk-esp4-encrypt",
-					"dpdk-esp4-decrypt",
-					"dpdk-esp6-encrypt",
-					"dpdk-esp6-decrypt",
-					dpdk_ipsec_check_support,
-					add_del_sa_session);
-  int rv = ipsec_select_esp_backend (im, idx);
-  ASSERT (rv == 0);
+  ipsec_register_esp_backend (vm, im, "dpdk backend",
+			      "dpdk-esp4-encrypt",
+			      "dpdk-esp4-decrypt",
+			      "dpdk-esp6-encrypt",
+			      "dpdk-esp6-decrypt",
+			      dpdk_ipsec_check_support, add_del_sa_session);
 
   vlib_node_t *node = vlib_get_node_by_name (vm, (u8 *) "dpdk-crypto-input");
   ASSERT (node);

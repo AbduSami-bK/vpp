@@ -41,7 +41,7 @@
 }
 
 void
-dummy_session_reset_callback (session_t * s)
+dummy_session_reset_callback (stream_session_t * s)
 {
   clib_warning ("called...");
 }
@@ -50,7 +50,7 @@ volatile u32 connected_session_index = ~0;
 volatile u32 connected_session_thread = ~0;
 int
 dummy_session_connected_callback (u32 app_index, u32 api_context,
-				  session_t * s, u8 is_fail)
+				  stream_session_t * s, u8 is_fail)
 {
   if (s)
     {
@@ -77,7 +77,7 @@ dummy_del_segment_callback (u32 client_index, u64 segment_handle)
 }
 
 void
-dummy_session_disconnect_callback (session_t * s)
+dummy_session_disconnect_callback (stream_session_t * s)
 {
   clib_warning ("called...");
 }
@@ -87,7 +87,7 @@ volatile u32 accepted_session_index;
 volatile u32 accepted_session_thread;
 
 int
-dummy_session_accept_callback (session_t * s)
+dummy_session_accept_callback (stream_session_t * s)
 {
   dummy_accept = 1;
   accepted_session_index = s->session_index;
@@ -97,7 +97,7 @@ dummy_session_accept_callback (session_t * s)
 }
 
 int
-dummy_server_rx_callback (session_t * s)
+dummy_server_rx_callback (stream_session_t * s)
 {
   clib_warning ("called...");
   return -1;
@@ -161,8 +161,8 @@ session_test_basic (vlib_main_t * vm, unformat_input_t * input)
 {
   session_endpoint_t server_sep = SESSION_ENDPOINT_NULL;
   u64 options[APP_OPTIONS_N_OPTIONS], bind4_handle, bind6_handle;
+  clib_error_t *error = 0;
   u32 server_index;
-  int error = 0;
 
   clib_memset (options, 0, sizeof (options));
   options[APP_OPTIONS_FLAGS] = APP_OPTIONS_FLAGS_IS_BUILTIN;
@@ -182,36 +182,36 @@ session_test_basic (vlib_main_t * vm, unformat_input_t * input)
   vec_free (attach_args.name);
 
   server_sep.is_ip4 = 1;
-  vnet_listen_args_t bind_args = {
+  vnet_bind_args_t bind_args = {
     .sep = server_sep,
     .app_index = 0,
   };
 
   bind_args.app_index = server_index;
-  error = vnet_listen (&bind_args);
+  error = vnet_bind (&bind_args);
   SESSION_TEST ((error == 0), "server bind4 should work");
   bind4_handle = bind_args.handle;
 
-  error = vnet_listen (&bind_args);
+  error = vnet_bind (&bind_args);
   SESSION_TEST ((error != 0), "double server bind4 should not work");
 
   bind_args.sep.is_ip4 = 0;
-  error = vnet_listen (&bind_args);
+  error = vnet_bind (&bind_args);
   SESSION_TEST ((error == 0), "server bind6 should work");
   bind6_handle = bind_args.handle;
 
-  error = vnet_listen (&bind_args);
+  error = vnet_bind (&bind_args);
   SESSION_TEST ((error != 0), "double server bind6 should not work");
 
-  vnet_unlisten_args_t unbind_args = {
+  vnet_unbind_args_t unbind_args = {
     .handle = bind4_handle,
     .app_index = server_index,
   };
-  error = vnet_unlisten (&unbind_args);
+  error = vnet_unbind (&unbind_args);
   SESSION_TEST ((error == 0), "unbind4 should work");
 
   unbind_args.handle = bind6_handle;
-  error = vnet_unlisten (&unbind_args);
+  error = vnet_unbind (&unbind_args);
   SESSION_TEST ((error == 0), "unbind6 should work");
 
   vnet_app_detach_args_t detach_args = {
@@ -276,9 +276,9 @@ session_test_endpoint_cfg (vlib_main_t * vm, unformat_input_t * input)
   session_endpoint_t server_sep = SESSION_ENDPOINT_NULL;
   ip4_address_t intf_addr[3];
   transport_connection_t *tc;
-  session_t *s;
+  stream_session_t *s;
+  clib_error_t *error;
   u8 *appns_id;
-  int error;
 
   /*
    * Create the loopbacks
@@ -306,7 +306,8 @@ session_test_endpoint_cfg (vlib_main_t * vm, unformat_input_t * input)
     .is_add = 1
   };
   error = vnet_app_namespace_add_del (&ns_args);
-  SESSION_TEST ((error == 0), "app ns insertion should succeed: %d", error);
+  SESSION_TEST ((error == 0), "app ns insertion should succeed: %d",
+		clib_error_get_code (error));
 
   /*
    * Attach client/server
@@ -339,11 +340,11 @@ session_test_endpoint_cfg (vlib_main_t * vm, unformat_input_t * input)
 
   server_sep.is_ip4 = 1;
   server_sep.port = dummy_server_port;
-  vnet_listen_args_t bind_args = {
+  vnet_bind_args_t bind_args = {
     .sep = server_sep,
     .app_index = server_index,
   };
-  error = vnet_listen (&bind_args);
+  error = vnet_bind (&bind_args);
   SESSION_TEST ((error == 0), "server bind should work");
 
   /*
@@ -423,12 +424,13 @@ session_test_namespace (vlib_main_t * vm, unformat_input_t * input)
   session_endpoint_t server_sep = SESSION_ENDPOINT_NULL;
   session_endpoint_t client_sep = SESSION_ENDPOINT_NULL;
   session_endpoint_t intf_sep = SESSION_ENDPOINT_NULL;
+  clib_error_t *error = 0;
   u8 *ns_id = format (0, "appns1");
   app_namespace_t *app_ns;
   application_t *server;
-  session_t *s;
+  stream_session_t *s;
   u64 handle;
-  int error = 0;
+  int code;
 
   server_sep.is_ip4 = 1;
   server_sep.port = dummy_port;
@@ -445,7 +447,7 @@ session_test_namespace (vlib_main_t * vm, unformat_input_t * input)
     .name = format (0, "session_test"),
   };
 
-  vnet_listen_args_t bind_args = {
+  vnet_bind_args_t bind_args = {
     .sep = server_sep,
     .app_index = 0,
   };
@@ -456,7 +458,7 @@ session_test_namespace (vlib_main_t * vm, unformat_input_t * input)
   };
   clib_memcpy (&connect_args.sep, &client_sep, sizeof (client_sep));
 
-  vnet_unlisten_args_t unbind_args = {
+  vnet_unbind_args_t unbind_args = {
     .handle = bind_args.handle,
     .app_index = 0,
   };
@@ -485,7 +487,8 @@ session_test_namespace (vlib_main_t * vm, unformat_input_t * input)
     .is_add = 1
   };
   error = vnet_app_namespace_add_del (&ns_args);
-  SESSION_TEST ((error == 0), "app ns insertion should succeed: %d", error);
+  SESSION_TEST ((error == 0), "app ns insertion should succeed: %d",
+		clib_error_get_code (error));
 
   app_ns = app_namespace_get_from_id (ns_id);
   SESSION_TEST ((app_ns != 0), "should find ns %v status", ns_id);
@@ -506,8 +509,9 @@ session_test_namespace (vlib_main_t * vm, unformat_input_t * input)
 
   error = vnet_application_attach (&attach_args);
   SESSION_TEST ((error != 0), "app attachment should fail");
-  SESSION_TEST ((error == VNET_API_ERROR_APP_WRONG_NS_SECRET),
-		"code should be wrong ns secret: %d", error);
+  code = clib_error_get_code (error);
+  SESSION_TEST ((code == VNET_API_ERROR_APP_WRONG_NS_SECRET),
+		"code should be wrong ns secret: %d", code);
 
   /*
    * Attach server with global default scope
@@ -526,7 +530,7 @@ session_test_namespace (vlib_main_t * vm, unformat_input_t * input)
 		"server should be in the default ns");
 
   bind_args.app_index = server_index;
-  error = vnet_listen (&bind_args);
+  error = vnet_bind (&bind_args);
   SESSION_TEST ((error == 0), "server bind should work");
 
   server_st_index = application_session_table (server, FIB_PROTOCOL_IP4);
@@ -540,7 +544,7 @@ session_test_namespace (vlib_main_t * vm, unformat_input_t * input)
 
   unbind_args.app_index = server_index;
   unbind_args.handle = bind_args.handle;
-  error = vnet_unlisten (&unbind_args);
+  error = vnet_unbind (&unbind_args);
   SESSION_TEST ((error == 0), "unbind should work");
 
   s = session_lookup_listener (server_st_index, &server_sep);
@@ -566,7 +570,7 @@ session_test_namespace (vlib_main_t * vm, unformat_input_t * input)
 		"server should be in the right ns");
 
   bind_args.app_index = server_index;
-  error = vnet_listen (&bind_args);
+  error = vnet_bind (&bind_args);
   SESSION_TEST ((error == 0), "bind should work");
   server_st_index = application_session_table (server, FIB_PROTOCOL_IP4);
   s = session_lookup_listener (server_st_index, &server_sep);
@@ -590,13 +594,15 @@ session_test_namespace (vlib_main_t * vm, unformat_input_t * input)
   connect_args.app_index = client_index;
   error = vnet_connect (&connect_args);
   SESSION_TEST ((error != 0), "client connect should return error code");
-  SESSION_TEST ((error == VNET_API_ERROR_INVALID_VALUE),
+  code = clib_error_get_code (error);
+  SESSION_TEST ((code == VNET_API_ERROR_INVALID_VALUE),
 		"error code should be invalid value (zero ip)");
   SESSION_TEST ((dummy_segment_count == 0),
 		"shouldn't have received request to map new segment");
   connect_args.sep.ip.ip4.as_u8[0] = 127;
   error = vnet_connect (&connect_args);
   SESSION_TEST ((error == 0), "client connect should not return error code");
+  code = clib_error_get_code (error);
   SESSION_TEST ((dummy_segment_count == 1),
 		"should've received request to map new segment");
   SESSION_TEST ((dummy_accept == 1), "should've received accept request");
@@ -610,7 +616,8 @@ session_test_namespace (vlib_main_t * vm, unformat_input_t * input)
   SESSION_TEST ((error == 0), "client attachment should work");
   error = vnet_connect (&connect_args);
   SESSION_TEST ((error != 0), "client connect should return error code");
-  SESSION_TEST ((error == VNET_API_ERROR_SESSION_CONNECT),
+  code = clib_error_get_code (error);
+  SESSION_TEST ((code == VNET_API_ERROR_SESSION_CONNECT),
 		"error code should be connect (nothing in local scope)");
   detach_args.app_index = client_index;
   vnet_application_detach (&detach_args);
@@ -620,7 +627,7 @@ session_test_namespace (vlib_main_t * vm, unformat_input_t * input)
    */
   unbind_args.handle = bind_args.handle;
   unbind_args.app_index = server_index;
-  error = vnet_unlisten (&unbind_args);
+  error = vnet_unbind (&unbind_args);
   SESSION_TEST ((error == 0), "unbind should work");
 
   s = session_lookup_listener (server_st_index, &server_sep);
@@ -643,7 +650,7 @@ session_test_namespace (vlib_main_t * vm, unformat_input_t * input)
 		"app should be in the right ns");
 
   bind_args.app_index = server_index;
-  error = vnet_listen (&bind_args);
+  error = vnet_bind (&bind_args);
   SESSION_TEST ((error == 0), "bind should work");
 
   server_st_index = application_session_table (server, FIB_PROTOCOL_IP4);
@@ -655,7 +662,7 @@ session_test_namespace (vlib_main_t * vm, unformat_input_t * input)
 		"listener should exist in local table");
 
   unbind_args.handle = bind_args.handle;
-  error = vnet_unlisten (&unbind_args);
+  error = vnet_unbind (&unbind_args);
   SESSION_TEST ((error == 0), "unbind should work");
 
   handle = session_lookup_local_endpoint (server_local_st_index, &server_sep);
@@ -672,7 +679,8 @@ session_test_namespace (vlib_main_t * vm, unformat_input_t * input)
   vnet_application_attach (&attach_args);
   error = vnet_connect (&connect_args);
   SESSION_TEST ((error != 0), "client connect should return error code");
-  SESSION_TEST ((error == VNET_API_ERROR_SESSION_CONNECT),
+  code = clib_error_get_code (error);
+  SESSION_TEST ((code == VNET_API_ERROR_SESSION_CONNECT),
 		"error code should be connect (not in same ns)");
   detach_args.app_index = client_index;
   vnet_application_detach (&detach_args);
@@ -689,11 +697,12 @@ session_test_namespace (vlib_main_t * vm, unformat_input_t * input)
   session_create_lookpback (0, &sw_if_index, &intf_addr);
 
   /*
-   * Update namespace with interface
+   * Update namespace
    */
   ns_args.sw_if_index = sw_if_index;
   error = vnet_app_namespace_add_del (&ns_args);
-  SESSION_TEST ((error == 0), "app ns insertion should succeed: %d", error);
+  SESSION_TEST ((error == 0), "app ns insertion should succeed: %d",
+		clib_error_get_code (error));
 
   /*
    * Attach server with local and global scope
@@ -710,7 +719,7 @@ session_test_namespace (vlib_main_t * vm, unformat_input_t * input)
   server_wrk_index = application_get_default_worker (server)->wrk_index;
 
   bind_args.app_index = server_index;
-  error = vnet_listen (&bind_args);
+  error = vnet_bind (&bind_args);
   server_st_index = application_session_table (server, FIB_PROTOCOL_IP4);
   s = session_lookup_listener (server_st_index, &server_sep);
   SESSION_TEST ((s == 0), "zero listener should not exist in global table");
@@ -742,7 +751,8 @@ session_test_rule_table (vlib_main_t * vm, unformat_input_t * input)
   u16 lcl_port = 1234, rmt_port = 4321;
   u32 action_index = 1, res;
   ip4_address_t lcl_lkup, rmt_lkup;
-  int verbose = 0, error;
+  clib_error_t *error;
+  int verbose = 0;
 
   while (unformat_check_input (input) != UNFORMAT_END_OF_INPUT)
     {
@@ -1013,14 +1023,13 @@ session_test_rules (vlib_main_t * vm, unformat_input_t * input)
   u32 dummy_server_api_index = ~0;
   transport_connection_t *tc;
   u32 dummy_port = 1111;
+  clib_error_t *error = 0;
   u8 is_filtered = 0, *ns_id = format (0, "appns1");
-  session_t *listener, *s;
+  stream_session_t *listener, *s;
   app_namespace_t *default_ns = app_namespace_get_default ();
   u32 local_ns_index = default_ns->local_table_index;
-  int verbose = 0;
+  int verbose = 0, rv;
   app_namespace_t *app_ns;
-  app_listener_t *al;
-  int error = 0;
   u64 handle;
 
   while (unformat_check_input (input) != UNFORMAT_END_OF_INPUT)
@@ -1047,7 +1056,7 @@ session_test_rules (vlib_main_t * vm, unformat_input_t * input)
     .name = format (0, "session_test"),
   };
 
-  vnet_listen_args_t bind_args = {
+  vnet_bind_args_t bind_args = {
     .sep = server_sep,
     .app_index = 0,
   };
@@ -1065,11 +1074,10 @@ session_test_rules (vlib_main_t * vm, unformat_input_t * input)
   server_index = attach_args.app_index;
 
   bind_args.app_index = server_index;
-  error = vnet_listen (&bind_args);
+  error = vnet_bind (&bind_args);
   SESSION_TEST ((error == 0), "server bound to %U/%d", format_ip46_address,
 		&server_sep.ip, 1, server_sep.port);
-  al = app_listener_get_w_handle (bind_args.handle);
-  listener = app_listener_get_session (al);
+  listener = listen_session_get_from_handle (bind_args.handle);
   ip4_address_t lcl_ip = {
     .as_u32 = clib_host_to_net_u32 (0x01020304),
   };
@@ -1249,7 +1257,8 @@ session_test_rules (vlib_main_t * vm, unformat_input_t * input)
   /* Try connecting */
   error = vnet_connect (&connect_args);
   SESSION_TEST ((error != 0), "connect should fail");
-  SESSION_TEST ((error == VNET_API_ERROR_APP_CONNECT_FILTERED),
+  rv = clib_error_get_code (error);
+  SESSION_TEST ((rv == VNET_API_ERROR_APP_CONNECT_FILTERED),
 		"connect should be filtered");
 
   sep.ip.ip4.as_u32 -= 1 << 24;
@@ -1480,7 +1489,8 @@ session_test_rules (vlib_main_t * vm, unformat_input_t * input)
     .is_add = 1
   };
   error = vnet_app_namespace_add_del (&ns_args);
-  SESSION_TEST ((error == 0), "app ns insertion should succeed: %d", error);
+  SESSION_TEST ((error == 0), "app ns insertion should succeed: %d",
+		clib_error_get_code (error));
   app_ns = app_namespace_get_from_id (ns_id);
 
   attach_args.namespace_id = ns_id;
@@ -1523,7 +1533,8 @@ session_test_rules (vlib_main_t * vm, unformat_input_t * input)
 
   error = vnet_connect (&connect_args);
   SESSION_TEST ((error != 0), "connect should fail");
-  SESSION_TEST ((error == VNET_API_ERROR_APP_CONNECT_FILTERED),
+  rv = clib_error_get_code (error);
+  SESSION_TEST ((rv == VNET_API_ERROR_APP_CONNECT_FILTERED),
 		"connect should be filtered");
 
   /*
@@ -1536,7 +1547,8 @@ session_test_rules (vlib_main_t * vm, unformat_input_t * input)
   connect_args.app_index = server_index;
   error = vnet_connect (&connect_args);
   SESSION_TEST ((error != 0), "connect should fail");
-  SESSION_TEST ((error == VNET_API_ERROR_APP_CONNECT_FILTERED),
+  rv = clib_error_get_code (error);
+  SESSION_TEST ((rv == VNET_API_ERROR_APP_CONNECT_FILTERED),
 		"connect should be filtered");
 
   args.table_args.is_add = 0;
@@ -1575,12 +1587,13 @@ session_test_proxy (vlib_main_t * vm, unformat_input_t * input)
   unformat_input_t tmp_input;
   u32 server_index, app_index;
   u32 dummy_server_api_index = ~0, sw_if_index = 0;
+  clib_error_t *error = 0;
   u8 is_filtered = 0;
-  session_t *s;
+  stream_session_t *s;
   transport_connection_t *tc;
   u16 lcl_port = 1234, rmt_port = 4321;
   app_namespace_t *app_ns;
-  int verbose = 0, error = 0;
+  int verbose = 0;
 
   while (unformat_check_input (input) != UNFORMAT_END_OF_INPUT)
     {

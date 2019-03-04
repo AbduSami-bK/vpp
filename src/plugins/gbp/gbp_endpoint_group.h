@@ -31,11 +31,6 @@ typedef struct gpb_endpoint_group_t_
   epg_id_t gg_id;
 
   /**
-   * Sclass. Could be unset => ~0
-   */
-  u16 gg_sclass;
-
-  /**
    * Bridge-domain ID the EPG is in
    */
   index_t gg_gbd;
@@ -76,7 +71,6 @@ typedef struct gbp_endpoint_group_db_t_
 } gbp_endpoint_group_db_t;
 
 extern int gbp_endpoint_group_add_and_lock (epg_id_t epg_id,
-					    u16 sclass,
 					    u32 bd_id,
 					    u32 rd_id,
 					    u32 uplink_sw_if_index);
@@ -102,19 +96,6 @@ extern u8 *format_gbp_endpoint_group (u8 * s, va_list * args);
  */
 extern gbp_endpoint_group_db_t gbp_endpoint_group_db;
 extern gbp_endpoint_group_t *gbp_endpoint_group_pool;
-extern uword *gbp_epg_sclass_db;
-
-always_inline gbp_endpoint_group_t *
-gbp_epg_get (epg_id_t epg)
-{
-  uword *p;
-
-  p = hash_get (gbp_endpoint_group_db.gg_hash, epg);
-
-  if (NULL != p)
-    return (pool_elt_at_index (gbp_endpoint_group_pool, p[0]));
-  return (NULL);
-}
 
 always_inline u32
 gbp_epg_itf_lookup (epg_id_t epg)
@@ -131,20 +112,6 @@ gbp_epg_itf_lookup (epg_id_t epg)
       return (gg->gg_uplink_sw_if_index);
     }
   return (~0);
-}
-
-always_inline epg_id_t
-gbp_epg_sclass_2_id (u16 sclass)
-{
-  uword *p;
-
-  p = hash_get (gbp_epg_sclass_db, sclass);
-
-  if (NULL != p)
-    {
-      return (p[0]);
-    }
-  return (EPG_INVALID);
 }
 
 always_inline const dpo_id_t *

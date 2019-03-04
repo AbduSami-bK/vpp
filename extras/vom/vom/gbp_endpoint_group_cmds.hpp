@@ -35,7 +35,6 @@ public:
    */
   create_cmd(HW::item<bool>& item,
              epg_id_t epg_id,
-             uint16_t sclass,
              uint32_t bd_id,
              route::table_id_t rd_id,
              const handle_t& itf);
@@ -57,7 +56,6 @@ public:
 
 private:
   const epg_id_t m_epg_id;
-  const uint16_t m_sclass;
   const uint32_t m_bd_id;
   const route::table_id_t m_rd_id;
   const handle_t m_itf;

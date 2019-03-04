@@ -1764,7 +1764,7 @@ sctp46_listen_process_inline (vlib_main_t * vm,
 
 	      if (error0 == SCTP_ERROR_NONE)
 		{
-		  if (session_stream_accept
+		  if (stream_session_accept
 		      (&child_conn->
 		       sub_conn[SCTP_PRIMARY_PATH_IDX].connection,
 		       sctp_listener->

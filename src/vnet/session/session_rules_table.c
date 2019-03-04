@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017-2019 Cisco and/or its affiliates.
+ * Copyright (c) 2017 Cisco and/or its affiliates.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at:
@@ -388,7 +388,7 @@ session_rules_table_lookup6 (session_rules_table_t * srt,
  *
  * @return 0 if success, clib_error_t error otherwise
  */
-int
+clib_error_t *
 session_rules_table_add_del (session_rules_table_t * srt,
 			     session_rule_table_add_del_args_t * args)
 {
@@ -398,7 +398,8 @@ session_rules_table_add_del (session_rules_table_t * srt,
 
   ri_from_tag = session_rules_table_rule_for_tag (srt, args->tag);
   if (args->is_add && ri_from_tag != SESSION_RULES_TABLE_INVALID_INDEX)
-    return VNET_API_ERROR_INVALID_VALUE;
+    return clib_error_return_code (0, VNET_API_ERROR_INVALID_VALUE, 0,
+				   "tag exists");
 
   if (fib_proto == FIB_PROTOCOL_IP4)
     {
@@ -509,7 +510,8 @@ session_rules_table_add_del (session_rules_table_t * srt,
 	}
     }
   else
-    return VNET_API_ERROR_INVALID_VALUE_2;
+    return clib_error_return_code (0, VNET_API_ERROR_INVALID_VALUE_2, 0,
+				   "invalid fib proto");
   return 0;
 }
 

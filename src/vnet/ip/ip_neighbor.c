@@ -49,8 +49,8 @@ static ip_neighbor_scan_config_t ip_neighbor_scan_conf;
 
 int
 ip_neighbor_add (const ip46_address_t * ip,
-		 ip46_type_t type,
-		 const mac_address_t * mac,
+		 u8 is_ip6,
+		 const u8 * mac,
 		 u32 sw_if_index,
 		 ip_neighbor_flags_t flags, u32 * stats_index)
 {
@@ -63,10 +63,13 @@ ip_neighbor_add (const ip46_address_t * ip,
    * The expectation is that the FIB will ensure that nothing bad
    * will come of adding bogus entries.
    */
-  if (IP46_TYPE_IP6 == type)
+  if (is_ip6)
     {
       rv = vnet_set_ip6_ethernet_neighbor (vlib_get_main (),
-					   sw_if_index, &ip->ip6, mac, flags);
+					   sw_if_index, &ip->ip6, mac, 6,
+					   (flags & IP_NEIGHBOR_FLAG_STATIC),
+					   (flags &
+					    IP_NEIGHBOR_FLAG_NO_ADJ_FIB));
       fproto = FIB_PROTOCOL_IP6;
       linkt = VNET_LINK_IP6;
     }
@@ -74,12 +77,16 @@ ip_neighbor_add (const ip46_address_t * ip,
     {
       ethernet_arp_ip4_over_ethernet_address_t a = {
 	.ip4 = ip->ip4,
-	.mac = *mac,
       };
 
-      rv =
-	vnet_arp_set_ip4_over_ethernet (vnet_get_main (), sw_if_index, &a,
-					flags);
+      clib_memcpy (&a.ethernet, mac, 6);
+
+      rv = vnet_arp_set_ip4_over_ethernet (vnet_get_main (),
+					   sw_if_index,
+					   &a,
+					   (flags & IP_NEIGHBOR_FLAG_STATIC),
+					   (flags &
+					    IP_NEIGHBOR_FLAG_NO_ADJ_FIB));
       fproto = FIB_PROTOCOL_IP4;
       linkt = VNET_LINK_IP4;
     }
@@ -91,11 +98,11 @@ ip_neighbor_add (const ip46_address_t * ip,
 }
 
 int
-ip_neighbor_del (const ip46_address_t * ip, ip46_type_t type, u32 sw_if_index)
+ip_neighbor_del (const ip46_address_t * ip, u8 is_ip6, u32 sw_if_index)
 {
   int rv;
 
-  if (IP46_TYPE_IP6 == type)
+  if (is_ip6)
     {
       rv = vnet_unset_ip6_ethernet_neighbor (vlib_get_main (),
 					     sw_if_index, &ip->ip6);
@@ -173,14 +180,14 @@ ip_neighbor_scan (vlib_main_t * vm, f64 start_time, u32 start_idx,
       if (!is_ip6)
 	{
 	  n4 = pool_elt_at_index (np4, curr_idx);
-	  if (n4->flags & IP_NEIGHBOR_FLAG_STATIC)
+	  if (n4->flags & ETHERNET_ARP_IP4_ENTRY_FLAG_STATIC)
 	    goto next_neighbor;
 	  update_time = n4->time_last_updated;
 	}
       else
 	{
 	  n6 = pool_elt_at_index (np6, curr_idx);
-	  if (n6->flags & IP_NEIGHBOR_FLAG_STATIC)
+	  if (n6->flags & IP6_NEIGHBOR_FLAG_STATIC)
 	    goto next_neighbor;
 	  update_time = n6->time_last_updated;
 	}
@@ -192,11 +199,9 @@ ip_neighbor_scan (vlib_main_t * vm, f64 start_time, u32 start_idx,
 	  /* delete stale neighbor */
 	  if (!is_ip6)
 	    {
-	      ethernet_arp_ip4_over_ethernet_address_t delme = {
-		.ip4.as_u32 = n4->ip4_address.as_u32,
-		.mac = n4->mac,
-	      };
-
+	      ethernet_arp_ip4_over_ethernet_address_t delme;
+	      clib_memcpy (&delme.ethernet, n4->ethernet_address, 6);
+	      delme.ip4.as_u32 = n4->ip4_address.as_u32;
 	      vnet_arp_unset_ip4_over_ethernet (vnm, n4->sw_if_index, &delme);
 	    }
 	  else

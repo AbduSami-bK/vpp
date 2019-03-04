@@ -51,15 +51,6 @@ public:
   gbp_endpoint_group(epg_id_t epg_id,
                      const gbp_route_domain& rd,
                      const gbp_bridge_domain& bd);
-  gbp_endpoint_group(epg_id_t epg_id,
-                     uint16_t sclass,
-                     const interface& itf,
-                     const gbp_route_domain& rd,
-                     const gbp_bridge_domain& bd);
-  gbp_endpoint_group(epg_id_t epg_id,
-                     uint16_t sclass,
-                     const gbp_route_domain& rd,
-                     const gbp_bridge_domain& bd);
 
   /**
    * Copy Construct
@@ -111,8 +102,8 @@ public:
    */
   epg_id_t id() const;
 
-  const std::shared_ptr<gbp_route_domain> get_route_domain() const;
-  const std::shared_ptr<gbp_bridge_domain> get_bridge_domain() const;
+  const std::shared_ptr<gbp_route_domain> get_route_domain();
+  const std::shared_ptr<gbp_bridge_domain> get_bridge_domain();
 
 private:
   /**
@@ -185,11 +176,6 @@ private:
    * The EPG ID
    */
   epg_id_t m_epg_id;
-
-  /**
-   * The SClass on the wire
-   */
-  uint16_t m_sclass;
 
   /**
    * The uplink interface for the endpoint group

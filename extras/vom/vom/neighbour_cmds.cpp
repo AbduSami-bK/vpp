@@ -14,20 +14,17 @@
  */
 
 #include "vom/neighbour_cmds.hpp"
-#include "vom/api_types.hpp"
 
 namespace VOM {
 namespace neighbour_cmds {
 create_cmd::create_cmd(HW::item<bool>& item,
                        handle_t itf,
                        const mac_address_t& mac,
-                       const boost::asio::ip::address& ip_addr,
-                       const neighbour::flags_t& flags)
+                       const boost::asio::ip::address& ip_addr)
   : rpc_cmd(item)
   , m_itf(itf)
   , m_mac(mac)
   , m_ip_addr(ip_addr)
-  , m_flags(flags)
 {
 }
 
@@ -35,7 +32,7 @@ bool
 create_cmd::operator==(const create_cmd& other) const
 {
   return ((m_mac == other.m_mac) && (m_ip_addr == other.m_ip_addr) &&
-          (m_itf == other.m_itf) && (m_flags == other.m_flags));
+          (m_itf == other.m_itf));
 }
 
 rc_t
@@ -44,12 +41,11 @@ create_cmd::issue(connection& con)
   msg_t req(con.ctx(), std::ref(*this));
 
   auto& payload = req.get_request().get_payload();
+  payload.sw_if_index = m_itf.value();
   payload.is_add = 1;
-  payload.neighbor.sw_if_index = m_itf.value();
-
-  to_api(m_mac, payload.neighbor.mac_address);
-  to_api(m_ip_addr, payload.neighbor.ip_address);
-  payload.neighbor.flags = to_api(m_flags);
+  payload.is_static = 1;
+  m_mac.to_bytes(payload.mac_address, 6);
+  to_bytes(m_ip_addr, &payload.is_ipv6, payload.dst_address);
 
   VAPI_CALL(req.execute());
 
@@ -70,13 +66,11 @@ create_cmd::to_string() const
 delete_cmd::delete_cmd(HW::item<bool>& item,
                        handle_t itf,
                        const mac_address_t& mac,
-                       const boost::asio::ip::address& ip_addr,
-                       const neighbour::flags_t& flags)
+                       const boost::asio::ip::address& ip_addr)
   : rpc_cmd(item)
   , m_itf(itf)
   , m_mac(mac)
   , m_ip_addr(ip_addr)
-  , m_flags(flags)
 {
 }
 
@@ -93,12 +87,11 @@ delete_cmd::issue(connection& con)
   msg_t req(con.ctx(), std::ref(*this));
 
   auto& payload = req.get_request().get_payload();
+  payload.sw_if_index = m_itf.value();
   payload.is_add = 0;
-  payload.neighbor.sw_if_index = m_itf.value();
-
-  to_api(m_mac, payload.neighbor.mac_address);
-  to_api(m_ip_addr, payload.neighbor.ip_address);
-  payload.neighbor.flags = to_api(m_flags);
+  payload.is_static = 1;
+  m_mac.to_bytes(payload.mac_address, 6);
+  to_bytes(m_ip_addr, &payload.is_ipv6, payload.dst_address);
 
   VAPI_CALL(req.execute());
 

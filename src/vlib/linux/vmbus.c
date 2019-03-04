@@ -157,7 +157,7 @@ vlib_vmbus_raise_lower (int fd, const char *upper_name)
   u8 *dev_net_dir;
   DIR *dir;
 
-  clib_memset (&ifr, 0, sizeof (ifr));
+  memset (&ifr, 0, sizeof (ifr));
 
   dev_net_dir = format (0, "%s/%s%c", sysfs_class_net_path, upper_name, 0);
 
@@ -175,7 +175,7 @@ vlib_vmbus_raise_lower (int fd, const char *upper_name)
       if (strncmp (e->d_name, "lower_", 6))
 	continue;
 
-      strncpy (ifr.ifr_name, e->d_name + 6, IFNAMSIZ - 1);
+      strncpy (ifr.ifr_name, e->d_name + 6, IFNAMSIZ);
       break;
     }
   closedir (dir);
@@ -249,8 +249,8 @@ vlib_vmbus_bind_to_uio (vlib_vmbus_addr_t * addr)
     }
 
 
-  clib_memset (&ifr, 0, sizeof (ifr));
-  strncpy (ifr.ifr_name, ifname, IFNAMSIZ - 1);
+  memset (&ifr, 0, sizeof (ifr));
+  strncpy (ifr.ifr_name, ifname, IFNAMSIZ);
 
   /* read up/down flags */
   fd = socket (PF_INET, SOCK_DGRAM, 0);

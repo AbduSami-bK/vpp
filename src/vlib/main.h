@@ -84,8 +84,9 @@ typedef struct vlib_main_t
   u32 node_counts_per_main_loop[2];
 
   /* Main loop hw / sw performance counters */
-  void (*vlib_node_runtime_perf_counter_cb) (struct vlib_main_t *,
-					     u64 *, u64 *);
+    u64 (*vlib_node_runtime_perf_counter_cb) (struct vlib_main_t *);
+  int perf_counter_id;
+  int perf_counter_fd;
 
   /* Every so often we switch to the next counter. */
 #define VLIB_LOG2_MAIN_LOOPS_PER_STATS_UPDATE 7
@@ -115,8 +116,8 @@ typedef struct vlib_main_t
   /* Size of the heap */
   uword heap_size;
 
-  /* buffer main structure. */
-  vlib_buffer_main_t *buffer_main;
+  /* Pool of buffer free lists. */
+  vlib_buffer_free_list_t *buffer_free_list_pool;
 
   /* physical memory main structure. */
   vlib_physmem_main_t physmem_main;
@@ -155,9 +156,6 @@ typedef struct vlib_main_t
   /* Event logger trace flags */
   int elog_trace_api_messages;
   int elog_trace_cli_commands;
-  int elog_trace_graph_dispatch;
-  int elog_trace_graph_circuit;
-  u32 elog_trace_graph_circuit_node_index;
 
   /* Node call and return event types. */
   elog_event_type_t *node_call_elog_event_types;
@@ -174,10 +172,8 @@ typedef struct vlib_main_t
   /* Hash table to record which init functions have been called. */
   uword *init_functions_called;
 
-  /* thread, cpu and numa_node indices */
+  /* to compare with node runtime */
   u32 thread_index;
-  u32 cpu_id;
-  u32 numa_node;
 
   /* List of init functions to call, setup by constructors */
   _vlib_init_function_list_elt_t *init_function_registrations;

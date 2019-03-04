@@ -108,7 +108,8 @@ VNET_DEVICE_CLASS_TX_FN (vmxnet3_device_class) (vlib_main_t * vm,
   u16 space_left;
   u16 n_left = frame->n_vectors;
   vmxnet3_txq_t *txq;
-  u16 qid = vm->thread_index % vd->num_tx_queues, produce;
+  u32 thread_index = vm->thread_index;
+  u16 qid = thread_index, produce;
 
   if (PREDICT_FALSE (!(vd->flags & VMXNET3_DEVICE_F_LINK_UP)))
     {
@@ -118,7 +119,7 @@ VNET_DEVICE_CLASS_TX_FN (vmxnet3_device_class) (vlib_main_t * vm,
       return (0);
     }
 
-  txq = vec_elt_at_index (vd->txqs, qid);
+  txq = vec_elt_at_index (vd->txqs, qid % vd->num_tx_queues);
   clib_spinlock_lock_if_init (&txq->lock);
 
   vmxnet3_txq_release (vm, vd, txq);
@@ -201,7 +202,8 @@ VNET_DEVICE_CLASS_TX_FN (vmxnet3_device_class) (vlib_main_t * vm,
     }
 
   if (PREDICT_TRUE (produce != txq->tx_ring.produce))
-    vmxnet3_reg_write_inline (vd, 0, txq->reg_txprod, txq->tx_ring.produce);
+    vmxnet3_reg_write_inline (vd, 0, VMXNET3_REG_TXPROD,
+			      txq->tx_ring.produce);
 
   clib_spinlock_unlock_if_init (&txq->lock);
 

@@ -22,7 +22,6 @@
 #include <vnet/ethernet/ethernet.h>
 #include <vnet/ipsec/ipsec.h>
 
-#include <dpdk/buffer.h>
 #include <dpdk/device/dpdk.h>
 #include <dpdk/device/dpdk_priv.h>
 #include <dpdk/ipsec/ipsec.h>
@@ -50,10 +49,33 @@ extern vlib_node_registration_t dpdk_crypto_input_node;
 
 typedef struct
 {
-  /* dev id of this cryptodev */
-  u16 dev_id;
-  u16 next_index;
+  u32 status;
 } dpdk_crypto_input_trace_t;
+
+#define foreach_cryptodev_status \
+    _(SUCCESS, "success") \
+    _(NOT_PROCESSED, "not processed") \
+    _(AUTH_FAILED, "auth failed") \
+    _(INVALID_SESSION, "invalid session") \
+    _(INVALID_ARGS, "invalid arguments") \
+    _(ERROR, "error")
+
+static u8 *
+format_cryptodev_status (u8 * s, va_list * args)
+{
+  u32 status = va_arg (*args, u32);
+  char *str = 0;
+
+  switch (status)
+    {
+#define _(x, z) case RTE_CRYPTO_OP_STATUS_##x: str = z; break;
+      foreach_cryptodev_status
+#undef _
+    }
+  s = format (s, "%s", str);
+
+  return s;
+}
 
 static u8 *
 format_dpdk_crypto_input_trace (u8 * s, va_list * args)
@@ -62,7 +84,7 @@ format_dpdk_crypto_input_trace (u8 * s, va_list * args)
   CLIB_UNUSED (vlib_node_t * node) = va_arg (*args, vlib_node_t *);
   dpdk_crypto_input_trace_t *t = va_arg (*args, dpdk_crypto_input_trace_t *);
 
-  s = format (s, "cryptodev-id %d next-index %d", t->dev_id, t->next_index);
+  s = format (s, "status: %U", format_cryptodev_status, t->status);
 
   return s;
 }
@@ -87,10 +109,9 @@ dpdk_crypto_input_check_op (vlib_main_t * vm, vlib_node_runtime_t * node,
 
 always_inline void
 dpdk_crypto_input_trace (vlib_main_t * vm, vlib_node_runtime_t * node,
-			 u8 dev_id, u32 * bis, u16 * nexts, u32 n_deq)
+			 struct rte_crypto_op **ops, u32 n_deq)
 {
   u32 n_left, n_trace;
-
   if (PREDICT_FALSE ((n_trace = vlib_get_trace_count (vm, node))))
     {
       n_left = n_deq;
@@ -98,25 +119,24 @@ dpdk_crypto_input_trace (vlib_main_t * vm, vlib_node_runtime_t * node,
       while (n_trace && n_left)
 	{
 	  vlib_buffer_t *b0;
+	  struct rte_crypto_op *op0;
 	  u16 next;
-	  u32 bi;
 
-	  bi = bis[0];
-	  next = nexts[0];
+	  op0 = ops[0];
 
-	  b0 = vlib_get_buffer (vm, bi);
+	  next = crypto_op_get_priv (op0)->next;
+
+	  b0 = vlib_buffer_from_rte_mbuf (op0->sym[0].m_src);
 
 	  vlib_trace_buffer (vm, node, next, b0, /* follow_chain */ 0);
 
 	  dpdk_crypto_input_trace_t *tr =
 	    vlib_add_trace (vm, node, b0, sizeof (*tr));
-	  tr->dev_id = dev_id;
-	  tr->next_index = next;
+	  tr->status = op0->status;
 
 	  n_trace--;
 	  n_left--;
-	  nexts++;
-	  bis++;
+	  ops++;
 	}
       vlib_set_trace_count (vm, node, n_trace);
     }
@@ -124,7 +144,7 @@ dpdk_crypto_input_trace (vlib_main_t * vm, vlib_node_runtime_t * node,
 
 static_always_inline u32
 dpdk_crypto_dequeue (vlib_main_t * vm, vlib_node_runtime_t * node,
-		     crypto_resource_t * res)
+		     crypto_resource_t * res, u8 outbound)
 {
   u32 thread_idx = vlib_get_thread_index ();
   u8 numa = rte_socket_id ();
@@ -143,14 +163,12 @@ dpdk_crypto_dequeue (vlib_main_t * vm, vlib_node_runtime_t * node,
   ops = cwm->ops;
 
   n_ops = n_deq = rte_cryptodev_dequeue_burst (res->dev_id,
-					       res->qp_id,
+					       res->qp_id + outbound,
 					       ops, VLIB_FRAME_SIZE);
 
-  /* no op dequeued, do not proceed */
-  if (n_deq == 0)
-    return 0;
+  res->inflights[outbound] -= n_ops;
 
-  res->inflights -= n_ops;
+  dpdk_crypto_input_trace (vm, node, ops, n_deq);
 
   while (n_ops >= 4)
     {
@@ -165,14 +183,14 @@ dpdk_crypto_dequeue (vlib_main_t * vm, vlib_node_runtime_t * node,
 	  CLIB_PREFETCH (ops[6], CLIB_CACHE_LINE_BYTES, LOAD);
 	  CLIB_PREFETCH (ops[7], CLIB_CACHE_LINE_BYTES, LOAD);
 
-	  CLIB_PREFETCH (crypto_op_get_priv (ops[4]),
-			 CLIB_CACHE_LINE_BYTES, LOAD);
-	  CLIB_PREFETCH (crypto_op_get_priv (ops[5]),
-			 CLIB_CACHE_LINE_BYTES, LOAD);
-	  CLIB_PREFETCH (crypto_op_get_priv (ops[6]),
-			 CLIB_CACHE_LINE_BYTES, LOAD);
-	  CLIB_PREFETCH (crypto_op_get_priv (ops[7]),
-			 CLIB_CACHE_LINE_BYTES, LOAD);
+	  CLIB_PREFETCH (crypto_op_get_priv (ops[4]), CLIB_CACHE_LINE_BYTES,
+			 LOAD);
+	  CLIB_PREFETCH (crypto_op_get_priv (ops[5]), CLIB_CACHE_LINE_BYTES,
+			 LOAD);
+	  CLIB_PREFETCH (crypto_op_get_priv (ops[6]), CLIB_CACHE_LINE_BYTES,
+			 LOAD);
+	  CLIB_PREFETCH (crypto_op_get_priv (ops[7]), CLIB_CACHE_LINE_BYTES,
+			 LOAD);
 	}
 
       op0 = ops[0];
@@ -240,8 +258,6 @@ dpdk_crypto_dequeue (vlib_main_t * vm, vlib_node_runtime_t * node,
 
   vlib_buffer_enqueue_to_next (vm, node, bis, nexts, n_deq);
 
-  dpdk_crypto_input_trace (vm, node, res->dev_id, bis, nexts, n_deq);
-
   crypto_free_ops (numa, cwm->ops, n_deq);
 
   return n_deq;
@@ -264,10 +280,13 @@ dpdk_crypto_input_inline (vlib_main_t * vm, vlib_node_runtime_t * node,
     {
       res = vec_elt_at_index (dcm->resource, res_idx[0]);
 
-      if (res->inflights)
-	n_deq += dpdk_crypto_dequeue (vm, node, res);
+      if (res->inflights[0])
+	n_deq += dpdk_crypto_dequeue (vm, node, res, 0);
 
-      if (PREDICT_FALSE (res->remove && !(res->inflights)))
+      if (res->inflights[1])
+	n_deq += dpdk_crypto_dequeue (vm, node, res, 1);
+
+      if (PREDICT_FALSE (res->remove && !(res->inflights[0] || res->inflights[1])))
 	vec_add1 (remove, res_idx[0]);
     }
   /* *INDENT-ON* */

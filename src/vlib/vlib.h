@@ -48,7 +48,6 @@
 
 /* Forward declarations of structs to avoid circular dependencies. */
 struct vlib_main_t;
-typedef u32 vlib_log_class_t;
 
 /* All includes in alphabetical order. */
 #include <vlib/physmem.h>

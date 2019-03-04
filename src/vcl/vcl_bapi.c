@@ -594,8 +594,9 @@ vppcom_send_bind_sock (vcl_session_t * session)
 }
 
 void
-vppcom_send_unbind_sock (vcl_worker_t * wrk, u64 vpp_handle)
+vppcom_send_unbind_sock (u64 vpp_handle)
 {
+  vcl_worker_t *wrk = vcl_worker_get_current ();
   vl_api_unbind_sock_t *ump;
 
   ump = vl_msg_api_alloc (sizeof (*ump));
@@ -679,7 +680,7 @@ vppcom_connect_to_vpp (char *app_name)
 	  return VPPCOM_ECONNREFUSED;
 	}
 
-      if (vl_socket_client_init_shm (0, 1 /* want_pthread */ ))
+      if (vl_socket_client_init_shm (0))
 	{
 	  VERR ("app (%s) init shm failed!", app_name);
 	  return VPPCOM_ECONNREFUSED;

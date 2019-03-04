@@ -27,30 +27,6 @@ namespace VOM {
 class neighbour : public object_base
 {
 public:
-  struct flags_t : public enum_base<flags_t>
-  {
-    /**
-     * Constructor
-     */
-    flags_t(int v, const std::string s);
-
-    /**
-     * Destructor
-     */
-    ~flags_t() = default;
-
-    flags_t operator|(const flags_t& e1) const
-    {
-      flags_t e = *this;
-      e |= e1;
-      return e;
-    }
-
-    const static flags_t NONE;
-    const static flags_t STATIC;
-    const static flags_t NO_FIB_ENTRY;
-  };
-
   /**
    * The key for a neighbour entry;
    *  the interface and IP address
@@ -62,8 +38,7 @@ public:
    */
   neighbour(const interface& itf,
             const boost::asio::ip::address& ip_addr,
-            const mac_address_t& mac,
-            const flags_t flags = flags_t::STATIC);
+            const mac_address_t& mac);
 
   /**
    * Copy Construct
@@ -197,11 +172,6 @@ private:
    * The mac to match
    */
   mac_address_t m_mac;
-
-  /**
-   * flags on the entry
-   */
-  flags_t m_flags;
 
   /**
    * A map of all bridge_domains

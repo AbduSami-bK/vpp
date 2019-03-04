@@ -19,7 +19,6 @@
 #include "vom/hw.hpp"
 #include "vom/inspect.hpp"
 #include "vom/interface.hpp"
-#include "vom/l2_vtr.hpp"
 #include "vom/object_base.hpp"
 #include "vom/om.hpp"
 #include "vom/singular_db.hpp"
@@ -77,11 +76,6 @@ public:
    * Dump all l2_xconnects into the stream provided
    */
   static void dump(std::ostream& os);
-
-  /**
-   * Set the VTR operation on the binding/interface
-   */
-  void set(const l2_vtr_op_t& op, uint16_t tag);
 
   /**
    * Static function to find the bridge_domain in the model
@@ -179,16 +173,6 @@ private:
    * do/don't bind.
    */
   HW::item<bool> m_xconnect_west;
-
-  /**
-   * HW configuration for the VTR option
-   */
-  HW::item<l2_vtr_op_t> m_vtr_op;
-
-  /**
-   * The Dot1q tag for the VTR operation
-   */
-  uint16_t m_vtr_op_tag;
 
   /**
    * A map of all L2 interfaces key against the interface's handle_t

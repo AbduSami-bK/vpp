@@ -553,7 +553,8 @@ show_mactime_command_fn (vlib_main_t * vm,
       for (j = 0; j < vec_len (mm->arp_cache_copy); j++)
 	{
 	  n = mm->arp_cache_copy + j;
-	  if (!memcmp (dp->mac_address, n->mac.bytes, sizeof (n->mac)))
+	  if (!memcmp (dp->mac_address, n->ethernet_address,
+		       sizeof (n->ethernet_address)))
 	    {
 	      vlib_cli_output (vm, "%17s%U", " ", format_ip4_address,
 			       &n->ip4_address);

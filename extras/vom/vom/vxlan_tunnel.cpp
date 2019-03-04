@@ -116,12 +116,6 @@ vxlan_tunnel::vxlan_tunnel(const vxlan_tunnel& o)
 {
 }
 
-bool
-vxlan_tunnel::operator==(const vxlan_tunnel& other) const
-{
-  return ((m_tep == other.m_tep) && (m_mode == other.m_mode));
-}
-
 const handle_t&
 vxlan_tunnel::handle() const
 {
@@ -183,7 +177,7 @@ vxlan_tunnel::update(const vxlan_tunnel& desired)
   /*
    * the desired state is always that the interface should be created
    */
-  if (rc_t::OK != m_hdl.rc()) {
+  if (!m_hdl) {
     if (mode_t::STANDARD == m_mode)
       HW::enqueue(new vxlan_tunnel_cmds::create_cmd(
         m_hdl, name(), m_tep,

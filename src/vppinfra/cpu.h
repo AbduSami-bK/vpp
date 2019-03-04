@@ -16,7 +16,6 @@
 #ifndef included_clib_cpu_h
 #define included_clib_cpu_h
 
-#include <sys/syscall.h>
 #include <vppinfra/format.h>
 
 /*
@@ -45,8 +44,12 @@
   if (clib_cpu_supports_ ## arch())					\
     return & fn ## _ ##arch;
 
-/* FIXME to be removed */
-#define CLIB_MULTIARCH_SELECT_FN(fn,...)
+#define CLIB_MULTIARCH_SELECT_FN(fn,...)                               \
+  __VA_ARGS__ void * fn ## _multiarch_select(void)                     \
+{                                                                      \
+  foreach_march_variant(CLIB_MULTIARCH_ARCH_CHECK, fn)                 \
+  return & fn;                                                         \
+}
 
 #ifdef CLIB_MARCH_VARIANT
 #define __CLIB_MULTIARCH_FN(a,b) a##_##b
@@ -58,62 +61,6 @@
 
 #define CLIB_MARCH_SFX CLIB_MULTIARCH_FN
 
-typedef struct _clib_march_fn_registration
-{
-  void *function;
-  int priority;
-  struct _clib_march_fn_registration *next;
-  char *name;
-} clib_march_fn_registration;
-
-static_always_inline void *
-clib_march_select_fn_ptr (clib_march_fn_registration * r)
-{
-  void *rv = 0;
-  int last_prio = -1;
-
-  while (r)
-    {
-      if (last_prio < r->priority)
-	{
-	  last_prio = r->priority;
-	  rv = r->function;
-	}
-      r = r->next;
-    }
-  return rv;
-}
-
-#define CLIB_MARCH_FN_POINTER(fn) \
-  clib_march_select_fn_ptr (fn##_march_fn_registrations);
-
-#define _CLIB_MARCH_FN_REGISTRATION(fn) \
-static clib_march_fn_registration \
-CLIB_MARCH_SFX(fn##_march_fn_registration) = \
-{ \
-  .name = CLIB_MARCH_VARIANT_STR \
-}; \
-\
-static void __clib_constructor \
-fn##_march_register () \
-{ \
-  clib_march_fn_registration *r; \
-  r = & CLIB_MARCH_SFX (fn##_march_fn_registration); \
-  r->priority = CLIB_MARCH_FN_PRIORITY(); \
-  r->next = fn##_march_fn_registrations; \
-  r->function = CLIB_MARCH_SFX (fn); \
-  fn##_march_fn_registrations = r; \
-}
-
-#ifdef CLIB_MARCH_VARIANT
-#define CLIB_MARCH_FN_REGISTRATION(fn) \
-extern clib_march_fn_registration *fn##_march_fn_registrations; \
-_CLIB_MARCH_FN_REGISTRATION(fn)
-#else
-#define CLIB_MARCH_FN_REGISTRATION(fn) \
-clib_march_fn_registration *fn##_march_fn_registrations = 0; \
-_CLIB_MARCH_FN_REGISTRATION(fn)
-#endif
 #define foreach_x86_64_flags \
 _ (sse3,     1, ecx, 0)   \
 _ (ssse3,    1, ecx, 9)   \
@@ -151,22 +98,6 @@ _ (sm4,        19) \
 _ (asimddp,    20) \
 _ (sha512,     21) \
 _ (sve,        22)
-
-static inline u32
-clib_get_current_cpu_id ()
-{
-  unsigned cpu, node;
-  syscall (__NR_getcpu, &cpu, &node, 0);
-  return cpu;
-}
-
-static inline u32
-clib_get_current_numa_node ()
-{
-  unsigned cpu, node;
-  syscall (__NR_getcpu, &cpu, &node, 0);
-  return node;
-}
 
 #if defined(__x86_64__)
 #include "cpuid.h"

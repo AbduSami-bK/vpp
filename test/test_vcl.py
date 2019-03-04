@@ -32,15 +32,7 @@ class VCLAppWorker(Worker):
 class VCLTestCase(VppTestCase):
     """ VCL Test Class """
 
-    @classmethod
-    def setUpClass(cls):
-        super(VCLTestCase, cls).setUpClass()
-
-    @classmethod
-    def tearDownClass(cls):
-        super(VCLTestCase, cls).tearDownClass()
-
-    def setUp(self):
+    def __init__(self, methodName):
         var = "VPP_BUILD_DIR"
         self.build_dir = os.getenv(var, None)
         if self.build_dir is None:
@@ -59,7 +51,7 @@ class VCLTestCase(VppTestCase):
         if os.path.isfile("/tmp/ldp_server_af_unix_socket"):
             os.remove("/tmp/ldp_server_af_unix_socket")
 
-        super(VCLTestCase, self).setUp()
+        super(VCLTestCase, self).__init__(methodName)
 
     def cut_thru_setup(self):
         self.vapi.session_enable_disable(is_enabled=1)
@@ -230,14 +222,6 @@ class VCLTestCase(VppTestCase):
 class LDPCutThruTestCase(VCLTestCase):
     """ LDP Cut Thru Tests """
 
-    @classmethod
-    def setUpClass(cls):
-        super(LDPCutThruTestCase, cls).setUpClass()
-
-    @classmethod
-    def tearDownClass(cls):
-        super(LDPCutThruTestCase, cls).tearDownClass()
-
     def setUp(self):
         super(LDPCutThruTestCase, self).setUp()
 
@@ -306,14 +290,6 @@ class LDPCutThruTestCase(VCLTestCase):
 class VCLCutThruTestCase(VCLTestCase):
     """ VCL Cut Thru Tests """
 
-    @classmethod
-    def setUpClass(cls):
-        super(VCLCutThruTestCase, cls).setUpClass()
-
-    @classmethod
-    def tearDownClass(cls):
-        super(VCLCutThruTestCase, cls).tearDownClass()
-
     def setUp(self):
         super(VCLCutThruTestCase, self).setUp()
 
@@ -363,14 +339,6 @@ class VCLCutThruTestCase(VCLTestCase):
 class LDPThruHostStackEcho(VCLTestCase):
     """ LDP Thru Host Stack Echo """
 
-    @classmethod
-    def setUpClass(cls):
-        super(LDPThruHostStackEcho, cls).setUpClass()
-
-    @classmethod
-    def tearDownClass(cls):
-        super(LDPThruHostStackEcho, cls).tearDownClass()
-
     def setUp(self):
         super(LDPThruHostStackEcho, self).setUp()
 
@@ -394,14 +362,6 @@ class LDPThruHostStackEcho(VCLTestCase):
 class VCLThruHostStackEcho(VCLTestCase):
     """ VCL Thru Host Stack Echo """
 
-    @classmethod
-    def setUpClass(cls):
-        super(VCLThruHostStackEcho, cls).setUpClass()
-
-    @classmethod
-    def tearDownClass(cls):
-        super(VCLThruHostStackEcho, cls).tearDownClass()
-
     def setUp(self):
         super(VCLThruHostStackEcho, self).setUp()
 
@@ -424,14 +384,6 @@ class VCLThruHostStackEcho(VCLTestCase):
 
 class VCLThruHostStackBidirNsock(VCLTestCase):
     """ VCL Thru Host Stack Bidir Nsock """
-
-    @classmethod
-    def setUpClass(cls):
-        super(VCLThruHostStackBidirNsock, cls).setUpClass()
-
-    @classmethod
-    def tearDownClass(cls):
-        super(VCLThruHostStackBidirNsock, cls).tearDownClass()
 
     def setUp(self):
         super(VCLThruHostStackBidirNsock, self).setUp()
@@ -461,14 +413,6 @@ class VCLThruHostStackBidirNsock(VCLTestCase):
 
 class LDPThruHostStackBidirNsock(VCLTestCase):
     """ LDP Thru Host Stack Bidir Nsock """
-
-    @classmethod
-    def setUpClass(cls):
-        super(LDPThruHostStackBidirNsock, cls).setUpClass()
-
-    @classmethod
-    def tearDownClass(cls):
-        super(LDPThruHostStackBidirNsock, cls).tearDownClass()
 
     def setUp(self):
         super(LDPThruHostStackBidirNsock, self).setUp()
@@ -505,14 +449,6 @@ class LDPThruHostStackBidirNsock(VCLTestCase):
 class LDPThruHostStackNsock(VCLTestCase):
     """ LDP Thru Host Stack Nsock """
 
-    @classmethod
-    def setUpClass(cls):
-        super(LDPThruHostStackNsock, cls).setUpClass()
-
-    @classmethod
-    def tearDownClass(cls):
-        super(LDPThruHostStackNsock, cls).tearDownClass()
-
     def setUp(self):
         super(LDPThruHostStackNsock, self).setUp()
 
@@ -544,14 +480,6 @@ class LDPThruHostStackNsock(VCLTestCase):
 
 class VCLThruHostStackNsock(VCLTestCase):
     """ VCL Thru Host Stack Nsock """
-
-    @classmethod
-    def setUpClass(cls):
-        super(VCLThruHostStackNsock, cls).setUpClass()
-
-    @classmethod
-    def tearDownClass(cls):
-        super(VCLThruHostStackNsock, cls).tearDownClass()
 
     def setUp(self):
         super(VCLThruHostStackNsock, self).setUp()
@@ -585,14 +513,6 @@ class VCLThruHostStackNsock(VCLTestCase):
 class LDPThruHostStackIperf(VCLTestCase):
     """ LDP Thru Host Stack Iperf  """
 
-    @classmethod
-    def setUpClass(cls):
-        super(LDPThruHostStackIperf, cls).setUpClass()
-
-    @classmethod
-    def tearDownClass(cls):
-        super(LDPThruHostStackIperf, cls).tearDownClass()
-
     def setUp(self):
         super(LDPThruHostStackIperf, self).setUp()
 
@@ -623,14 +543,6 @@ class LDPThruHostStackIperf(VCLTestCase):
 
 class LDPIpv6CutThruTestCase(VCLTestCase):
     """ LDP IPv6 Cut Thru Tests """
-
-    @classmethod
-    def setUpClass(cls):
-        super(LDPIpv6CutThruTestCase, cls).setUpClass()
-
-    @classmethod
-    def tearDownClass(cls):
-        super(LDPIpv6CutThruTestCase, cls).tearDownClass()
 
     def setUp(self):
         super(LDPIpv6CutThruTestCase, self).setUp()
@@ -707,14 +619,6 @@ class LDPIpv6CutThruTestCase(VCLTestCase):
 class VCLIpv6CutThruTestCase(VCLTestCase):
     """ VCL IPv6 Cut Thru Tests """
 
-    @classmethod
-    def setUpClass(cls):
-        super(VCLIpv6CutThruTestCase, cls).setUpClass()
-
-    @classmethod
-    def tearDownClass(cls):
-        super(VCLIpv6CutThruTestCase, cls).tearDownClass()
-
     def setUp(self):
         super(VCLIpv6CutThruTestCase, self).setUp()
 
@@ -769,14 +673,6 @@ class VCLIpv6CutThruTestCase(VCLTestCase):
 
 class VCLIpv6ThruHostStackEcho(VCLTestCase):
     """ VCL IPv6 Thru Host Stack Echo """
-
-    @classmethod
-    def setUpClass(cls):
-        super(VCLIpv6ThruHostStackEcho, cls).setUpClass()
-
-    @classmethod
-    def tearDownClass(cls):
-        super(VCLIpv6ThruHostStackEcho, cls).tearDownClass()
 
     def setUp(self):
         super(VCLIpv6ThruHostStackEcho, self).setUp()

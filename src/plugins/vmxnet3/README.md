@@ -16,7 +16,7 @@ vfio driver can still be used with recent kernels which support no-iommu mode.
 ##Known issues
 
 * TSO/LRO
-* RSS
+* RSS/multiple queues
 * VLAN filter
 
 ## Usage

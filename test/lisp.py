@@ -64,7 +64,7 @@ class VppLispLocator(VppObject):
 
     @property
     def priority(self):
-        return self._priority
+        return self.priority
 
     @property
     def weight(self):
@@ -183,10 +183,6 @@ class VppLispMapping(VppObject):
     def query_vpp_config(self):
         mapping = self.get_lisp_mapping_dump_entry()
         return mapping
-
-    def object_id(self):
-        return 'lisp-mapping-[%s]-%s-%s-%s' % (
-            self.vni, self.eid, self.priority, self.weight)
 
 
 class VppLocalMapping(VppLispMapping):

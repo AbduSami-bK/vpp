@@ -114,11 +114,6 @@ public:
   vxlan_tunnel(const vxlan_tunnel& o);
 
   /**
-   * comparison operator
-   */
-  bool operator==(const vxlan_tunnel& vx) const;
-
-  /**
    * Return the matching 'singular instance'
    */
   std::shared_ptr<vxlan_tunnel> singular() const;

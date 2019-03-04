@@ -21,9 +21,7 @@
 #include <vnet/snap/snap.h>
 #include <vnet/bonding/node.h>
 
-#ifndef CLIB_MARCH_VARIANT
 bond_main_t bond_main;
-#endif /* CLIB_MARCH_VARIANT */
 
 #define foreach_bond_input_error \
   _(NONE, "no error")            \

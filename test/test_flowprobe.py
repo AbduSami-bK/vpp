@@ -158,10 +158,6 @@ class MethodHolder(VppTestCase):
             super(MethodHolder, cls).tearDownClass()
             raise
 
-    @classmethod
-    def tearDownClass(cls):
-        super(MethodHolder, cls).tearDownClass()
-
     def create_stream(self, src_if=None, dst_if=None, packets=None,
                       size=None, ip_ver='v4'):
         """Create a packet stream to tickle the plugin
@@ -329,14 +325,6 @@ class MethodHolder(VppTestCase):
 class Flowprobe(MethodHolder):
     """Template verification, timer tests"""
 
-    @classmethod
-    def setUpClass(cls):
-        super(Flowprobe, cls).setUpClass()
-
-    @classmethod
-    def tearDownClass(cls):
-        super(Flowprobe, cls).tearDownClass()
-
     def test_0001(self):
         """ timer less than template timeout"""
         self.logger.info("FFP_TEST_START_0001")
@@ -472,14 +460,6 @@ class Flowprobe(MethodHolder):
 
 class Datapath(MethodHolder):
     """collect information on Ethernet, IP4 and IP6 datapath (no timers)"""
-
-    @classmethod
-    def setUpClass(cls):
-        super(Datapath, cls).setUpClass()
-
-    @classmethod
-    def tearDownClass(cls):
-        super(Datapath, cls).tearDownClass()
 
     def test_templatesL2(self):
         """ verify template on L2 datapath"""
@@ -848,14 +828,6 @@ class Datapath(MethodHolder):
 class DisableIPFIX(MethodHolder):
     """Disable IPFIX"""
 
-    @classmethod
-    def setUpClass(cls):
-        super(DisableIPFIX, cls).setUpClass()
-
-    @classmethod
-    def tearDownClass(cls):
-        super(DisableIPFIX, cls).tearDownClass()
-
     def test_0001(self):
         """ disable IPFIX after first packets"""
         self.logger.info("FFP_TEST_START_0001")
@@ -897,14 +869,6 @@ class DisableIPFIX(MethodHolder):
 class ReenableIPFIX(MethodHolder):
     """Re-enable IPFIX"""
 
-    @classmethod
-    def setUpClass(cls):
-        super(ReenableIPFIX, cls).setUpClass()
-
-    @classmethod
-    def tearDownClass(cls):
-        super(ReenableIPFIX, cls).tearDownClass()
-
     def test_0011(self):
         """ disable IPFIX after first packets and re-enable after few packets
         """
@@ -927,7 +891,7 @@ class ReenableIPFIX(MethodHolder):
         self.wait_for_cflow_packet(self.collector, templates[1])
         self.collector.get_capture(4)
 
-        # disable IPFIX
+        # disble IPFIX
         ipfix.disable_exporter()
         self.vapi.cli("ipfix flush")
         self.pg_enable_capture([self.collector])
@@ -965,14 +929,6 @@ class ReenableIPFIX(MethodHolder):
 @unittest.skipUnless(running_extended_tests, "part of extended tests")
 class DisableFP(MethodHolder):
     """Disable Flowprobe feature"""
-
-    @classmethod
-    def setUpClass(cls):
-        super(DisableFP, cls).setUpClass()
-
-    @classmethod
-    def tearDownClass(cls):
-        super(DisableFP, cls).tearDownClass()
 
     def test_0001(self):
         """ disable flowprobe feature after first packets"""
@@ -1013,14 +969,6 @@ class DisableFP(MethodHolder):
 @unittest.skipUnless(running_extended_tests, "part of extended tests")
 class ReenableFP(MethodHolder):
     """Re-enable Flowprobe feature"""
-
-    @classmethod
-    def setUpClass(cls):
-        super(ReenableFP, cls).setUpClass()
-
-    @classmethod
-    def tearDownClass(cls):
-        super(ReenableFP, cls).tearDownClass()
 
     def test_0001(self):
         """ disable flowprobe feature after first packets and re-enable
