@@ -42,6 +42,10 @@
 
 #include <vppinfra/hash.h>
 #include <vppinfra/fifo.h>
+#include <vlib/buffer.h>
+#include <vlib/physmem_funcs.h>
+#include <vlib/main.h>
+#include <vlib/node.h>
 
 /** \file
     vlib buffer access methods.
@@ -1217,122 +1221,277 @@ vlib_packet_template_free (vlib_main_t * vm, vlib_packet_template_t * t)
   vec_free (t->packet_data);
 }
 
-/**
- * @brief compress buffer chain in a way where the first buffer is at least
- * VLIB_BUFFER_CLONE_HEAD_SIZE long
- *
- * @param[in] vm - vlib_main
- * @param[in,out] first - first buffer in chain
- * @param[in,out] discard_vector - vector of buffer indexes which were removed
- * from the chain
- */
+/* Set a buffer quickly into "uninitialized" state.  We want this to
+   be extremely cheap and arrange for all fields that need to be
+   initialized to be in the first 128 bits of the buffer. */
 always_inline void
-vlib_buffer_chain_compress (vlib_main_t * vm,
-			    vlib_buffer_t * first, u32 ** discard_vector)
+vlib_buffer_init_for_free_list (vlib_buffer_t * dst,
+				vlib_buffer_free_list_t * fl)
 {
-  if (first->current_length >= VLIB_BUFFER_CLONE_HEAD_SIZE ||
-      !(first->flags & VLIB_BUFFER_NEXT_PRESENT))
-    {
-      /* this is already big enough or not a chain */
-      return;
-    }
+  vlib_buffer_t *src = &fl->buffer_init_template;
 
-  u32 want_first_size = clib_min (VLIB_BUFFER_CLONE_HEAD_SIZE,
-				  vlib_buffer_get_default_data_size (vm) -
-				  first->current_data);
-  do
-    {
-      vlib_buffer_t *second = vlib_get_buffer (vm, first->next_buffer);
-      u32 need = want_first_size - first->current_length;
-      u32 amount_to_copy = clib_min (need, second->current_length);
-      clib_memcpy_fast (((u8 *) vlib_buffer_get_current (first)) +
-			first->current_length,
-			vlib_buffer_get_current (second), amount_to_copy);
-      first->current_length += amount_to_copy;
-      second->current_data += amount_to_copy;
-      second->current_length -= amount_to_copy;
-      if (first->flags & VLIB_BUFFER_TOTAL_LENGTH_VALID)
-	{
-	  first->total_length_not_including_first_buffer -= amount_to_copy;
-	}
-      if (!second->current_length)
-	{
-	  vec_add1 (*discard_vector, first->next_buffer);
-	  if (second->flags & VLIB_BUFFER_NEXT_PRESENT)
-	    {
-	      first->next_buffer = second->next_buffer;
-	    }
-	  else
-	    {
-	      first->flags &= ~VLIB_BUFFER_NEXT_PRESENT;
-	    }
-	  second->flags &= ~VLIB_BUFFER_NEXT_PRESENT;
-	}
-    }
-  while ((first->current_length < want_first_size) &&
-	 (first->flags & VLIB_BUFFER_NEXT_PRESENT));
+  /* Make sure vlib_buffer_t is cacheline aligned and sized */
+  ASSERT (STRUCT_OFFSET_OF (vlib_buffer_t, cacheline0) == 0);
+  ASSERT (STRUCT_OFFSET_OF (vlib_buffer_t, cacheline1) ==
+	  CLIB_CACHE_LINE_BYTES);
+  ASSERT (STRUCT_OFFSET_OF (vlib_buffer_t, cacheline2) ==
+	  CLIB_CACHE_LINE_BYTES * 2);
+
+  /* Make sure buffer template is sane. */
+  ASSERT (fl->index == vlib_buffer_get_free_list_index (src));
+
+  clib_memcpy_fast (STRUCT_MARK_PTR (dst, template_start),
+		    STRUCT_MARK_PTR (src, template_start),
+		    STRUCT_OFFSET_OF (vlib_buffer_t, template_end) -
+		    STRUCT_OFFSET_OF (vlib_buffer_t, template_start));
+
+  /* Not in the first 16 octets. */
+  dst->n_add_refs = src->n_add_refs;
+  vlib_buffer_set_free_list_index (dst, fl->index);
+
+  /* Make sure it really worked. */
+#define _(f) ASSERT (dst->f == src->f);
+  _(current_data);
+  _(current_length);
+  _(flags);
+#undef _
+  /* ASSERT (dst->total_length_not_including_first_buffer == 0); */
+  /* total_length_not_including_first_buffer is not in the template anymore
+   * so it may actually not zeroed for some buffers. One option is to
+   * uncomment the line lower (comes at a cost), the other, is to just  not
+   * care */
+  /* dst->total_length_not_including_first_buffer = 0; */
+  ASSERT (dst->n_add_refs == 0);
 }
 
-/**
- * @brief linearize buffer chain - the first buffer is filled, if needed,
- * buffers are allocated and filled, returns free space in last buffer or
- * negative on failure
- *
- * @param[in] vm - vlib_main
- * @param[in,out] first - first buffer in chain
- */
-always_inline int
-vlib_buffer_chain_linearize (vlib_main_t * vm, vlib_buffer_t * first)
+always_inline void
+vlib_buffer_add_to_free_list (vlib_main_t * vm,
+			      vlib_buffer_free_list_t * f,
+			      u32 buffer_index, u8 do_init)
 {
-  vlib_buffer_t *b = first;
-  u32 buf_len = vlib_buffer_get_default_data_size (vm);
-  // free buffer chain starting from the second buffer
-  int free_count = (b->flags & VLIB_BUFFER_NEXT_PRESENT) != 0;
-  u32 chain_to_free = b->next_buffer;
+  vlib_buffer_pool_t *bp = vlib_buffer_pool_get (f->buffer_pool_index);
+  vlib_buffer_t *b;
+  b = vlib_get_buffer (vm, buffer_index);
+  if (PREDICT_TRUE (do_init))
+    vlib_buffer_init_for_free_list (b, f);
+  vec_add1_aligned (f->buffers, buffer_index, CLIB_CACHE_LINE_BYTES);
 
-  u32 len = vlib_buffer_length_in_chain (vm, b);
-  u32 free_len = buf_len - b->current_data - b->current_length;
-  int alloc_len = clib_max (len - free_len, 0);	//use the free len in the first buffer
-  int n_buffers = (alloc_len + buf_len - 1) / buf_len;
-  u32 new_buffers[n_buffers];
-
-  u32 n_alloc = vlib_buffer_alloc (vm, new_buffers, n_buffers);
-  if (n_alloc != n_buffers)
+  if (vec_len (f->buffers) > 4 * VLIB_FRAME_SIZE)
     {
-      vlib_buffer_free_no_next (vm, new_buffers, n_alloc);
-      return -1;
+      clib_spinlock_lock (&bp->lock);
+      /* keep last stored buffers, as they are more likely hot in the cache */
+      vec_add_aligned (bp->buffers, f->buffers, VLIB_FRAME_SIZE,
+		       CLIB_CACHE_LINE_BYTES);
+      vec_delete (f->buffers, VLIB_FRAME_SIZE, 0);
+      f->n_alloc -= VLIB_FRAME_SIZE;
+      clib_spinlock_unlock (&bp->lock);
+    }
+}
+
+#if CLIB_DEBUG > 0
+extern u32 *vlib_buffer_state_validation_lock;
+extern uword *vlib_buffer_state_validation_hash;
+extern void *vlib_buffer_state_heap;
+#endif
+
+static inline void
+vlib_validate_buffer_in_use (vlib_buffer_t * b, u32 expected)
+{
+#if CLIB_DEBUG > 0
+  uword *p;
+  void *oldheap;
+
+  oldheap = clib_mem_set_heap (vlib_buffer_state_heap);
+
+  while (clib_atomic_test_and_set (vlib_buffer_state_validation_lock))
+    ;
+
+  p = hash_get (vlib_buffer_state_validation_hash, b);
+
+  /* If we don't know about b, declare it to be in the expected state */
+  if (!p)
+    {
+      hash_set (vlib_buffer_state_validation_hash, b, expected);
+      goto out;
     }
 
-  vlib_buffer_t *s = b;
-  while (s->flags & VLIB_BUFFER_NEXT_PRESENT)
+  if (p[0] != expected)
     {
-      s = vlib_get_buffer (vm, s->next_buffer);
-      int d_free_len = buf_len - b->current_data - b->current_length;
-      ASSERT (d_free_len >= 0);
-      // chain buf and split write
-      u32 copy_len = clib_min (d_free_len, s->current_length);
-      u8 *d = vlib_buffer_put_uninit (b, copy_len);
-      clib_memcpy (d, vlib_buffer_get_current (s), copy_len);
-      int rest = s->current_length - copy_len;
-      if (rest > 0)
+      void cj_stop (void);
+      u32 bi;
+      vlib_main_t *vm = &vlib_global_main;
+
+      cj_stop ();
+
+      bi = vlib_get_buffer_index (vm, b);
+
+      clib_mem_set_heap (oldheap);
+      clib_warning ("%.6f buffer %llx (%d): %s, not %s",
+		    vlib_time_now (vm), bi,
+		    p[0] ? "busy" : "free", expected ? "busy" : "free");
+      os_panic ();
+    }
+out:
+  CLIB_MEMORY_BARRIER ();
+  *vlib_buffer_state_validation_lock = 0;
+  clib_mem_set_heap (oldheap);
+#endif
+}
+
+static inline void
+vlib_validate_buffer_set_in_use (vlib_buffer_t * b, u32 expected)
+{
+#if CLIB_DEBUG > 0
+  void *oldheap;
+
+  oldheap = clib_mem_set_heap (vlib_buffer_state_heap);
+
+  while (clib_atomic_test_and_set (vlib_buffer_state_validation_lock))
+    ;
+
+  hash_set (vlib_buffer_state_validation_hash, b, expected);
+
+  CLIB_MEMORY_BARRIER ();
+  *vlib_buffer_state_validation_lock = 0;
+  clib_mem_set_heap (oldheap);
+#endif
+}
+
+always_inline u32
+vlib_buffer_space_left_at_end (vlib_main_t * vm, vlib_buffer_t * b)
+{
+  return b->data + VLIB_BUFFER_DATA_SIZE -
+    ((u8 *) vlib_buffer_get_current (b) + b->current_length);
+}
+
+always_inline u32
+vlib_buffer_chain_linearize (vlib_main_t * vm, vlib_buffer_t * b)
+{
+  vlib_buffer_t *db = b, *sb, *first = b;
+  int is_cloned = 0;
+  u32 bytes_left = 0, data_size;
+  u16 src_left, dst_left, n_buffers = 1;
+  u8 *dp, *sp;
+  u32 to_free = 0;
+
+  if (PREDICT_TRUE ((b->flags & VLIB_BUFFER_NEXT_PRESENT) == 0))
+    return 1;
+
+  data_size = VLIB_BUFFER_DATA_SIZE;
+
+  dst_left = vlib_buffer_space_left_at_end (vm, b);
+
+  while (b->flags & VLIB_BUFFER_NEXT_PRESENT)
+    {
+      b = vlib_get_buffer (vm, b->next_buffer);
+      if (b->n_add_refs > 0)
+	is_cloned = 1;
+      bytes_left += b->current_length;
+      n_buffers++;
+    }
+
+  /* if buffer is cloned, create completely new chain - unless everything fits
+   * into one buffer */
+  if (is_cloned && bytes_left >= dst_left)
+    {
+      u32 len = 0;
+      u32 space_needed = bytes_left - dst_left;
+      u32 tail;
+
+      if (vlib_buffer_alloc (vm, &tail, 1) == 0)
+	return 0;
+
+      ++n_buffers;
+      len += data_size;
+      b = vlib_get_buffer (vm, tail);
+
+      while (len < space_needed)
 	{
-	  //prev buf is full
-	  ASSERT (vlib_buffer_get_tail (b) == b->data + buf_len);
-	  ASSERT (n_buffers > 0);
-	  b = vlib_buffer_chain_buffer (vm, b, new_buffers[--n_buffers]);
-	  //make full use of the new buffers
-	  b->current_data = 0;
-	  d = vlib_buffer_put_uninit (b, rest);
-	  clib_memcpy (d, vlib_buffer_get_current (s) + copy_len, rest);
+	  u32 bi;
+	  if (vlib_buffer_alloc (vm, &bi, 1) == 0)
+	    {
+	      vlib_buffer_free_one (vm, tail);
+	      return 0;
+	    }
+	  b->flags = VLIB_BUFFER_NEXT_PRESENT;
+	  b->next_buffer = bi;
+	  b = vlib_get_buffer (vm, bi);
+	  len += data_size;
+	  n_buffers++;
+	}
+      sb = vlib_get_buffer (vm, first->next_buffer);
+      to_free = first->next_buffer;
+      first->next_buffer = tail;
+    }
+  else
+    sb = vlib_get_buffer (vm, first->next_buffer);
+
+  src_left = sb->current_length;
+  sp = vlib_buffer_get_current (sb);
+  dp = vlib_buffer_get_tail (db);
+
+  while (bytes_left)
+    {
+      u16 bytes_to_copy;
+
+      if (dst_left == 0)
+	{
+	  if (db != first)
+	    db->current_data = 0;
+	  db->current_length = dp - (u8 *) vlib_buffer_get_current (db);
+	  ASSERT (db->flags & VLIB_BUFFER_NEXT_PRESENT);
+	  db = vlib_get_buffer (vm, db->next_buffer);
+	  dst_left = data_size;
+	  dp = db->data;
+	}
+
+      while (src_left == 0)
+	{
+	  ASSERT (sb->flags & VLIB_BUFFER_NEXT_PRESENT);
+	  sb = vlib_get_buffer (vm, sb->next_buffer);
+	  src_left = sb->current_length;
+	  sp = vlib_buffer_get_current (sb);
+	}
+
+      bytes_to_copy = clib_min (dst_left, src_left);
+
+      if (dp != sp)
+	{
+	  if (sb == db)
+	    bytes_to_copy = clib_min (bytes_to_copy, sp - dp);
+
+	  clib_memcpy_fast (dp, sp, bytes_to_copy);
+	}
+
+      src_left -= bytes_to_copy;
+      dst_left -= bytes_to_copy;
+      dp += bytes_to_copy;
+      sp += bytes_to_copy;
+      bytes_left -= bytes_to_copy;
+    }
+  if (db != first)
+    db->current_data = 0;
+  db->current_length = dp - (u8 *) vlib_buffer_get_current (db);
+
+  if (is_cloned && to_free)
+    vlib_buffer_free_one (vm, to_free);
+  else
+    {
+      if (db->flags & VLIB_BUFFER_NEXT_PRESENT)
+	vlib_buffer_free_one (vm, db->next_buffer);
+      db->flags &= ~VLIB_BUFFER_NEXT_PRESENT;
+      b = first;
+      n_buffers = 1;
+      while (b->flags & VLIB_BUFFER_NEXT_PRESENT)
+	{
+	  b = vlib_get_buffer (vm, b->next_buffer);
+	  ++n_buffers;
 	}
     }
-  vlib_buffer_free (vm, &chain_to_free, free_count);
-  b->flags &= ~VLIB_BUFFER_TOTAL_LENGTH_VALID;
-  if (b == first)		/* no buffers addeed */
-    b->flags &= ~VLIB_BUFFER_NEXT_PRESENT;
-  ASSERT (len == vlib_buffer_length_in_chain (vm, first));
-  ASSERT (n_buffers == 0);
-  return buf_len - b->current_data - b->current_length;
+
+  first->flags &= ~VLIB_BUFFER_TOTAL_LENGTH_VALID;
+
+  return n_buffers;
 }
 
 #endif /* included_vlib_buffer_funcs_h */
