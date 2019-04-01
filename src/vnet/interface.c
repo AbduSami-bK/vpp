@@ -837,7 +837,7 @@ vnet_register_interface (vnet_main_t * vnm,
       /* The new class may differ from the old one.
        * Functions have to be updated. */
       node = vlib_get_node (vm, hw->output_node_index);
-      node->function = vnet_interface_output_node_multiarch_select ();
+      node->function = vnet_interface_output_node;
       node->format_trace = format_vnet_interface_output_trace;
       /* *INDENT-OFF* */
       foreach_vlib_main ({
@@ -887,13 +887,14 @@ vnet_register_interface (vnet_main_t * vnm,
 
       r.flags = 0;
       r.name = output_node_name;
-      r.function = vnet_interface_output_node_multiarch_select ();
+      r.function = vnet_interface_output_node;
       r.format_trace = format_vnet_interface_output_trace;
 
       {
 	static char *e[] = {
 	  "interface is down",
 	  "interface is deleted",
+	  "no buffers to segment GSO",
 	};
 
 	r.n_errors = ARRAY_LEN (e);
@@ -1327,6 +1328,11 @@ vnet_interface_init (vlib_main_t * vm)
 	c = c->next_class_registration;
       }
   }
+
+  im->gso_interface_count = 0;
+  /* init per-thread data */
+  vec_validate_aligned (im->per_thread_data, vlib_num_workers (),
+			CLIB_CACHE_LINE_BYTES);
 
   if ((error = vlib_call_init_function (vm, vnet_interface_cli_init)))
     return error;

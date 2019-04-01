@@ -75,7 +75,7 @@ class TestL2bd(VppTestCase):
             for pg_if in cls.pg_interfaces:
                 sw_if_index = pg_if.sub_if.sw_if_index \
                     if hasattr(pg_if, 'sub_if') else pg_if.sw_if_index
-                cls.vapi.sw_interface_set_l2_bridge(sw_if_index,
+                cls.vapi.sw_interface_set_l2_bridge(rx_sw_if_index=sw_if_index,
                                                     bd_id=cls.bd_id)
 
             # setup all interfaces
@@ -184,7 +184,7 @@ class TestL2bd(VppTestCase):
             last_info[i.sw_if_index] = None
         dst_sw_if_index = pg_if.sw_if_index
         for packet in capture:
-            payload_info = self.payload_to_info(str(packet[Raw]))
+            payload_info = self.payload_to_info(packet[Raw])
             src_sw_if_index = payload_info.src
             src_if = None
             for ifc in self.pg_interfaces:

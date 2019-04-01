@@ -10,7 +10,7 @@ released with release 17.10.
 Use:
 
 The installation and executing of the VPP configuration utility is simple. First
-install the python pip module. Using pip3.7 install, then pip3.7 install vpp-config.
+install the python pip module. Using pip install, then pip install vpp-config.
 Then simply type �vpp-config� and answer the questions. If you are not sure what
 to answer choose the default. For yes or no questions the capital letter
 designates the default. For example, for a question that shows [Y/n] Y is the
@@ -29,7 +29,7 @@ For Developers:
 
 Modifying the code is reasonable simple. The process would be edit and debug the
 code from the root directory. In order to do this, we need a script that will copy
-or data files to the proper place. This is where they end up with pip3.7 install. For
+or data files to the proper place. This is where they end up with pip install. For
 Ubuntu, this is /usr/local/vpp/vpp-config. I have provided a script that will copy
 the relevant files correctly. I have also provided a script that will clean the
 environment so you can start from scratch. These are the steps to run the utility
@@ -54,12 +54,12 @@ when we want everyone to contribute we will need to change that.
 
   sudo �H bash
   cd vpp_config
-  python3.6 setup.py sdist bdist_wheel
+  python setup.py sdist bdist_wheel
   twine upload dist/*
 
 Example Run:
 
-# pip3.7 install vpp-config
+# pip install vpp-config
 # vpp-config
 
 Welcome to the VPP system configuration utility

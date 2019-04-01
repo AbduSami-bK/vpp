@@ -1,0 +1,1028 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>2.5. framework module &mdash; VPP test framework 0.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="2.6. hook module" href="hook.html" />
+    <link rel="prev" title="2.4. discover_tests module" href="discover_tests.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> VPP test framework
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="overview.html">1. VPP Test Framework</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">2. Module documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="bfd.html">2.1. bfd module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="debug.html">2.2. debug module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="debug_internal.html">2.3. debug_internal module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="discover_tests.html">2.4. discover_tests module</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">2.5. framework module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hook.html">2.6. hook module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ipfix.html">2.7. ipfix module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lisp.html">2.8. lisp module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="log.html">2.9. log module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="remote_test.html">2.10. remote_test module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run_tests.html">2.11. run_tests module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sanity_import_vpp_papi.html">2.12. sanity_import_vpp_papi module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sanity_run_vpp.html">2.13. sanity_run_vpp module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="scapy_handlers.html">2.14. scapy_handlers package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="template_bd.html">2.15. template_bd module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="template_ipsec.html">2.16. template_ipsec module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_abf.html">2.17. test_abf module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_acl_plugin.html">2.18. test_acl_plugin module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_acl_plugin_conns.html">2.19. test_acl_plugin_conns module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_acl_plugin_l2l3.html">2.20. test_acl_plugin_l2l3 module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_acl_plugin_macip.html">2.21. test_acl_plugin_macip module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_bfd.html">2.22. test_bfd module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_bier.html">2.23. test_bier module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_bihash.html">2.24. test_bihash module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_bond.html">2.25. test_bond module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_cdp.html">2.26. test_cdp module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_classifier.html">2.27. test_classifier module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_classifier_ip6.html">2.28. test_classifier_ip6 module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_classify_l2_acl.html">2.29. test_classify_l2_acl module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_container.html">2.30. test_container module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_dhcp.html">2.31. test_dhcp module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_dhcp6.html">2.32. test_dhcp6 module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_dvr.html">2.33. test_dvr module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_fib.html">2.34. test_fib module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_flowprobe.html">2.35. test_flowprobe module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_gbp.html">2.36. test_gbp module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_geneve.html">2.37. test_geneve module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_gre.html">2.38. test_gre module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_gtpu.html">2.39. test_gtpu module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_igmp.html">2.40. test_igmp module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_interface_crud.html">2.41. test_interface_crud module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_ip4.html">2.42. test_ip4 module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_ip4_irb.html">2.43. test_ip4_irb module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_ip4_vrf_multi_instance.html">2.44. test_ip4_vrf_multi_instance module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_ip6.html">2.45. test_ip6 module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_ip6_vrf_multi_instance.html">2.46. test_ip6_vrf_multi_instance module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_ip_ecmp.html">2.47. test_ip_ecmp module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_ip_mcast.html">2.48. test_ip_mcast module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_ipip.html">2.49. test_ipip module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_ipsec_ah.html">2.50. test_ipsec_ah module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_ipsec_api.html">2.51. test_ipsec_api module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_ipsec_esp.html">2.52. test_ipsec_esp module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_ipsec_nat.html">2.53. test_ipsec_nat module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_ipsec_tun_if_esp.html">2.54. test_ipsec_tun_if_esp module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_l2_fib.html">2.55. test_l2_fib module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_l2_flood.html">2.56. test_l2_flood module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_l2bd.html">2.57. test_l2bd module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_l2bd_arp_term.html">2.58. test_l2bd_arp_term module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_l2bd_multi_instance.html">2.59. test_l2bd_multi_instance module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_l2xc.html">2.60. test_l2xc module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_l2xc_multi_instance.html">2.61. test_l2xc_multi_instance module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_lb.html">2.62. test_lb module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_lisp.html">2.63. test_lisp module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_map.html">2.64. test_map module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_memif.html">2.65. test_memif module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_mpls.html">2.66. test_mpls module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_mtu.html">2.67. test_mtu module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_nat.html">2.68. test_nat module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_neighbor.html">2.69. test_neighbor module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_p2p_ethernet.html">2.70. test_p2p_ethernet module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_ping.html">2.71. test_ping module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_pipe.html">2.72. test_pipe module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_pppoe.html">2.73. test_pppoe module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_punt.html">2.74. test_punt module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_qos.html">2.75. test_qos module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_reassembly.html">2.76. test_reassembly module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_sctp.html">2.77. test_sctp module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_session.html">2.78. test_session module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_sixrd.html">2.79. test_sixrd module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_span.html">2.80. test_span module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_srmpls.html">2.81. test_srmpls module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_srv6.html">2.82. test_srv6 module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_srv6_ad.html">2.83. test_srv6_ad module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_srv6_as.html">2.84. test_srv6_as module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_stats_client.html">2.85. test_stats_client module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_string.html">2.86. test_string module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_svs.html">2.87. test_svs module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_syslog.html">2.88. test_syslog module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_tcp.html">2.89. test_tcp module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_udp.html">2.90. test_udp module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_util.html">2.91. test_util module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_vapi.html">2.92. test_vapi module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_vcl.html">2.93. test_vcl module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_vhost.html">2.94. test_vhost module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_vom.html">2.95. test_vom module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_vtr.html">2.96. test_vtr module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_vxlan.html">2.97. test_vxlan module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_vxlan6.html">2.98. test_vxlan6 module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_vxlan_gbp.html">2.99. test_vxlan_gbp module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_vxlan_gpe.html">2.100. test_vxlan_gpe module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="util.html">2.101. util module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpp_bier.html">2.102. vpp_bier module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpp_bond_interface.html">2.103. vpp_bond_interface module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpp_bvi_interface.html">2.104. vpp_bvi_interface module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpp_gre_interface.html">2.105. vpp_gre_interface module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpp_igmp.html">2.106. vpp_igmp module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpp_interface.html">2.107. vpp_interface module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpp_ip.html">2.108. vpp_ip module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpp_ip_route.html">2.109. vpp_ip_route module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpp_ipsec.html">2.110. vpp_ipsec module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpp_ipsec_tun_interface.html">2.111. vpp_ipsec_tun_interface module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpp_l2.html">2.112. vpp_l2 module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpp_lo_interface.html">2.113. vpp_lo_interface module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpp_memif.html">2.114. vpp_memif module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpp_mpls_tunnel_interface.html">2.115. vpp_mpls_tunnel_interface module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpp_neighbor.html">2.116. vpp_neighbor module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpp_object.html">2.117. vpp_object module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpp_papi_provider.html">2.118. vpp_papi_provider module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpp_pg_interface.html">2.119. vpp_pg_interface module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpp_pppoe_interface.html">2.120. vpp_pppoe_interface module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpp_srv6.html">2.121. vpp_srv6 module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpp_sub_interface.html">2.122. vpp_sub_interface module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpp_tunnel_interface.html">2.123. vpp_tunnel_interface module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpp_udp_encap.html">2.124. vpp_udp_encap module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpp_vhost_interface.html">2.125. vpp_vhost_interface module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpp_vxlan_gbp_tunnel.html">2.126. vpp_vxlan_gbp_tunnel module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vrf.html">2.127. vrf module</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="indices.html">3. Indices and tables</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">VPP test framework</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="modules.html">2. Module documentation</a> &raquo;</li>
+        
+      <li>2.5. framework module</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/framework.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-framework">
+<span id="framework-module"></span><h1>2.5. framework module<a class="headerlink" href="#module-framework" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="framework.KeepAliveReporter">
+<em class="property">class </em><code class="descclassname">framework.</code><code class="descname">KeepAliveReporter</code><a class="headerlink" href="#framework.KeepAliveReporter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Singleton object which reports test start to parent process</p>
+<dl class="attribute">
+<dt id="framework.KeepAliveReporter.pipe">
+<code class="descname">pipe</code><a class="headerlink" href="#framework.KeepAliveReporter.pipe" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="framework.KeepAliveReporter.send_keep_alive">
+<code class="descname">send_keep_alive</code><span class="sig-paren">(</span><em>test</em>, <em>desc=None</em><span class="sig-paren">)</span><a class="headerlink" href="#framework.KeepAliveReporter.send_keep_alive" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write current test tmpdir &amp; desc to keep-alive pipe to signal liveness</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="framework.TestCaseInfo">
+<em class="property">class </em><code class="descclassname">framework.</code><code class="descname">TestCaseInfo</code><span class="sig-paren">(</span><em>logger</em>, <em>tempdir</em>, <em>vpp_pid</em>, <em>vpp_bin_path</em><span class="sig-paren">)</span><a class="headerlink" href="#framework.TestCaseInfo" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+</dd></dl>
+
+<dl class="class">
+<dt id="framework.VppTestCase">
+<em class="property">class </em><code class="descclassname">framework.</code><code class="descname">VppTestCase</code><span class="sig-paren">(</span><em>methodName='runTest'</em><span class="sig-paren">)</span><a class="headerlink" href="#framework.VppTestCase" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">unittest.case.TestCase</span></code></p>
+<p>This subclass is a base class for VPP test cases that are implemented as
+classes. It provides methods to create and run test case.</p>
+<dl class="method">
+<dt id="framework.VppTestCase.assert_checksum_valid">
+<code class="descname">assert_checksum_valid</code><span class="sig-paren">(</span><em>received_packet</em>, <em>layer</em>, <em>field_name='chksum'</em>, <em>ignore_zero_checksum=False</em><span class="sig-paren">)</span><a class="headerlink" href="#framework.VppTestCase.assert_checksum_valid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check checksum of received packet on given layer</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="framework.VppTestCase.assert_embedded_icmp_checksum_valid">
+<code class="descname">assert_embedded_icmp_checksum_valid</code><span class="sig-paren">(</span><em>received_packet</em><span class="sig-paren">)</span><a class="headerlink" href="#framework.VppTestCase.assert_embedded_icmp_checksum_valid" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="framework.VppTestCase.assert_equal">
+<code class="descname">assert_equal</code><span class="sig-paren">(</span><em>real_value</em>, <em>expected_value</em>, <em>name_or_class=None</em><span class="sig-paren">)</span><a class="headerlink" href="#framework.VppTestCase.assert_equal" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="framework.VppTestCase.assert_icmp_checksum_valid">
+<code class="descname">assert_icmp_checksum_valid</code><span class="sig-paren">(</span><em>received_packet</em><span class="sig-paren">)</span><a class="headerlink" href="#framework.VppTestCase.assert_icmp_checksum_valid" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="framework.VppTestCase.assert_icmpv6_checksum_valid">
+<code class="descname">assert_icmpv6_checksum_valid</code><span class="sig-paren">(</span><em>pkt</em><span class="sig-paren">)</span><a class="headerlink" href="#framework.VppTestCase.assert_icmpv6_checksum_valid" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="framework.VppTestCase.assert_in_range">
+<code class="descname">assert_in_range</code><span class="sig-paren">(</span><em>real_value</em>, <em>expected_min</em>, <em>expected_max</em>, <em>name=None</em><span class="sig-paren">)</span><a class="headerlink" href="#framework.VppTestCase.assert_in_range" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="framework.VppTestCase.assert_ip_checksum_valid">
+<code class="descname">assert_ip_checksum_valid</code><span class="sig-paren">(</span><em>received_packet</em>, <em>ignore_zero_checksum=False</em><span class="sig-paren">)</span><a class="headerlink" href="#framework.VppTestCase.assert_ip_checksum_valid" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="framework.VppTestCase.assert_packet_checksums_valid">
+<code class="descname">assert_packet_checksums_valid</code><span class="sig-paren">(</span><em>packet</em>, <em>ignore_zero_udp_checksums=True</em><span class="sig-paren">)</span><a class="headerlink" href="#framework.VppTestCase.assert_packet_checksums_valid" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="framework.VppTestCase.assert_packet_counter_equal">
+<code class="descname">assert_packet_counter_equal</code><span class="sig-paren">(</span><em>counter</em>, <em>expected_value</em><span class="sig-paren">)</span><a class="headerlink" href="#framework.VppTestCase.assert_packet_counter_equal" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="framework.VppTestCase.assert_tcp_checksum_valid">
+<code class="descname">assert_tcp_checksum_valid</code><span class="sig-paren">(</span><em>received_packet</em>, <em>ignore_zero_checksum=False</em><span class="sig-paren">)</span><a class="headerlink" href="#framework.VppTestCase.assert_tcp_checksum_valid" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="framework.VppTestCase.assert_udp_checksum_valid">
+<code class="descname">assert_udp_checksum_valid</code><span class="sig-paren">(</span><em>received_packet</em>, <em>ignore_zero_checksum=True</em><span class="sig-paren">)</span><a class="headerlink" href="#framework.VppTestCase.assert_udp_checksum_valid" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="classmethod">
+<dt id="framework.VppTestCase.create_bvi_interfaces">
+<em class="property">classmethod </em><code class="descname">create_bvi_interfaces</code><span class="sig-paren">(</span><em>count</em><span class="sig-paren">)</span><a class="headerlink" href="#framework.VppTestCase.create_bvi_interfaces" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create BVI interfaces.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>count</strong> – number of interfaces created.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">List of created interfaces.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="framework.VppTestCase.create_loopback_interfaces">
+<em class="property">classmethod </em><code class="descname">create_loopback_interfaces</code><span class="sig-paren">(</span><em>count</em><span class="sig-paren">)</span><a class="headerlink" href="#framework.VppTestCase.create_loopback_interfaces" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create loopback interfaces.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>count</strong> – number of interfaces created.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">List of created interfaces.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="framework.VppTestCase.create_packet_info">
+<em class="property">classmethod </em><code class="descname">create_packet_info</code><span class="sig-paren">(</span><em>src_if</em>, <em>dst_if</em><span class="sig-paren">)</span><a class="headerlink" href="#framework.VppTestCase.create_packet_info" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create packet info object containing the source and destination indexes
+and add it to the testcase’s packet info list</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>src_if</strong> (<a class="reference internal" href="vpp_interface.html#vpp_interface.VppInterface" title="vpp_interface.VppInterface"><em>VppInterface</em></a>) – source interface</li>
+<li><strong>dst_if</strong> (<a class="reference internal" href="vpp_interface.html#vpp_interface.VppInterface" title="vpp_interface.VppInterface"><em>VppInterface</em></a>) – destination interface</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">_PacketInfo object</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="framework.VppTestCase.create_pg_interfaces">
+<em class="property">classmethod </em><code class="descname">create_pg_interfaces</code><span class="sig-paren">(</span><em>interfaces</em><span class="sig-paren">)</span><a class="headerlink" href="#framework.VppTestCase.create_pg_interfaces" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create packet-generator interfaces.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>interfaces</strong> – iterable indexes of the interfaces.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">List of created interfaces.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="framework.VppTestCase.extend_packet">
+<em class="property">static </em><code class="descname">extend_packet</code><span class="sig-paren">(</span><em>packet</em>, <em>size</em>, <em>padding=' '</em><span class="sig-paren">)</span><a class="headerlink" href="#framework.VppTestCase.extend_packet" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extend packet to given size by padding with spaces or custom padding
+NOTE: Currently works only when Raw layer is present.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>packet</strong> – packet</li>
+<li><strong>size</strong> – target size</li>
+<li><strong>padding</strong> – padding used to extend the payload</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="framework.VppTestCase.extra_vpp_plugin_config">
+<code class="descname">extra_vpp_plugin_config</code><em class="property"> = []</em><a class="headerlink" href="#framework.VppTestCase.extra_vpp_plugin_config" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="framework.VppTestCase.extra_vpp_punt_config">
+<code class="descname">extra_vpp_punt_config</code><em class="property"> = []</em><a class="headerlink" href="#framework.VppTestCase.extra_vpp_punt_config" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="staticmethod">
+<dt id="framework.VppTestCase.get_least_used_cpu">
+<em class="property">static </em><code class="descname">get_least_used_cpu</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#framework.VppTestCase.get_least_used_cpu" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="framework.VppTestCase.get_next_packet_info">
+<code class="descname">get_next_packet_info</code><span class="sig-paren">(</span><em>info</em><span class="sig-paren">)</span><a class="headerlink" href="#framework.VppTestCase.get_next_packet_info" title="Permalink to this definition">¶</a></dt>
+<dd><p>Iterate over the packet info list stored in the testcase
+Start iteration with first element if info is None
+Continue based on index in info if info is specified</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>info</strong> – info or None</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">next info in list or None if no more infos</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="framework.VppTestCase.get_next_packet_info_for_interface">
+<code class="descname">get_next_packet_info_for_interface</code><span class="sig-paren">(</span><em>src_index</em>, <em>info</em><span class="sig-paren">)</span><a class="headerlink" href="#framework.VppTestCase.get_next_packet_info_for_interface" title="Permalink to this definition">¶</a></dt>
+<dd><p>Search the packet info list for the next packet info with same source
+interface index</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>src_index</strong> – source interface index to search for</li>
+<li><strong>info</strong> – packet info - where to start the search</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">packet info or None</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="framework.VppTestCase.get_next_packet_info_for_interface2">
+<code class="descname">get_next_packet_info_for_interface2</code><span class="sig-paren">(</span><em>src_index</em>, <em>dst_index</em>, <em>info</em><span class="sig-paren">)</span><a class="headerlink" href="#framework.VppTestCase.get_next_packet_info_for_interface2" title="Permalink to this definition">¶</a></dt>
+<dd><p>Search the packet info list for the next packet info with same source
+and destination interface indexes</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>src_index</strong> – source interface index to search for</li>
+<li><strong>dst_index</strong> – destination interface index to search for</li>
+<li><strong>info</strong> – packet info - where to start the search</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">packet info or None</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="framework.VppTestCase.get_packet_count_for_if_idx">
+<em class="property">classmethod </em><code class="descname">get_packet_count_for_if_idx</code><span class="sig-paren">(</span><em>dst_if_index</em><span class="sig-paren">)</span><a class="headerlink" href="#framework.VppTestCase.get_packet_count_for_if_idx" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the number of packet info for specified destination if index</p>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="framework.VppTestCase.info_to_payload">
+<em class="property">static </em><code class="descname">info_to_payload</code><span class="sig-paren">(</span><em>info</em><span class="sig-paren">)</span><a class="headerlink" href="#framework.VppTestCase.info_to_payload" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert _PacketInfo object to packet payload</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>info</strong> – _PacketInfo object</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">string containing serialized data from packet info</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="framework.VppTestCase.instance">
+<em class="property">classmethod </em><code class="descname">instance</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#framework.VppTestCase.instance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the instance of this testcase</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="framework.VppTestCase.packet_infos">
+<code class="descname">packet_infos</code><a class="headerlink" href="#framework.VppTestCase.packet_infos" title="Permalink to this definition">¶</a></dt>
+<dd><p>List of packet infos</p>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="framework.VppTestCase.payload_to_info">
+<em class="property">static </em><code class="descname">payload_to_info</code><span class="sig-paren">(</span><em>payload</em>, <em>payload_field='load'</em><span class="sig-paren">)</span><a class="headerlink" href="#framework.VppTestCase.payload_to_info" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert packet payload to _PacketInfo object</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>payload</strong> (<em>&lt;class 'scapy.packet.Raw'&gt;</em>) – packet payload</li>
+<li><strong>payload_field</strong> (<em>str</em>) – packet fieldname of payload “load” for
+&lt;class ‘scapy.packet.Raw’&gt;</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">_PacketInfo object containing de-serialized data from payload</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="framework.VppTestCase.pg_enable_capture">
+<em class="property">classmethod </em><code class="descname">pg_enable_capture</code><span class="sig-paren">(</span><em>interfaces=None</em><span class="sig-paren">)</span><a class="headerlink" href="#framework.VppTestCase.pg_enable_capture" title="Permalink to this definition">¶</a></dt>
+<dd><p>Enable capture on packet-generator interfaces</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>interfaces</strong> – iterable interface indexes (if None,
+use self.pg_interfaces)</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="framework.VppTestCase.pg_send">
+<code class="descname">pg_send</code><span class="sig-paren">(</span><em>intf</em>, <em>pkts</em><span class="sig-paren">)</span><a class="headerlink" href="#framework.VppTestCase.pg_send" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="classmethod">
+<dt id="framework.VppTestCase.pg_start">
+<em class="property">classmethod </em><code class="descname">pg_start</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#framework.VppTestCase.pg_start" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove any zombie captures and enable the packet generator</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="framework.VppTestCase.quit">
+<em class="property">classmethod </em><code class="descname">quit</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#framework.VppTestCase.quit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Disconnect vpp-api, kill vpp and cleanup shared memory files</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="framework.VppTestCase.register_capture">
+<em class="property">classmethod </em><code class="descname">register_capture</code><span class="sig-paren">(</span><em>cap_name</em><span class="sig-paren">)</span><a class="headerlink" href="#framework.VppTestCase.register_capture" title="Permalink to this definition">¶</a></dt>
+<dd><p>Register a capture in the testclass</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="framework.VppTestCase.reset_packet_infos">
+<em class="property">classmethod </em><code class="descname">reset_packet_infos</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#framework.VppTestCase.reset_packet_infos" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reset the list of packet info objects and packet counts to zero</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="framework.VppTestCase.runTest">
+<code class="descname">runTest</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#framework.VppTestCase.runTest" title="Permalink to this definition">¶</a></dt>
+<dd><p>unittest calls runTest when TestCase is instantiated without a
+test case.  Use case: Writing unittests against VppTestCase</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="framework.VppTestCase.run_vpp">
+<em class="property">classmethod </em><code class="descname">run_vpp</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#framework.VppTestCase.run_vpp" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="framework.VppTestCase.send_and_assert_no_replies">
+<code class="descname">send_and_assert_no_replies</code><span class="sig-paren">(</span><em>intf</em>, <em>pkts</em>, <em>remark=''</em>, <em>timeout=None</em><span class="sig-paren">)</span><a class="headerlink" href="#framework.VppTestCase.send_and_assert_no_replies" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="framework.VppTestCase.send_and_expect">
+<code class="descname">send_and_expect</code><span class="sig-paren">(</span><em>intf</em>, <em>pkts</em>, <em>output</em><span class="sig-paren">)</span><a class="headerlink" href="#framework.VppTestCase.send_and_expect" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="framework.VppTestCase.send_and_expect_only">
+<code class="descname">send_and_expect_only</code><span class="sig-paren">(</span><em>intf</em>, <em>pkts</em>, <em>output</em>, <em>timeout=None</em><span class="sig-paren">)</span><a class="headerlink" href="#framework.VppTestCase.send_and_expect_only" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="framework.VppTestCase.setUp">
+<code class="descname">setUp</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#framework.VppTestCase.setUp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Clear trace before running each test</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="framework.VppTestCase.setUpClass">
+<em class="property">classmethod </em><code class="descname">setUpClass</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#framework.VppTestCase.setUpClass" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform class setup before running the testcase
+Remove shared memory files, start vpp and connect the vpp-api</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="framework.VppTestCase.setUpConstants">
+<em class="property">classmethod </em><code class="descname">setUpConstants</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#framework.VppTestCase.setUpConstants" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set-up the test case class based on environment variables</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="framework.VppTestCase.set_debug_flags">
+<em class="property">classmethod </em><code class="descname">set_debug_flags</code><span class="sig-paren">(</span><em>d</em><span class="sig-paren">)</span><a class="headerlink" href="#framework.VppTestCase.set_debug_flags" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="classmethod">
+<dt id="framework.VppTestCase.sleep">
+<em class="property">classmethod </em><code class="descname">sleep</code><span class="sig-paren">(</span><em>timeout</em>, <em>remark=None</em><span class="sig-paren">)</span><a class="headerlink" href="#framework.VppTestCase.sleep" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="framework.VppTestCase.tearDown">
+<code class="descname">tearDown</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#framework.VppTestCase.tearDown" title="Permalink to this definition">¶</a></dt>
+<dd><p>Show various debug prints after each test</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="framework.VppTestCase.tearDownClass">
+<em class="property">classmethod </em><code class="descname">tearDownClass</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#framework.VppTestCase.tearDownClass" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform final cleanup after running all tests in this test-case</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="framework.VppTestCase.wait_for_enter">
+<em class="property">classmethod </em><code class="descname">wait_for_enter</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#framework.VppTestCase.wait_for_enter" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="classmethod">
+<dt id="framework.VppTestCase.wait_for_stats_socket">
+<em class="property">classmethod </em><code class="descname">wait_for_stats_socket</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#framework.VppTestCase.wait_for_stats_socket" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="framework.VppTestResult">
+<em class="property">class </em><code class="descclassname">framework.</code><code class="descname">VppTestResult</code><span class="sig-paren">(</span><em>stream=None</em>, <em>descriptions=None</em>, <em>verbosity=None</em>, <em>runner=None</em><span class="sig-paren">)</span><a class="headerlink" href="#framework.VppTestResult" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">unittest.result.TestResult</span></code></p>
+<dl class="docutils">
+<dt>&#64;property result_string</dt>
+<dd>String variable to store the test case result string.</dd>
+<dt>&#64;property errors</dt>
+<dd>List variable containing 2-tuples of TestCase instances and strings
+holding formatted tracebacks. Each tuple represents a test which
+raised an unexpected exception.</dd>
+<dt>&#64;property failures</dt>
+<dd>List variable containing 2-tuples of TestCase instances and strings
+holding formatted tracebacks. Each tuple represents a test where
+a failure was explicitly signalled using the TestCase.assert*()
+methods.</dd>
+</dl>
+<dl class="method">
+<dt id="framework.VppTestResult.addError">
+<code class="descname">addError</code><span class="sig-paren">(</span><em>test</em>, <em>err</em><span class="sig-paren">)</span><a class="headerlink" href="#framework.VppTestResult.addError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Record a test error result</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>test</strong> – </li>
+<li><strong>err</strong> – error message</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="framework.VppTestResult.addFailure">
+<code class="descname">addFailure</code><span class="sig-paren">(</span><em>test</em>, <em>err</em><span class="sig-paren">)</span><a class="headerlink" href="#framework.VppTestResult.addFailure" title="Permalink to this definition">¶</a></dt>
+<dd><p>Record a test failed result</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>test</strong> – </li>
+<li><strong>err</strong> – error message</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="framework.VppTestResult.addSkip">
+<code class="descname">addSkip</code><span class="sig-paren">(</span><em>test</em>, <em>reason</em><span class="sig-paren">)</span><a class="headerlink" href="#framework.VppTestResult.addSkip" title="Permalink to this definition">¶</a></dt>
+<dd><p>Record a test skipped.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>test</strong> – </li>
+<li><strong>reason</strong> – </li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="framework.VppTestResult.addSuccess">
+<code class="descname">addSuccess</code><span class="sig-paren">(</span><em>test</em><span class="sig-paren">)</span><a class="headerlink" href="#framework.VppTestResult.addSuccess" title="Permalink to this definition">¶</a></dt>
+<dd><p>Record a test succeeded result</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>test</strong> – </td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="framework.VppTestResult.add_error">
+<code class="descname">add_error</code><span class="sig-paren">(</span><em>test</em>, <em>err</em>, <em>unittest_fn</em>, <em>error_type</em><span class="sig-paren">)</span><a class="headerlink" href="#framework.VppTestResult.add_error" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="framework.VppTestResult.core_crash_test_cases_info">
+<code class="descname">core_crash_test_cases_info</code><em class="property"> = {}</em><a class="headerlink" href="#framework.VppTestResult.core_crash_test_cases_info" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="framework.VppTestResult.current_test_case_info">
+<code class="descname">current_test_case_info</code><em class="property"> = None</em><a class="headerlink" href="#framework.VppTestResult.current_test_case_info" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="framework.VppTestResult.failed_test_cases_info">
+<code class="descname">failed_test_cases_info</code><em class="property"> = {}</em><a class="headerlink" href="#framework.VppTestResult.failed_test_cases_info" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="framework.VppTestResult.getDescription">
+<code class="descname">getDescription</code><span class="sig-paren">(</span><em>test</em><span class="sig-paren">)</span><a class="headerlink" href="#framework.VppTestResult.getDescription" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get test description</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>test</strong> – </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">test description</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="framework.VppTestResult.log_error">
+<code class="descname">log_error</code><span class="sig-paren">(</span><em>test</em>, <em>err</em>, <em>fn_name</em><span class="sig-paren">)</span><a class="headerlink" href="#framework.VppTestResult.log_error" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="framework.VppTestResult.printErrorList">
+<code class="descname">printErrorList</code><span class="sig-paren">(</span><em>flavour</em>, <em>errors</em><span class="sig-paren">)</span><a class="headerlink" href="#framework.VppTestResult.printErrorList" title="Permalink to this definition">¶</a></dt>
+<dd><p>Print error list to the output stream together with error type
+and test case description.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>flavour</strong> – error type</li>
+<li><strong>errors</strong> – iterable errors</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="framework.VppTestResult.printErrors">
+<code class="descname">printErrors</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#framework.VppTestResult.printErrors" title="Permalink to this definition">¶</a></dt>
+<dd><p>Print errors from running the test case</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="framework.VppTestResult.send_result_through_pipe">
+<code class="descname">send_result_through_pipe</code><span class="sig-paren">(</span><em>test</em>, <em>result</em><span class="sig-paren">)</span><a class="headerlink" href="#framework.VppTestResult.send_result_through_pipe" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="framework.VppTestResult.startTest">
+<code class="descname">startTest</code><span class="sig-paren">(</span><em>test</em><span class="sig-paren">)</span><a class="headerlink" href="#framework.VppTestResult.startTest" title="Permalink to this definition">¶</a></dt>
+<dd><p>Start a test</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>test</strong> – </td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="framework.VppTestResult.stopTest">
+<code class="descname">stopTest</code><span class="sig-paren">(</span><em>test</em><span class="sig-paren">)</span><a class="headerlink" href="#framework.VppTestResult.stopTest" title="Permalink to this definition">¶</a></dt>
+<dd><p>Called when the given test has been run</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>test</strong> – </td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="framework.VppTestResult.symlink_failed">
+<code class="descname">symlink_failed</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#framework.VppTestResult.symlink_failed" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="framework.VppTestRunner">
+<em class="property">class </em><code class="descclassname">framework.</code><code class="descname">VppTestRunner</code><span class="sig-paren">(</span><em>keep_alive_pipe=None</em>, <em>descriptions=True</em>, <em>verbosity=1</em>, <em>result_pipe=None</em>, <em>failfast=False</em>, <em>buffer=False</em>, <em>resultclass=None</em>, <em>print_summary=True</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#framework.VppTestRunner" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">unittest.runner.TextTestRunner</span></code></p>
+<p>A basic test runner implementation which prints results to standard error.</p>
+<dl class="attribute">
+<dt id="framework.VppTestRunner.resultclass">
+<code class="descname">resultclass</code><a class="headerlink" href="#framework.VppTestRunner.resultclass" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class maintaining the results of the tests</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="framework.VppTestRunner.run">
+<code class="descname">run</code><span class="sig-paren">(</span><em>test</em><span class="sig-paren">)</span><a class="headerlink" href="#framework.VppTestRunner.run" title="Permalink to this definition">¶</a></dt>
+<dd><p>Run the tests</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>test</strong> – </td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="framework.Worker">
+<em class="property">class </em><code class="descclassname">framework.</code><code class="descname">Worker</code><span class="sig-paren">(</span><em>args</em>, <em>logger</em>, <em>env={}</em><span class="sig-paren">)</span><a class="headerlink" href="#framework.Worker" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">threading.Thread</span></code></p>
+<dl class="method">
+<dt id="framework.Worker.run">
+<code class="descname">run</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#framework.Worker.run" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method representing the thread’s activity.</p>
+<p>You may override this method in a subclass. The standard run() method
+invokes the callable object passed to the object’s constructor as the
+target argument, if any, with sequential and keyword arguments taken
+from the args and kwargs arguments, respectively.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="framework.get_test_description">
+<code class="descclassname">framework.</code><code class="descname">get_test_description</code><span class="sig-paren">(</span><em>descriptions</em>, <em>test</em><span class="sig-paren">)</span><a class="headerlink" href="#framework.get_test_description" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="framework.get_testcase_doc_name">
+<code class="descclassname">framework.</code><code class="descname">get_testcase_doc_name</code><span class="sig-paren">(</span><em>test</em><span class="sig-paren">)</span><a class="headerlink" href="#framework.get_testcase_doc_name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="framework.pump_output">
+<code class="descclassname">framework.</code><code class="descname">pump_output</code><span class="sig-paren">(</span><em>testclass</em><span class="sig-paren">)</span><a class="headerlink" href="#framework.pump_output" title="Permalink to this definition">¶</a></dt>
+<dd><p>pump output from vpp stdout/stderr to proper queues</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="framework.running_on_centos">
+<code class="descclassname">framework.</code><code class="descname">running_on_centos</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#framework.running_on_centos" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="hook.html" class="btn btn-neutral float-right" title="2.6. hook module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="discover_tests.html" class="btn btn-neutral float-left" title="2.4. discover_tests module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2016, VPP team
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

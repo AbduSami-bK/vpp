@@ -1,0 +1,456 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>2.62. test_lb module &mdash; VPP test framework 0.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="2.63. test_lisp module" href="test_lisp.html" />
+    <link rel="prev" title="2.61. test_l2xc_multi_instance module" href="test_l2xc_multi_instance.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> VPP test framework
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="overview.html">1. VPP Test Framework</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">2. Module documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="bfd.html">2.1. bfd module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="debug.html">2.2. debug module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="debug_internal.html">2.3. debug_internal module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="discover_tests.html">2.4. discover_tests module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="framework.html">2.5. framework module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hook.html">2.6. hook module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ipfix.html">2.7. ipfix module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lisp.html">2.8. lisp module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="log.html">2.9. log module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="remote_test.html">2.10. remote_test module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run_tests.html">2.11. run_tests module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sanity_import_vpp_papi.html">2.12. sanity_import_vpp_papi module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sanity_run_vpp.html">2.13. sanity_run_vpp module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="scapy_handlers.html">2.14. scapy_handlers package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="template_bd.html">2.15. template_bd module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="template_ipsec.html">2.16. template_ipsec module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_abf.html">2.17. test_abf module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_acl_plugin.html">2.18. test_acl_plugin module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_acl_plugin_conns.html">2.19. test_acl_plugin_conns module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_acl_plugin_l2l3.html">2.20. test_acl_plugin_l2l3 module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_acl_plugin_macip.html">2.21. test_acl_plugin_macip module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_bfd.html">2.22. test_bfd module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_bier.html">2.23. test_bier module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_bihash.html">2.24. test_bihash module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_bond.html">2.25. test_bond module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_cdp.html">2.26. test_cdp module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_classifier.html">2.27. test_classifier module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_classifier_ip6.html">2.28. test_classifier_ip6 module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_classify_l2_acl.html">2.29. test_classify_l2_acl module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_container.html">2.30. test_container module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_dhcp.html">2.31. test_dhcp module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_dhcp6.html">2.32. test_dhcp6 module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_dvr.html">2.33. test_dvr module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_fib.html">2.34. test_fib module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_flowprobe.html">2.35. test_flowprobe module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_gbp.html">2.36. test_gbp module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_geneve.html">2.37. test_geneve module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_gre.html">2.38. test_gre module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_gtpu.html">2.39. test_gtpu module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_igmp.html">2.40. test_igmp module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_interface_crud.html">2.41. test_interface_crud module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_ip4.html">2.42. test_ip4 module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_ip4_irb.html">2.43. test_ip4_irb module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_ip4_vrf_multi_instance.html">2.44. test_ip4_vrf_multi_instance module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_ip6.html">2.45. test_ip6 module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_ip6_vrf_multi_instance.html">2.46. test_ip6_vrf_multi_instance module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_ip_ecmp.html">2.47. test_ip_ecmp module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_ip_mcast.html">2.48. test_ip_mcast module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_ipip.html">2.49. test_ipip module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_ipsec_ah.html">2.50. test_ipsec_ah module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_ipsec_api.html">2.51. test_ipsec_api module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_ipsec_esp.html">2.52. test_ipsec_esp module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_ipsec_nat.html">2.53. test_ipsec_nat module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_ipsec_tun_if_esp.html">2.54. test_ipsec_tun_if_esp module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_l2_fib.html">2.55. test_l2_fib module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_l2_flood.html">2.56. test_l2_flood module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_l2bd.html">2.57. test_l2bd module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_l2bd_arp_term.html">2.58. test_l2bd_arp_term module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_l2bd_multi_instance.html">2.59. test_l2bd_multi_instance module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_l2xc.html">2.60. test_l2xc module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_l2xc_multi_instance.html">2.61. test_l2xc_multi_instance module</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">2.62. test_lb module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_lisp.html">2.63. test_lisp module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_map.html">2.64. test_map module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_memif.html">2.65. test_memif module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_mpls.html">2.66. test_mpls module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_mtu.html">2.67. test_mtu module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_nat.html">2.68. test_nat module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_neighbor.html">2.69. test_neighbor module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_p2p_ethernet.html">2.70. test_p2p_ethernet module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_ping.html">2.71. test_ping module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_pipe.html">2.72. test_pipe module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_pppoe.html">2.73. test_pppoe module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_punt.html">2.74. test_punt module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_qos.html">2.75. test_qos module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_reassembly.html">2.76. test_reassembly module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_sctp.html">2.77. test_sctp module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_session.html">2.78. test_session module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_sixrd.html">2.79. test_sixrd module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_span.html">2.80. test_span module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_srmpls.html">2.81. test_srmpls module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_srv6.html">2.82. test_srv6 module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_srv6_ad.html">2.83. test_srv6_ad module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_srv6_as.html">2.84. test_srv6_as module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_stats_client.html">2.85. test_stats_client module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_string.html">2.86. test_string module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_svs.html">2.87. test_svs module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_syslog.html">2.88. test_syslog module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_tcp.html">2.89. test_tcp module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_udp.html">2.90. test_udp module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_util.html">2.91. test_util module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_vapi.html">2.92. test_vapi module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_vcl.html">2.93. test_vcl module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_vhost.html">2.94. test_vhost module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_vom.html">2.95. test_vom module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_vtr.html">2.96. test_vtr module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_vxlan.html">2.97. test_vxlan module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_vxlan6.html">2.98. test_vxlan6 module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_vxlan_gbp.html">2.99. test_vxlan_gbp module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_vxlan_gpe.html">2.100. test_vxlan_gpe module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="util.html">2.101. util module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpp_bier.html">2.102. vpp_bier module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpp_bond_interface.html">2.103. vpp_bond_interface module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpp_bvi_interface.html">2.104. vpp_bvi_interface module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpp_gre_interface.html">2.105. vpp_gre_interface module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpp_igmp.html">2.106. vpp_igmp module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpp_interface.html">2.107. vpp_interface module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpp_ip.html">2.108. vpp_ip module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpp_ip_route.html">2.109. vpp_ip_route module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpp_ipsec.html">2.110. vpp_ipsec module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpp_ipsec_tun_interface.html">2.111. vpp_ipsec_tun_interface module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpp_l2.html">2.112. vpp_l2 module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpp_lo_interface.html">2.113. vpp_lo_interface module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpp_memif.html">2.114. vpp_memif module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpp_mpls_tunnel_interface.html">2.115. vpp_mpls_tunnel_interface module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpp_neighbor.html">2.116. vpp_neighbor module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpp_object.html">2.117. vpp_object module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpp_papi_provider.html">2.118. vpp_papi_provider module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpp_pg_interface.html">2.119. vpp_pg_interface module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpp_pppoe_interface.html">2.120. vpp_pppoe_interface module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpp_srv6.html">2.121. vpp_srv6 module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpp_sub_interface.html">2.122. vpp_sub_interface module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpp_tunnel_interface.html">2.123. vpp_tunnel_interface module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpp_udp_encap.html">2.124. vpp_udp_encap module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpp_vhost_interface.html">2.125. vpp_vhost_interface module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpp_vxlan_gbp_tunnel.html">2.126. vpp_vxlan_gbp_tunnel module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vrf.html">2.127. vrf module</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="indices.html">3. Indices and tables</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">VPP test framework</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="modules.html">2. Module documentation</a> &raquo;</li>
+        
+      <li>2.62. test_lb module</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/test_lb.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-test_lb">
+<span id="test-lb-module"></span><h1>2.62. test_lb module<a class="headerlink" href="#module-test_lb" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="test_lb.TestLB">
+<em class="property">class </em><code class="descclassname">test_lb.</code><code class="descname">TestLB</code><span class="sig-paren">(</span><em>methodName='runTest'</em><span class="sig-paren">)</span><a class="headerlink" href="#test_lb.TestLB" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="framework.html#framework.VppTestCase" title="framework.VppTestCase"><code class="xref py py-class docutils literal notranslate"><span class="pre">framework.VppTestCase</span></code></a></p>
+<p>Load Balancer Test Case</p>
+<dl class="method">
+<dt id="test_lb.TestLB.checkCapture">
+<code class="descname">checkCapture</code><span class="sig-paren">(</span><em>encap</em>, <em>isv4</em><span class="sig-paren">)</span><a class="headerlink" href="#test_lb.TestLB.checkCapture" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="test_lb.TestLB.checkInner">
+<code class="descname">checkInner</code><span class="sig-paren">(</span><em>gre</em>, <em>isv4</em><span class="sig-paren">)</span><a class="headerlink" href="#test_lb.TestLB.checkInner" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="test_lb.TestLB.generatePackets">
+<code class="descname">generatePackets</code><span class="sig-paren">(</span><em>src_if</em>, <em>isv4</em><span class="sig-paren">)</span><a class="headerlink" href="#test_lb.TestLB.generatePackets" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="test_lb.TestLB.getIPv4Flow">
+<code class="descname">getIPv4Flow</code><span class="sig-paren">(</span><em>id</em><span class="sig-paren">)</span><a class="headerlink" href="#test_lb.TestLB.getIPv4Flow" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="test_lb.TestLB.getIPv6Flow">
+<code class="descname">getIPv6Flow</code><span class="sig-paren">(</span><em>id</em><span class="sig-paren">)</span><a class="headerlink" href="#test_lb.TestLB.getIPv6Flow" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="classmethod">
+<dt id="test_lb.TestLB.setUpClass">
+<em class="property">classmethod </em><code class="descname">setUpClass</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_lb.TestLB.setUpClass" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform class setup before running the testcase
+Remove shared memory files, start vpp and connect the vpp-api</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_lb.TestLB.tearDown">
+<code class="descname">tearDown</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_lb.TestLB.tearDown" title="Permalink to this definition">¶</a></dt>
+<dd><p>Show various debug prints after each test</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_lb.TestLB.test_lb_ip4_gre4">
+<code class="descname">test_lb_ip4_gre4</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_lb.TestLB.test_lb_ip4_gre4" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load Balancer IP4 GRE4 on vip case</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_lb.TestLB.test_lb_ip4_gre4_port">
+<code class="descname">test_lb_ip4_gre4_port</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_lb.TestLB.test_lb_ip4_gre4_port" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load Balancer IP4 GRE4 on per-port-vip case</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_lb.TestLB.test_lb_ip4_gre6">
+<code class="descname">test_lb_ip4_gre6</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_lb.TestLB.test_lb_ip4_gre6" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load Balancer IP4 GRE6 on vip case</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_lb.TestLB.test_lb_ip4_gre6_port">
+<code class="descname">test_lb_ip4_gre6_port</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_lb.TestLB.test_lb_ip4_gre6_port" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load Balancer IP4 GRE6 on per-port-vip case</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_lb.TestLB.test_lb_ip4_l3dsr">
+<code class="descname">test_lb_ip4_l3dsr</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_lb.TestLB.test_lb_ip4_l3dsr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load Balancer IP4 L3DSR on vip case</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_lb.TestLB.test_lb_ip4_l3dsr_port">
+<code class="descname">test_lb_ip4_l3dsr_port</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_lb.TestLB.test_lb_ip4_l3dsr_port" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load Balancer IP4 L3DSR on per-port-vip case</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_lb.TestLB.test_lb_ip4_nat4_port">
+<code class="descname">test_lb_ip4_nat4_port</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_lb.TestLB.test_lb_ip4_nat4_port" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load Balancer IP4 NAT4 on per-port-vip case</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_lb.TestLB.test_lb_ip6_gre4">
+<code class="descname">test_lb_ip6_gre4</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_lb.TestLB.test_lb_ip6_gre4" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load Balancer IP6 GRE4 on vip case</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_lb.TestLB.test_lb_ip6_gre4_port">
+<code class="descname">test_lb_ip6_gre4_port</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_lb.TestLB.test_lb_ip6_gre4_port" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load Balancer IP6 GRE4 on per-port-vip case</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_lb.TestLB.test_lb_ip6_gre6">
+<code class="descname">test_lb_ip6_gre6</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_lb.TestLB.test_lb_ip6_gre6" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load Balancer IP6 GRE6 on vip case</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_lb.TestLB.test_lb_ip6_gre6_port">
+<code class="descname">test_lb_ip6_gre6_port</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_lb.TestLB.test_lb_ip6_gre6_port" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load Balancer IP6 GRE6 on per-port-vip case</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_lb.TestLB.test_lb_ip6_nat6_port">
+<code class="descname">test_lb_ip6_nat6_port</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_lb.TestLB.test_lb_ip6_nat6_port" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load Balancer IP6 NAT6 on per-port-vip case</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="test_lisp.html" class="btn btn-neutral float-right" title="2.63. test_lisp module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="test_l2xc_multi_instance.html" class="btn btn-neutral float-left" title="2.61. test_l2xc_multi_instance module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2016, VPP team
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

@@ -892,7 +892,7 @@ sctp_main_enable (vlib_main_t * vm)
   vec_validate (tm->ip_lookup_tx_frames[0], num_threads - 1);
   vec_validate (tm->ip_lookup_tx_frames[1], num_threads - 1);
 
-  tm->bytes_per_buffer = VLIB_BUFFER_DATA_SIZE;
+  tm->bytes_per_buffer = vlib_buffer_get_default_data_size (vm);
 
   vec_validate (tm->time_now, num_threads - 1);
   return error;
@@ -943,9 +943,9 @@ sctp_update_time (f64 now, u8 thread_index)
 /* *INDENT OFF* */
 const static transport_proto_vft_t sctp_proto = {
   .enable = sctp_enable_disable,
-  .bind = sctp_session_bind,
-  .unbind = sctp_session_unbind,
-  .open = sctp_session_open,
+  .start_listen = sctp_session_bind,
+  .stop_listen = sctp_session_unbind,
+  .connect = sctp_session_open,
   .close = sctp_session_close,
   .cleanup = sctp_session_cleanup,
   .push_header = sctp_push_header,
@@ -970,6 +970,12 @@ sctp_init (vlib_main_t * vm)
   sctp_main_t *tm = vnet_get_sctp_main ();
   ip_main_t *im = &ip_main;
   ip_protocol_info_t *pi;
+  vlib_node_t *node = vlib_get_node_by_name (vm, (u8 *) "sctp4-established");
+  tm->sctp4_established_phase_node_index = node->index;
+
+  node = vlib_get_node_by_name (vm, (u8 *) "sctp6-established");
+  tm->sctp6_established_phase_node_index = node->index;
+
   /* Session layer, and by implication SCTP, are disabled by default */
   tm->is_enabled = 0;
 

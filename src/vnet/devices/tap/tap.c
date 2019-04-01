@@ -93,6 +93,7 @@ tap_create_if (vlib_main_t * vm, tap_create_if_args_t * args)
   struct vhost_memory *vhost_mem = 0;
   virtio_if_t *vif = 0;
   clib_error_t *err = 0;
+  int fd = -1;
 
   if (args->id != ~0)
     {
@@ -130,7 +131,7 @@ tap_create_if (vlib_main_t * vm, tap_create_if_args_t * args)
 
   _IOCTL (vif->fd, VHOST_GET_FEATURES, &vif->remote_features);
 
-  if ((vif->remote_features & (1ULL << VIRTIO_NET_F_MRG_RXBUF)) == 0)
+  if ((vif->remote_features & VIRTIO_FEATURE (VIRTIO_NET_F_MRG_RXBUF)) == 0)
     {
       args->rv = VNET_API_ERROR_UNSUPPORTED;
       args->error = clib_error_return (0, "vhost-net backend doesn't support "
@@ -138,7 +139,8 @@ tap_create_if (vlib_main_t * vm, tap_create_if_args_t * args)
       goto error;
     }
 
-  if ((vif->remote_features & (1ULL << VIRTIO_RING_F_INDIRECT_DESC)) == 0)
+  if ((vif->remote_features & VIRTIO_FEATURE (VIRTIO_RING_F_INDIRECT_DESC)) ==
+      0)
     {
       args->rv = VNET_API_ERROR_UNSUPPORTED;
       args->error = clib_error_return (0, "vhost-net backend doesn't support "
@@ -146,7 +148,7 @@ tap_create_if (vlib_main_t * vm, tap_create_if_args_t * args)
       goto error;
     }
 
-  if ((vif->remote_features & (1ULL << VIRTIO_F_VERSION_1)) == 0)
+  if ((vif->remote_features & VIRTIO_FEATURE (VIRTIO_F_VERSION_1)) == 0)
     {
       args->rv = VNET_API_ERROR_UNSUPPORTED;
       args->error = clib_error_return (0, "vhost-net backend doesn't support "
@@ -154,9 +156,11 @@ tap_create_if (vlib_main_t * vm, tap_create_if_args_t * args)
       goto error;
     }
 
-  vif->features |= 1ULL << VIRTIO_NET_F_MRG_RXBUF;
-  vif->features |= 1ULL << VIRTIO_F_VERSION_1;
-  vif->features |= 1ULL << VIRTIO_RING_F_INDIRECT_DESC;
+  vif->features |= VIRTIO_FEATURE (VIRTIO_NET_F_MRG_RXBUF);
+  vif->features |= VIRTIO_FEATURE (VIRTIO_F_VERSION_1);
+  vif->features |= VIRTIO_FEATURE (VIRTIO_RING_F_INDIRECT_DESC);
+
+  virtio_set_net_hdr_size (vif);
 
   _IOCTL (vif->fd, VHOST_SET_FEATURES, &vif->features);
 
@@ -173,6 +177,16 @@ tap_create_if (vlib_main_t * vm, tap_create_if_args_t * args)
 
   unsigned int offload = 0;
   hdrsz = sizeof (struct virtio_net_hdr_v1);
+  if (args->tap_flags & TAP_FLAG_GSO)
+    {
+      offload = TUN_F_CSUM | TUN_F_TSO4 | TUN_F_TSO6;
+      vif->gso_enabled = 1;
+    }
+  else
+    {
+      vif->gso_enabled = 0;
+    }
+
   _IOCTL (vif->tap_fd, TUNSETOFFLOAD, offload);
   _IOCTL (vif->tap_fd, TUNSETVNETHDRSZ, &hdrsz);
   _IOCTL (vif->fd, VHOST_SET_OWNER, 0);
@@ -181,8 +195,6 @@ tap_create_if (vlib_main_t * vm, tap_create_if_args_t * args)
      after we change our net namespace */
   if (args->host_namespace)
     {
-      int fd;
-      int rc;
       old_netns_fd = open ("/proc/self/ns/net", O_RDONLY);
       if ((fd = open_netns_fd ((char *) args->host_namespace)) == -1)
 	{
@@ -198,9 +210,7 @@ tap_create_if (vlib_main_t * vm, tap_create_if_args_t * args)
 	  args->rv = VNET_API_ERROR_NETLINK_ERROR;
 	  goto error;
 	}
-      rc = setns (fd, CLONE_NEWNET);
-      close (fd);
-      if (rc == -1)
+      if (setns (fd, CLONE_NEWNET) == -1)
 	{
 	  args->rv = VNET_API_ERROR_SYSCALL_ERROR_3;
 	  args->error = clib_error_return_unix (0, "setns '%s'",
@@ -349,6 +359,8 @@ tap_create_if (vlib_main_t * vm, tap_create_if_args_t * args)
     }
   vif->rx_ring_sz = args->rx_ring_sz != 0 ? args->rx_ring_sz : 256;
   vif->tx_ring_sz = args->tx_ring_sz != 0 ? args->tx_ring_sz : 256;
+  clib_memcpy (vif->mac_addr, args->mac_addr, 6);
+
   vif->host_if_name = args->host_if_name;
   args->host_if_name = 0;
   vif->net_ns = args->host_namespace;
@@ -363,9 +375,10 @@ tap_create_if (vlib_main_t * vm, tap_create_if_args_t * args)
   if (args->host_ip6_prefix_len)
     clib_memcpy (&vif->host_ip6_addr, &args->host_ip6_addr, 16);
 
+  vif->type = VIRTIO_IF_TYPE_TAP;
   args->error = ethernet_register_interface (vnm, virtio_device_class.index,
 					     vif->dev_instance,
-					     args->mac_addr,
+					     vif->mac_addr,
 					     &vif->hw_if_index,
 					     virtio_eth_flag_change);
   if (args->error)
@@ -380,13 +393,18 @@ tap_create_if (vlib_main_t * vm, tap_create_if_args_t * args)
   args->sw_if_index = vif->sw_if_index;
   hw = vnet_get_hw_interface (vnm, vif->hw_if_index);
   hw->flags |= VNET_HW_INTERFACE_FLAG_SUPPORTS_INT_MODE;
+  if (args->tap_flags & TAP_FLAG_GSO)
+    {
+      hw->flags |= VNET_HW_INTERFACE_FLAG_SUPPORTS_GSO;
+      vnm->interface_main.gso_interface_count++;
+    }
   vnet_hw_interface_set_input_node (vnm, vif->hw_if_index,
 				    virtio_input_node.index);
   vnet_hw_interface_assign_rx_thread (vnm, vif->hw_if_index, 0, ~0);
   vnet_hw_interface_set_rx_mode (vnm, vif->hw_if_index, 0,
 				 VNET_HW_INTERFACE_RX_MODE_DEFAULT);
   vif->per_interface_next_index = ~0;
-  vif->type = VIRTIO_IF_TYPE_TAP;
+  virtio_vring_set_numa_node (vm, vif, 0);
   vif->flags |= VIRTIO_IF_FLAG_ADMIN_UP;
   vnet_hw_interface_set_flags (vnm, vif->hw_if_index,
 			       VNET_HW_INTERFACE_FLAG_LINK_UP);
@@ -415,6 +433,8 @@ done:
     clib_mem_free (vhost_mem);
   if (old_netns_fd != -1)
     close (old_netns_fd);
+  if (fd != -1)
+    close (fd);
 }
 
 int
@@ -432,6 +452,13 @@ tap_delete_if (vlib_main_t * vm, u32 sw_if_index)
     return VNET_API_ERROR_INVALID_SW_IF_INDEX;
 
   vif = pool_elt_at_index (mm->interfaces, hw->dev_instance);
+
+  if (vif->type != VIRTIO_IF_TYPE_TAP)
+    return VNET_API_ERROR_INVALID_INTERFACE;
+
+  /* decrement if this was a GSO interface */
+  if (hw->flags & VNET_HW_INTERFACE_FLAG_SUPPORTS_GSO)
+    vnm->interface_main.gso_interface_count--;
 
   /* bring down the interface */
   vnet_hw_interface_set_flags (vnm, vif->hw_if_index, 0);
@@ -458,6 +485,52 @@ tap_delete_if (vlib_main_t * vm, u32 sw_if_index)
 }
 
 int
+tap_gso_enable_disable (vlib_main_t * vm, u32 sw_if_index, int enable_disable)
+{
+  vnet_main_t *vnm = vnet_get_main ();
+  virtio_main_t *mm = &virtio_main;
+  virtio_if_t *vif;
+  vnet_hw_interface_t *hw = vnet_get_sup_hw_interface (vnm, sw_if_index);
+  clib_error_t *err = 0;
+
+  if (hw == NULL || virtio_device_class.index != hw->dev_class_index)
+    return VNET_API_ERROR_INVALID_SW_IF_INDEX;
+
+  vif = pool_elt_at_index (mm->interfaces, hw->dev_instance);
+
+  const unsigned int gso_on = TUN_F_CSUM | TUN_F_TSO4 | TUN_F_TSO6;
+  const unsigned int gso_off = 0;
+  unsigned int offload = enable_disable ? gso_on : gso_off;
+  _IOCTL (vif->tap_fd, TUNSETOFFLOAD, offload);
+  vif->gso_enabled = enable_disable ? 1 : 0;
+  if (enable_disable)
+    {
+      if ((hw->flags & VNET_HW_INTERFACE_FLAG_SUPPORTS_GSO) == 0)
+	{
+	  vnm->interface_main.gso_interface_count++;
+	  hw->flags |= VNET_HW_INTERFACE_FLAG_SUPPORTS_GSO;
+	}
+    }
+  else
+    {
+      if ((hw->flags & VNET_HW_INTERFACE_FLAG_SUPPORTS_GSO) != 0)
+	{
+	  vnm->interface_main.gso_interface_count--;
+	  hw->flags &= ~VNET_HW_INTERFACE_FLAG_SUPPORTS_GSO;
+	}
+    }
+
+error:
+  if (err)
+    {
+      clib_warning ("Error %s gso on sw_if_index %d",
+		    enable_disable ? "enabling" : "disabling", sw_if_index);
+      return VNET_API_ERROR_SYSCALL_ERROR_3;
+    }
+  return 0;
+}
+
+int
 tap_dump_ifs (tap_interface_details_t ** out_tapids)
 {
   vnet_main_t *vnm = vnet_get_main ();
@@ -469,6 +542,8 @@ tap_dump_ifs (tap_interface_details_t ** out_tapids)
 
   /* *INDENT-OFF* */
   pool_foreach (vif, mm->interfaces,
+    if (vif->type != VIRTIO_IF_TYPE_TAP)
+      continue;
     vec_add2(r_tapids, tapid, 1);
     clib_memset (tapid, 0, sizeof (*tapid));
     tapid->id = vif->id;

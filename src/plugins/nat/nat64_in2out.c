@@ -70,10 +70,6 @@ format_nat64_in2out_reass_trace (u8 * s, va_list * args)
   return s;
 }
 
-vlib_node_registration_t nat64_in2out_node;
-vlib_node_registration_t nat64_in2out_slowpath_node;
-vlib_node_registration_t nat64_in2out_reass_node;
-vlib_node_registration_t nat64_in2out_handoff_node;
 
 #define foreach_nat64_in2out_error                       \
 _(UNSUPPORTED_PROTOCOL, "unsupported protocol")          \
@@ -217,8 +213,9 @@ nat64_in2out_tcp_udp_set_cb (ip6_header_t * ip6, ip4_header_t * ip4,
 	    return -1;
 
 	  bibe =
-	    nat64_db_bib_entry_create (db, &ip6->src_address, &out_addr,
-				       sport, out_port, fib_index, proto, 0);
+	    nat64_db_bib_entry_create (ctx->thread_index, db,
+				       &ip6->src_address, &out_addr, sport,
+				       out_port, fib_index, proto, 0);
 	  if (!bibe)
 	    return -1;
 
@@ -228,8 +225,8 @@ nat64_in2out_tcp_udp_set_cb (ip6_header_t * ip6, ip4_header_t * ip4,
 
       nat64_extract_ip4 (&ip6->dst_address, &daddr.ip4, fib_index);
       ste =
-	nat64_db_st_entry_create (db, bibe, &ip6->dst_address,
-				  &daddr.ip4, dport);
+	nat64_db_st_entry_create (ctx->thread_index, db, bibe,
+				  &ip6->dst_address, &daddr.ip4, dport);
       if (!ste)
 	return -1;
 
@@ -313,9 +310,10 @@ nat64_in2out_icmp_set_cb (ip6_header_t * ip6, ip4_header_t * ip4, void *arg)
 		return -1;
 
 	      bibe =
-		nat64_db_bib_entry_create (db, &ip6->src_address,
-					   &out_addr, in_id, out_id,
-					   fib_index, IP_PROTOCOL_ICMP, 0);
+		nat64_db_bib_entry_create (ctx->thread_index, db,
+					   &ip6->src_address, &out_addr,
+					   in_id, out_id, fib_index,
+					   IP_PROTOCOL_ICMP, 0);
 	      if (!bibe)
 		return -1;
 
@@ -325,8 +323,8 @@ nat64_in2out_icmp_set_cb (ip6_header_t * ip6, ip4_header_t * ip4, void *arg)
 
 	  nat64_extract_ip4 (&ip6->dst_address, &daddr.ip4, fib_index);
 	  ste =
-	    nat64_db_st_entry_create (db, bibe, &ip6->dst_address,
-				      &daddr.ip4, 0);
+	    nat64_db_st_entry_create (ctx->thread_index, db, bibe,
+				      &ip6->dst_address, &daddr.ip4, 0);
 	  if (!ste)
 	    return -1;
 
@@ -556,9 +554,9 @@ nat64_in2out_unk_proto_set_cb (ip6_header_t * ip6, ip4_header_t * ip4,
 	    return -1;
 
 	  bibe =
-	    nat64_db_bib_entry_create (db, &ip6->src_address,
-				       &ctx.out_addr, 0, 0, fib_index, proto,
-				       0);
+	    nat64_db_bib_entry_create (s_ctx->thread_index, db,
+				       &ip6->src_address, &ctx.out_addr,
+				       0, 0, fib_index, proto, 0);
 	  if (!bibe)
 	    return -1;
 
@@ -568,7 +566,8 @@ nat64_in2out_unk_proto_set_cb (ip6_header_t * ip6, ip4_header_t * ip4,
 
       nat64_extract_ip4 (&ip6->dst_address, &daddr.ip4, fib_index);
       ste =
-	nat64_db_st_entry_create (db, bibe, &ip6->dst_address, &daddr.ip4, 0);
+	nat64_db_st_entry_create (s_ctx->thread_index, db, bibe,
+				  &ip6->dst_address, &daddr.ip4, 0);
       if (!ste)
 	return -1;
 
@@ -649,8 +648,9 @@ nat64_in2out_tcp_udp_hairpinning (vlib_main_t * vm, vlib_buffer_t * b,
 	    return -1;
 
 	  bibe =
-	    nat64_db_bib_entry_create (db, &ip6->src_address, &out_addr,
-				       sport, out_port, fib_index, proto, 0);
+	    nat64_db_bib_entry_create (thread_index, db, &ip6->src_address,
+				       &out_addr, sport, out_port, fib_index,
+				       proto, 0);
 	  if (!bibe)
 	    return -1;
 
@@ -660,7 +660,7 @@ nat64_in2out_tcp_udp_hairpinning (vlib_main_t * vm, vlib_buffer_t * b,
 
       nat64_extract_ip4 (&ip6->dst_address, &daddr.ip4, fib_index);
       ste =
-	nat64_db_st_entry_create (db, bibe, &ip6->dst_address,
+	nat64_db_st_entry_create (thread_index, db, bibe, &ip6->dst_address,
 				  &daddr.ip4, dport);
       if (!ste)
 	return -1;
@@ -909,7 +909,7 @@ nat64_in2out_unk_proto_hairpinning (vlib_main_t * vm, vlib_buffer_t * b,
 	    return -1;
 
 	  bibe =
-	    nat64_db_bib_entry_create (db, &ip6->src_address,
+	    nat64_db_bib_entry_create (thread_index, db, &ip6->src_address,
 				       &ctx.out_addr, 0, 0, fib_index, proto,
 				       0);
 	  if (!bibe)
@@ -921,7 +921,8 @@ nat64_in2out_unk_proto_hairpinning (vlib_main_t * vm, vlib_buffer_t * b,
 
       nat64_extract_ip4 (&ip6->dst_address, &daddr.ip4, fib_index);
       ste =
-	nat64_db_st_entry_create (db, bibe, &ip6->dst_address, &daddr.ip4, 0);
+	nat64_db_st_entry_create (thread_index, db, bibe, &ip6->dst_address,
+				  &daddr.ip4, 0);
       if (!ste)
 	return -1;
 
@@ -965,11 +966,13 @@ nat64_in2out_node_fn_inline (vlib_main_t * vm, vlib_node_runtime_t * node,
   u32 pkts_processed = 0;
   u32 stats_node_index;
   u32 thread_index = vm->thread_index;
+  nat64_main_t *nm = &nat64_main;
+
   u32 tcp_packets = 0, udp_packets = 0, icmp_packets = 0, other_packets =
     0, fragments = 0;
 
   stats_node_index =
-    is_slow_path ? nat64_in2out_slowpath_node.index : nat64_in2out_node.index;
+    is_slow_path ? nm->in2out_slowpath_node_index : nm->in2out_node_index;
 
   from = vlib_frame_vector_args (frame);
   n_left_from = frame->n_vectors;
@@ -1166,16 +1169,15 @@ nat64_in2out_node_fn_inline (vlib_main_t * vm, vlib_node_runtime_t * node,
   return frame->n_vectors;
 }
 
-static uword
-nat64_in2out_node_fn (vlib_main_t * vm, vlib_node_runtime_t * node,
-		      vlib_frame_t * frame)
+VLIB_NODE_FN (nat64_in2out_node) (vlib_main_t * vm,
+				  vlib_node_runtime_t * node,
+				  vlib_frame_t * frame)
 {
   return nat64_in2out_node_fn_inline (vm, node, frame, 0);
 }
 
 /* *INDENT-OFF* */
 VLIB_REGISTER_NODE (nat64_in2out_node) = {
-  .function = nat64_in2out_node_fn,
   .name = "nat64-in2out",
   .vector_size = sizeof (u32),
   .format_trace = format_nat64_in2out_trace,
@@ -1194,18 +1196,15 @@ VLIB_REGISTER_NODE (nat64_in2out_node) = {
 };
 /* *INDENT-ON* */
 
-VLIB_NODE_FUNCTION_MULTIARCH (nat64_in2out_node, nat64_in2out_node_fn);
-
-static uword
-nat64_in2out_slowpath_node_fn (vlib_main_t * vm, vlib_node_runtime_t * node,
-			       vlib_frame_t * frame)
+VLIB_NODE_FN (nat64_in2out_slowpath_node) (vlib_main_t * vm,
+					   vlib_node_runtime_t * node,
+					   vlib_frame_t * frame)
 {
   return nat64_in2out_node_fn_inline (vm, node, frame, 1);
 }
 
 /* *INDENT-OFF* */
 VLIB_REGISTER_NODE (nat64_in2out_slowpath_node) = {
-  .function = nat64_in2out_slowpath_node_fn,
   .name = "nat64-in2out-slowpath",
   .vector_size = sizeof (u32),
   .format_trace = format_nat64_in2out_trace,
@@ -1223,9 +1222,6 @@ VLIB_REGISTER_NODE (nat64_in2out_slowpath_node) = {
   },
 };
 /* *INDENT-ON* */
-
-VLIB_NODE_FUNCTION_MULTIARCH (nat64_in2out_slowpath_node,
-			      nat64_in2out_slowpath_node_fn);
 
 typedef struct nat64_in2out_frag_set_ctx_t_
 {
@@ -1374,9 +1370,9 @@ nat64_in2out_frag_hairpinning (vlib_buffer_t * b, ip6_header_t * ip6,
   return 0;
 }
 
-static uword
-nat64_in2out_reass_node_fn (vlib_main_t * vm,
-			    vlib_node_runtime_t * node, vlib_frame_t * frame)
+VLIB_NODE_FN (nat64_in2out_reass_node) (vlib_main_t * vm,
+					vlib_node_runtime_t * node,
+					vlib_frame_t * frame)
 {
   u32 n_left_from, *from, *to_next;
   nat64_in2out_next_t next_index;
@@ -1485,7 +1481,7 @@ nat64_in2out_reass_node_fn (vlib_main_t * vm,
 	      if (PREDICT_FALSE (reass0->sess_index == (u32) ~ 0))
 		{
 		  if (nat_ip6_reass_add_fragment
-		      (reass0, bi0, &fragments_to_drop))
+		      (thread_index, reass0, bi0, &fragments_to_drop))
 		    {
 		      b0->error = node->errors[NAT64_IN2OUT_ERROR_MAX_FRAG];
 		      next0 = NAT64_IN2OUT_NEXT_DROP;
@@ -1528,7 +1524,7 @@ nat64_in2out_reass_node_fn (vlib_main_t * vm,
 			}
 
 		      bibe0 =
-			nat64_db_bib_entry_create (db,
+			nat64_db_bib_entry_create (thread_index, db,
 						   &ip60->src_address,
 						   &out_addr0, udp0->src_port,
 						   out_port0, fib_index0,
@@ -1546,7 +1542,7 @@ nat64_in2out_reass_node_fn (vlib_main_t * vm,
 		  nat64_extract_ip4 (&ip60->dst_address, &daddr0.ip4,
 				     fib_index0);
 		  ste0 =
-		    nat64_db_st_entry_create (db, bibe0,
+		    nat64_db_st_entry_create (thread_index, db, bibe0,
 					      &ip60->dst_address, &daddr0.ip4,
 					      udp0->dst_port);
 		  if (!ste0)
@@ -1643,10 +1639,10 @@ nat64_in2out_reass_node_fn (vlib_main_t * vm,
       vlib_put_next_frame (vm, node, next_index, n_left_to_next);
     }
 
-  vlib_node_increment_counter (vm, nat64_in2out_reass_node.index,
+  vlib_node_increment_counter (vm, nm->in2out_reass_node_index,
 			       NAT64_IN2OUT_ERROR_PROCESSED_FRAGMENTS,
 			       pkts_processed);
-  vlib_node_increment_counter (vm, nat64_in2out_reass_node.index,
+  vlib_node_increment_counter (vm, nm->in2out_reass_node_index,
 			       NAT64_IN2OUT_ERROR_CACHED_FRAGMENTS,
 			       cached_fragments);
 
@@ -1661,7 +1657,6 @@ nat64_in2out_reass_node_fn (vlib_main_t * vm,
 
 /* *INDENT-OFF* */
 VLIB_REGISTER_NODE (nat64_in2out_reass_node) = {
-  .function = nat64_in2out_reass_node_fn,
   .name = "nat64-in2out-reass",
   .vector_size = sizeof (u32),
   .format_trace = format_nat64_in2out_reass_trace,
@@ -1679,9 +1674,6 @@ VLIB_REGISTER_NODE (nat64_in2out_reass_node) = {
   },
 };
 /* *INDENT-ON* */
-
-VLIB_NODE_FUNCTION_MULTIARCH (nat64_in2out_reass_node,
-			      nat64_in2out_reass_node_fn);
 
 #define foreach_nat64_in2out_handoff_error                       \
 _(CONGESTION_DROP, "congestion drop")                            \
@@ -1721,9 +1713,9 @@ format_nat64_in2out_handoff_trace (u8 * s, va_list * args)
   return s;
 }
 
-static inline uword
-nat64_in2out_handoff_node_fn (vlib_main_t * vm, vlib_node_runtime_t * node,
-			      vlib_frame_t * frame)
+VLIB_NODE_FN (nat64_in2out_handoff_node) (vlib_main_t * vm,
+					  vlib_node_runtime_t * node,
+					  vlib_frame_t * frame)
 {
   nat64_main_t *nm = &nat64_main;
   vlib_buffer_t *bufs[VLIB_FRAME_SIZE], **b;
@@ -1788,7 +1780,6 @@ nat64_in2out_handoff_node_fn (vlib_main_t * vm, vlib_node_runtime_t * node,
 
 /* *INDENT-OFF* */
 VLIB_REGISTER_NODE (nat64_in2out_handoff_node) = {
-  .function = nat64_in2out_handoff_node_fn,
   .name = "nat64-in2out-handoff",
   .vector_size = sizeof (u32),
   .format_trace = format_nat64_in2out_handoff_trace,
@@ -1803,9 +1794,6 @@ VLIB_REGISTER_NODE (nat64_in2out_handoff_node) = {
   },
 };
 /* *INDENT-ON* */
-
-VLIB_NODE_FUNCTION_MULTIARCH (nat64_in2out_handoff_node,
-			      nat64_in2out_handoff_node_fn);
 
 /*
  * fd.io coding-style-patch-verification: ON

@@ -80,9 +80,8 @@
   _(GBP_EXT_ITF_DUMP, gbp_ext_itf_dump)                     \
   _(GBP_CONTRACT_ADD_DEL, gbp_contract_add_del)             \
   _(GBP_CONTRACT_DUMP, gbp_contract_dump)                   \
-  _(GBP_ENDPOINT_LEARN_SET_INACTIVE_THRESHOLD, gbp_endpoint_learn_set_inactive_threshold) \
-  _(GBP_VXLAN_TUNNEL_ADD, gbp_vxlan_tunnel_add)                         \
-  _(GBP_VXLAN_TUNNEL_DEL, gbp_vxlan_tunnel_del)                         \
+  _(GBP_VXLAN_TUNNEL_ADD, gbp_vxlan_tunnel_add)             \
+  _(GBP_VXLAN_TUNNEL_DEL, gbp_vxlan_tunnel_del)             \
   _(GBP_VXLAN_TUNNEL_DUMP, gbp_vxlan_tunnel_dump)
 
 gbp_main_t gbp_main;
@@ -166,7 +165,7 @@ vl_api_gbp_endpoint_add_t_handler (vl_api_gbp_endpoint_add_t * mp)
       rv = gbp_endpoint_update_and_lock (GBP_ENDPOINT_SRC_CP,
 					 sw_if_index, ips, &mac,
 					 INDEX_INVALID, INDEX_INVALID,
-					 ntohs (mp->endpoint.epg_id),
+					 ntohs (mp->endpoint.sclass),
 					 gef, &tun_src, &tun_dst, &handle);
     }
   else
@@ -174,7 +173,7 @@ vl_api_gbp_endpoint_add_t_handler (vl_api_gbp_endpoint_add_t * mp)
       rv = gbp_endpoint_update_and_lock (GBP_ENDPOINT_SRC_CP,
 					 sw_if_index, ips, &mac,
 					 INDEX_INVALID, INDEX_INVALID,
-					 ntohs (mp->endpoint.epg_id),
+					 ntohs (mp->endpoint.sclass),
 					 gef, NULL, NULL, &handle);
     }
   vec_free (ips);
@@ -197,19 +196,6 @@ vl_api_gbp_endpoint_del_t_handler (vl_api_gbp_endpoint_del_t * mp)
   gbp_endpoint_unlock (GBP_ENDPOINT_SRC_CP, ntohl (mp->handle));
 
   REPLY_MACRO (VL_API_GBP_ENDPOINT_DEL_REPLY + GBP_MSG_BASE);
-}
-
-static void
-  vl_api_gbp_endpoint_learn_set_inactive_threshold_t_handler
-  (vl_api_gbp_endpoint_learn_set_inactive_threshold_t * mp)
-{
-  vl_api_gbp_endpoint_learn_set_inactive_threshold_reply_t *rmp;
-  int rv = 0;
-
-  gbp_learn_set_inactive_threshold (ntohl (mp->threshold));
-
-  REPLY_MACRO (VL_API_GBP_ENDPOINT_LEARN_SET_INACTIVE_THRESHOLD_REPLY +
-	       GBP_MSG_BASE);
 }
 
 typedef struct gbp_walk_ctx_t_
@@ -255,7 +241,7 @@ gbp_endpoint_send_details (index_t gei, void *args)
     {
       mp->endpoint.sw_if_index = ntohl (gef->gef_itf);
     }
-  mp->endpoint.epg_id = ntohs (ge->ge_fwd.gef_epg_id);
+  mp->endpoint.sclass = ntohs (ge->ge_fwd.gef_sclass);
   mp->endpoint.n_ips = n_ips;
   mp->endpoint.flags = gbp_endpoint_flags_encode (gef->gef_flags);
   mp->handle = htonl (gei);
@@ -291,16 +277,28 @@ vl_api_gbp_endpoint_dump_t_handler (vl_api_gbp_endpoint_dump_t * mp)
 }
 
 static void
+gbp_retention_decode (const vl_api_gbp_endpoint_retention_t * in,
+		      gbp_endpoint_retention_t * out)
+{
+  out->remote_ep_timeout = ntohl (in->remote_ep_timeout);
+}
+
+static void
   vl_api_gbp_endpoint_group_add_t_handler
   (vl_api_gbp_endpoint_group_add_t * mp)
 {
   vl_api_gbp_endpoint_group_add_reply_t *rmp;
+  gbp_endpoint_retention_t retention;
   int rv = 0;
 
-  rv = gbp_endpoint_group_add_and_lock (ntohs (mp->epg.epg_id),
+  gbp_retention_decode (&mp->epg.retention, &retention);
+
+  rv = gbp_endpoint_group_add_and_lock (ntohl (mp->epg.vnid),
+					ntohs (mp->epg.sclass),
 					ntohl (mp->epg.bd_id),
 					ntohl (mp->epg.rd_id),
-					ntohl (mp->epg.uplink_sw_if_index));
+					ntohl (mp->epg.uplink_sw_if_index),
+					&retention);
 
   REPLY_MACRO (VL_API_GBP_ENDPOINT_GROUP_ADD_REPLY + GBP_MSG_BASE);
 }
@@ -312,7 +310,7 @@ static void
   vl_api_gbp_endpoint_group_del_reply_t *rmp;
   int rv = 0;
 
-  rv = gbp_endpoint_group_delete (ntohs (mp->epg_id));
+  rv = gbp_endpoint_group_delete (ntohs (mp->sclass));
 
   REPLY_MACRO (VL_API_GBP_ENDPOINT_GROUP_DEL_REPLY + GBP_MSG_BASE);
 }
@@ -341,7 +339,8 @@ vl_api_gbp_bridge_domain_add_t_handler (vl_api_gbp_bridge_domain_add_t * mp)
 				       gbp_bridge_domain_flags_from_api
 				       (mp->bd.flags),
 				       ntohl (mp->bd.bvi_sw_if_index),
-				       ntohl (mp->bd.uu_fwd_sw_if_index));
+				       ntohl (mp->bd.uu_fwd_sw_if_index),
+				       ntohl (mp->bd.bm_flood_sw_if_index));
 
   REPLY_MACRO (VL_API_GBP_BRIDGE_DOMAIN_ADD_REPLY + GBP_MSG_BASE);
 }
@@ -426,7 +425,7 @@ vl_api_gbp_subnet_add_del_t_handler (vl_api_gbp_subnet_add_del_t * mp)
     rv = gbp_subnet_add (ntohl (mp->subnet.rd_id),
 			 &pfx, type,
 			 ntohl (mp->subnet.sw_if_index),
-			 ntohs (mp->subnet.epg_id));
+			 ntohs (mp->subnet.sclass));
   else
     rv = gbp_subnet_del (ntohl (mp->subnet.rd_id), &pfx);
 
@@ -464,7 +463,7 @@ static walk_rc_t
 gbp_subnet_send_details (u32 rd_id,
 			 const fib_prefix_t * pfx,
 			 gbp_subnet_type_t type,
-			 u32 sw_if_index, epg_id_t epg, void *args)
+			 u32 sw_if_index, sclass_t sclass, void *args)
 {
   vl_api_gbp_subnet_details_t *mp;
   gbp_walk_ctx_t *ctx;
@@ -480,7 +479,7 @@ gbp_subnet_send_details (u32 rd_id,
 
   mp->subnet.type = gub_subnet_type_to_api (type);
   mp->subnet.sw_if_index = ntohl (sw_if_index);
-  mp->subnet.epg_id = ntohs (epg);
+  mp->subnet.sclass = ntohs (sclass);
   mp->subnet.rd_id = ntohl (rd_id);
   ip_prefix_encode (pfx, &mp->subnet.prefix);
 
@@ -522,7 +521,8 @@ gbp_endpoint_group_send_details (gbp_endpoint_group_t * gg, void *args)
   mp->context = ctx->context;
 
   mp->epg.uplink_sw_if_index = ntohl (gg->gg_uplink_sw_if_index);
-  mp->epg.epg_id = ntohs (gg->gg_id);
+  mp->epg.vnid = ntohl (gg->gg_vnid);
+  mp->epg.sclass = ntohs (gg->gg_sclass);
   mp->epg.bd_id = ntohl (gbp_endpoint_group_get_bd_id (gg));
   mp->epg.rd_id = ntohl (gbp_route_domain_get_rd_id (gg->gg_rd));
 
@@ -567,6 +567,7 @@ gbp_bridge_domain_send_details (gbp_bridge_domain_t * gb, void *args)
   mp->bd.bd_id = ntohl (gb->gb_bd_id);
   mp->bd.bvi_sw_if_index = ntohl (gb->gb_bvi_sw_if_index);
   mp->bd.uu_fwd_sw_if_index = ntohl (gb->gb_uu_fwd_sw_if_index);
+  mp->bd.bm_flood_sw_if_index = ntohl (gb->gb_bm_flood_sw_if_index);
 
   vl_api_send_msg (ctx->reg, (u8 *) mp);
 
@@ -646,7 +647,7 @@ vl_api_gbp_recirc_add_del_t_handler (vl_api_gbp_recirc_add_del_t * mp)
 
   if (mp->is_add)
     rv = gbp_recirc_add (sw_if_index,
-			 ntohs (mp->recirc.epg_id), mp->recirc.is_ext);
+			 ntohs (mp->recirc.sclass), mp->recirc.is_ext);
   else
     rv = gbp_recirc_delete (sw_if_index);
 
@@ -670,7 +671,7 @@ gbp_recirc_send_details (gbp_recirc_t * gr, void *args)
   mp->_vl_msg_id = ntohs (VL_API_GBP_RECIRC_DETAILS + GBP_MSG_BASE);
   mp->context = ctx->context;
 
-  mp->recirc.epg_id = ntohs (gr->gr_epg);
+  mp->recirc.sclass = ntohs (gr->gr_sclass);
   mp->recirc.sw_if_index = ntohl (gr->gr_sw_if_index);
   mp->recirc.is_ext = gr->gr_is_ext;
 
@@ -930,8 +931,7 @@ vl_api_gbp_contract_add_del_t_handler (vl_api_gbp_contract_add_del_t * mp)
   u16 *allowed_ethertypes;
   index_t *rules;
   int ii, rv = 0;
-  u8 *data, n_et;
-  u16 *et;
+  u8 n_et;
 
   if (mp->is_add)
     {
@@ -943,29 +943,25 @@ vl_api_gbp_contract_add_del_t_handler (vl_api_gbp_contract_add_del_t * mp)
       allowed_ethertypes = NULL;
 
       /*
-       * move past the variable legnth array of rules to get to the
        * allowed ether types
        */
-      data = (((u8 *) & mp->contract.n_ether_types) +
-	      (sizeof (mp->contract.rules[0]) * mp->contract.n_rules));
-      n_et = *data;
-      et = (u16 *) (++data);
+      n_et = mp->contract.n_ether_types;
       vec_validate (allowed_ethertypes, n_et - 1);
 
       for (ii = 0; ii < n_et; ii++)
 	{
 	  /* leave the ether types in network order */
-	  allowed_ethertypes[ii] = et[ii];
+	  allowed_ethertypes[ii] = mp->contract.allowed_ethertypes[ii];
 	}
 
-      rv = gbp_contract_update (ntohs (mp->contract.src_epg),
-				ntohs (mp->contract.dst_epg),
+      rv = gbp_contract_update (ntohs (mp->contract.sclass),
+				ntohs (mp->contract.dclass),
 				ntohl (mp->contract.acl_index),
 				rules, allowed_ethertypes);
     }
   else
-    rv = gbp_contract_delete (ntohs (mp->contract.src_epg),
-			      ntohs (mp->contract.dst_epg));
+    rv = gbp_contract_delete (ntohs (mp->contract.sclass),
+			      ntohs (mp->contract.dclass));
 
 out:
   REPLY_MACRO (VL_API_GBP_CONTRACT_ADD_DEL_REPLY + GBP_MSG_BASE);
@@ -986,9 +982,9 @@ gbp_contract_send_details (gbp_contract_t * gbpc, void *args)
   mp->_vl_msg_id = ntohs (VL_API_GBP_CONTRACT_DETAILS + GBP_MSG_BASE);
   mp->context = ctx->context;
 
-  mp->contract.src_epg = ntohs (gbpc->gc_key.gck_src);
-  mp->contract.dst_epg = ntohs (gbpc->gc_key.gck_dst);
-  // mp->contract.acl_index = ntohl (gbpc->gc_value.gc_acl_index);
+  mp->contract.sclass = ntohs (gbpc->gc_key.gck_src);
+  mp->contract.dclass = ntohs (gbpc->gc_key.gck_dst);
+  mp->contract.acl_index = ntohl (gbpc->gc_acl_index);
 
   vl_api_send_msg (ctx->reg, (u8 *) mp);
 
@@ -1035,9 +1031,11 @@ vl_api_gbp_vxlan_tunnel_add_t_handler (vl_api_gbp_vxlan_tunnel_add_t * mp)
 {
   vl_api_gbp_vxlan_tunnel_add_reply_t *rmp;
   gbp_vxlan_tunnel_layer_t layer;
+  ip4_address_t src;
   u32 sw_if_index;
   int rv = 0;
 
+  ip4_address_decode (mp->tunnel.src, &src);
   rv = gbp_vxlan_tunnel_mode_2_layer (mp->tunnel.mode, &layer);
 
   if (0 != rv)
@@ -1045,7 +1043,7 @@ vl_api_gbp_vxlan_tunnel_add_t_handler (vl_api_gbp_vxlan_tunnel_add_t * mp)
 
   rv = gbp_vxlan_tunnel_add (ntohl (mp->tunnel.vni),
 			     layer,
-			     ntohl (mp->tunnel.bd_rd_id), &sw_if_index);
+			     ntohl (mp->tunnel.bd_rd_id), &src, &sw_if_index);
 
 out:
   /* *INDENT-OFF* */

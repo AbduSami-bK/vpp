@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/python3
 
 from __future__ import print_function
 import ply.lex as lex
@@ -133,11 +133,11 @@ def crc_block(block):
 
 
 class Service():
-    def __init__(self, caller, reply, events=[], stream=False):
+    def __init__(self, caller, reply, events=None, stream=False):
         self.caller = caller
         self.reply = reply
         self.stream = stream
-        self.events = events
+        self.events = [] if events is None else events
 
 
 class Typedef():
@@ -165,13 +165,13 @@ class Using():
         self.name = name
 
         if isinstance(alias, Array):
-            a = { 'type': alias.fieldtype,
-                  'length': alias.length }
+            a = { 'type': alias.fieldtype,  # noqa: E201
+                  'length': alias.length }  # noqa: E202
         else:
-            a = { 'type': alias.fieldtype }
+            a = { 'type': alias.fieldtype }  # noqa: E201,E202
         self.alias = a
-        self.crc = binascii.crc32(str(alias)) & 0xffffffff
-        global_crc = binascii.crc32(str(alias), global_crc)
+        self.crc = binascii.crc32(str(alias).encode()) & 0xffffffff
+        global_crc = binascii.crc32(str(alias).encode(), global_crc)
         global_type_add(name)
 
     def __repr__(self):
@@ -759,12 +759,17 @@ def main():
     if sys.version[0] == '2':
         cliparser.add_argument('--input', type=argparse.FileType('r'),
                                default=sys.stdin)
+        cliparser.add_argument('--output', nargs='?',
+                               type=argparse.FileType('w'),
+                               default=sys.stdout)
+
     else:
         cliparser.add_argument('--input',
                                type=argparse.FileType('r', encoding='UTF-8'),
                                default=sys.stdin)
-    cliparser.add_argument('--output', nargs='?', type=argparse.FileType('w'),
-                           default=sys.stdout)
+        cliparser.add_argument('--output', nargs='?',
+                               type=argparse.FileType('w', encoding='UTF-8'),
+                               default=sys.stdout)
 
     cliparser.add_argument('output_module', nargs='?', default='C')
     cliparser.add_argument('--debug', action='store_true')
@@ -815,7 +820,7 @@ def main():
     #
     # Generate representation
     #
-    import imp
+    from importlib.machinery import SourceFileLoader
 
     # Default path
     pluginpath = ''
@@ -838,7 +843,8 @@ def main():
                                              args.output_module.lower())
 
     try:
-        plugin = imp.load_source(args.output_module, module_path)
+        plugin = SourceFileLoader(args.output_module,
+                                  module_path).load_module()
     except Exception as err:
         raise Exception('Error importing output plugin: {}, {}'
                         .format(module_path, err))

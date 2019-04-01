@@ -70,11 +70,8 @@ class TestL2bdArpTerm(VppTestCase):
     def add_del_arp_term_hosts(self, entries, bd_id=1, is_add=1, is_ipv6=0):
         for e in entries:
             ip = e.ip4 if is_ipv6 == 0 else e.ip6
-            self.vapi.bd_ip_mac_add_del(bd_id=bd_id,
-                                        mac=e.mac,
-                                        ip=ip,
-                                        is_ipv6=is_ipv6,
-                                        is_add=is_add)
+            self.vapi.bd_ip_mac_add_del(bd_id=bd_id, is_add=is_add, ip=ip,
+                                        mac=e.mac)
 
     @classmethod
     def mac_list(cls, b6_range):
@@ -111,8 +108,8 @@ class TestL2bdArpTerm(VppTestCase):
             self.vapi.bridge_domain_add_del(bd_id=bd_id, is_add=is_add)
         for swif in self.bd_swifs(bd_id):
             swif_idx = swif.sw_if_index
-            self.vapi.sw_interface_set_l2_bridge(
-                swif_idx, bd_id=bd_id, enable=is_add)
+            self.vapi.sw_interface_set_l2_bridge(rx_sw_if_index=swif_idx,
+                                                 bd_id=bd_id, enable=is_add)
         if not is_add:
             self.vapi.bridge_domain_add_del(bd_id=bd_id, is_add=is_add)
 
@@ -163,15 +160,13 @@ class TestL2bdArpTerm(VppTestCase):
         return '%s.%s.%s.%s' % (o1, o2, o3, o4)
 
     def arp_event_host(self, e):
-        return Host(mac=':'.join(['%02x' % ord(char) for char in e.new_mac]),
-                    ip4=self.inttoip4(e.address))
+        return Host(str(e.mac), ip4=str(e.ip))
 
     def arp_event_hosts(self, evs):
         return {self.arp_event_host(e) for e in evs}
 
     def nd_event_host(self, e):
-        return Host(mac=':'.join(['%02x' % ord(char) for char in e.new_mac]),
-                    ip6=inet_ntop(AF_INET6, e.address))
+        return Host(str(e.mac), ip6=str(e.ip))
 
     def nd_event_hosts(self, evs):
         return {self.nd_event_host(e) for e in evs}
@@ -231,7 +226,8 @@ class TestL2bdArpTerm(VppTestCase):
             else:
                 raise ValueError("Unknown feature used: %s" % flag)
             is_set = 1 if args[flag] else 0
-            self.vapi.bridge_flags(bd_id, is_set, feature_bitmap)
+            self.vapi.bridge_flags(bd_id=bd_id, is_set=is_set,
+                                   flags=feature_bitmap)
         self.logger.info("Bridge domain ID %d updated" % bd_id)
 
     def verify_arp(self, src_host, req_hosts, resp_hosts, bd_id=1):
@@ -439,7 +435,7 @@ class TestL2bdArpTerm(VppTestCase):
     def test_l2bd_arp_term_12(self):
         """ L2BD ND term - send NS packets verify reports
         """
-        self.vapi.want_ip6_nd_events(address=inet_pton(AF_INET6, "::0"))
+        self.vapi.want_ip6_nd_events(ip="::")
         dst_host = self.ip6_host(50, 50, "00:00:11:22:33:44")
         self.bd_add_del(1, is_add=1)
         self.set_bd_flags(1, arp_term=True, flood=False,
@@ -475,8 +471,7 @@ class TestL2bdArpTerm(VppTestCase):
     def test_l2bd_arp_term_14(self):
         """ L2BD ND term - disable ip4 arp events,send ns, verify no events
         """
-        self.vapi.want_ip6_nd_events(enable_disable=0,
-                                     address=inet_pton(AF_INET6, "::0"))
+        self.vapi.want_ip6_nd_events(enable_disable=0, ip="::")
         dst_host = self.ip6_host(50, 50, "00:00:11:22:33:44")
         macs = self.mac_list(range(10, 15))
         hosts = self.ip6_hosts(5, 1, macs)

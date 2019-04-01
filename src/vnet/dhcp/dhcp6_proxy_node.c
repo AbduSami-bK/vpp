@@ -179,7 +179,6 @@ dhcpv6_proxy_to_server_input (vlib_main_t * vm,
 	  dhcpv6_client_mac_t *cmac;	// client mac
 	  ethernet_header_t *e_h0;
 	  u8 client_src_mac[6];
-	  vlib_buffer_free_list_t *fl;
 	  dhcp_vss_t *vss;
 	  u8 is_solicit = 0;
 
@@ -315,12 +314,9 @@ dhcpv6_proxy_to_server_input (vlib_main_t * vm,
 	  copy_ip6_address (&r1->link_addr, ia0);
 
 	link_address_set:
-	  fl =
-	    vlib_buffer_get_free_list (vm,
-				       vlib_buffer_get_free_list_index (b0));
 
 	  if ((b0->current_length + sizeof (*id1) + sizeof (*vss1) +
-	       sizeof (*cmac)) > fl->n_data_bytes)
+	       sizeof (*cmac)) > vlib_buffer_get_default_data_size (vm))
 	    {
 	      error0 = DHCPV6_PROXY_ERROR_PKT_TOO_BIG;
 	      next0 = DHCPV6_PROXY_TO_SERVER_INPUT_NEXT_DROP;
@@ -440,7 +436,6 @@ dhcpv6_proxy_to_server_input (vlib_main_t * vm,
 		  u32 ci0;
 
 		  c0 = vlib_buffer_copy (vm, b0);
-		  vlib_buffer_copy_trace_flag (vm, c0, bi0);
 		  VLIB_BUFFER_TRACE_TRAJECTORY_INIT (c0);
 		  ci0 = vlib_get_buffer_index (vm, c0);
 		  server = &proxy->dhcp_servers[ii];
@@ -465,6 +460,7 @@ dhcpv6_proxy_to_server_input (vlib_main_t * vm,
 		    {
 		      dhcpv6_proxy_trace_t *tr;
 
+		      vlib_buffer_copy_trace_flag (vm, b0, ci0);
 		      tr = vlib_add_trace (vm, node, c0, sizeof (*tr));
 		      tr->which = 0;	/* to server */
 		      tr->error = error0;

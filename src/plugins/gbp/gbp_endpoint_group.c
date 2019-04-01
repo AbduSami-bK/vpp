@@ -33,6 +33,12 @@ gbp_endpoint_group_t *gbp_endpoint_group_pool;
  * DB of endpoint_groups
  */
 gbp_endpoint_group_db_t gbp_endpoint_group_db;
+
+/**
+ * Map sclass to EPG
+ */
+uword *gbp_epg_sclass_db;
+
 vlib_log_class_t gg_logger;
 
 #define GBP_EPG_DBG(...)                           \
@@ -54,11 +60,11 @@ gbp_endpoint_group_lock (index_t i)
 }
 
 index_t
-gbp_endpoint_group_find (epg_id_t epg_id)
+gbp_endpoint_group_find (sclass_t sclass)
 {
   uword *p;
 
-  p = hash_get (gbp_endpoint_group_db.gg_hash, epg_id);
+  p = hash_get (gbp_endpoint_group_db.gg_hash_sclass, sclass);
 
   if (NULL != p)
     return p[0];
@@ -67,13 +73,17 @@ gbp_endpoint_group_find (epg_id_t epg_id)
 }
 
 int
-gbp_endpoint_group_add_and_lock (epg_id_t epg_id,
-				 u32 bd_id, u32 rd_id, u32 uplink_sw_if_index)
+gbp_endpoint_group_add_and_lock (vnid_t vnid,
+				 u16 sclass,
+				 u32 bd_id,
+				 u32 rd_id,
+				 u32 uplink_sw_if_index,
+				 const gbp_endpoint_retention_t * retention)
 {
   gbp_endpoint_group_t *gg;
   index_t ggi;
 
-  ggi = gbp_endpoint_group_find (epg_id);
+  ggi = gbp_endpoint_group_find (sclass);
 
   if (INDEX_INVALID == ggi)
     {
@@ -98,13 +108,18 @@ gbp_endpoint_group_add_and_lock (epg_id_t epg_id,
 
       pool_get_zero (gbp_endpoint_group_pool, gg);
 
-      gg->gg_id = epg_id;
+      gg->gg_vnid = vnid;
       gg->gg_rd = grdi;
       gg->gg_gbd = gbi;
       gg->gg_bd_index = gb->gb_bd_index;
 
       gg->gg_uplink_sw_if_index = uplink_sw_if_index;
       gg->gg_locks = 1;
+      gg->gg_sclass = sclass;
+      gg->gg_retention = *retention;
+
+      if (SCLASS_INVALID != gg->gg_sclass)
+	hash_set (gbp_epg_sclass_db, gg->gg_sclass, gg->gg_vnid);
 
       /*
        * an egress DVR dpo for internal subnets to use when sending
@@ -130,9 +145,8 @@ gbp_endpoint_group_add_and_lock (epg_id_t epg_id,
 				      L2INPUT_FEAT_GBP_NULL_CLASSIFY, 1);
 	}
 
-      hash_set (gbp_endpoint_group_db.gg_hash,
-		gg->gg_id, gg - gbp_endpoint_group_pool);
-
+      hash_set (gbp_endpoint_group_db.gg_hash_sclass,
+		gg->gg_sclass, gg - gbp_endpoint_group_pool);
     }
   else
     {
@@ -179,18 +193,20 @@ gbp_endpoint_group_unlock (index_t ggi)
       gbp_bridge_domain_unlock (gg->gg_gbd);
       gbp_route_domain_unlock (gg->gg_rd);
 
-      hash_unset (gbp_endpoint_group_db.gg_hash, gg->gg_id);
+      if (SCLASS_INVALID != gg->gg_sclass)
+	hash_unset (gbp_epg_sclass_db, gg->gg_sclass);
+      hash_unset (gbp_endpoint_group_db.gg_hash_sclass, gg->gg_sclass);
 
       pool_put (gbp_endpoint_group_pool, gg);
     }
 }
 
 int
-gbp_endpoint_group_delete (epg_id_t epg_id)
+gbp_endpoint_group_delete (sclass_t sclass)
 {
   index_t ggi;
 
-  ggi = gbp_endpoint_group_find (epg_id);
+  ggi = gbp_endpoint_group_find (sclass);
 
   if (INDEX_INVALID != ggi)
     {
@@ -243,8 +259,9 @@ static clib_error_t *
 gbp_endpoint_group_cli (vlib_main_t * vm,
 			unformat_input_t * input, vlib_cli_command_t * cmd)
 {
+  gbp_endpoint_retention_t retention = { 0 };
+  vnid_t vnid = VNID_INVALID, sclass;
   vnet_main_t *vnm = vnet_get_main ();
-  epg_id_t epg_id = EPG_INVALID;
   u32 uplink_sw_if_index = ~0;
   u32 bd_id = ~0;
   u32 rd_id = ~0;
@@ -259,7 +276,9 @@ gbp_endpoint_group_cli (vlib_main_t * vm,
 	add = 1;
       else if (unformat (input, "del"))
 	add = 0;
-      else if (unformat (input, "epg %d", &epg_id))
+      else if (unformat (input, "epg %d", &vnid))
+	;
+      else if (unformat (input, "sclass %d", &sclass))
 	;
       else if (unformat (input, "bd %d", &bd_id))
 	;
@@ -269,7 +288,7 @@ gbp_endpoint_group_cli (vlib_main_t * vm,
 	break;
     }
 
-  if (EPG_INVALID == epg_id)
+  if (VNID_INVALID == vnid)
     return clib_error_return (0, "EPG-ID must be specified");
 
   if (add)
@@ -281,11 +300,11 @@ gbp_endpoint_group_cli (vlib_main_t * vm,
       if (~0 == rd_id)
 	return clib_error_return (0, "route-domain must be specified");
 
-      gbp_endpoint_group_add_and_lock (epg_id, bd_id, rd_id,
-				       uplink_sw_if_index);
+      gbp_endpoint_group_add_and_lock (vnid, sclass, bd_id, rd_id,
+				       uplink_sw_if_index, &retention);
     }
   else
-    gbp_endpoint_group_delete (epg_id);
+    gbp_endpoint_group_delete (vnid);
 
   return (NULL);
 }
@@ -304,6 +323,16 @@ VLIB_CLI_COMMAND (gbp_endpoint_group_cli_node, static) = {
   .function = gbp_endpoint_group_cli,
 };
 
+static u8 *
+format_gbp_endpoint_retention (u8 * s, va_list * args)
+{
+  gbp_endpoint_retention_t *rt = va_arg (*args, gbp_endpoint_retention_t*);
+
+  s = format (s, "[remote-EP-timeout:%d]", rt->remote_ep_timeout);
+
+  return (s);
+}
+
 u8 *
 format_gbp_endpoint_group (u8 * s, va_list * args)
 {
@@ -311,11 +340,14 @@ format_gbp_endpoint_group (u8 * s, va_list * args)
   vnet_main_t *vnm = vnet_get_main ();
 
   if (NULL != gg)
-    s = format (s, "%d, bd:[%d,%d], rd:[%d] uplink:%U locks:%d",
-                gg->gg_id,
+    s = format (s, "[%d] %d, sclass:%d bd:[%d,%d] rd:[%d] uplink:%U retnetion:%U locks:%d",
+                gg - gbp_endpoint_group_pool,
+                gg->gg_vnid,
+                gg->gg_sclass,
                 gbp_endpoint_group_get_bd_id(gg), gg->gg_bd_index,
                 gg->gg_rd,
                 format_vnet_sw_if_index_name, vnm, gg->gg_uplink_sw_if_index,
+                format_gbp_endpoint_retention, &gg->gg_retention,
                 gg->gg_locks);
   else
     s = format (s, "NULL");

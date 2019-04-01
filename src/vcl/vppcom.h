@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 Cisco and/or its affiliates.
+ * Copyright (c) 2017-2019 Cisco and/or its affiliates.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at:
@@ -152,7 +152,6 @@ typedef enum
   VPPCOM_ATTR_SET_TCP_KEEPINTVL,
   VPPCOM_ATTR_GET_TCP_USER_MSS,
   VPPCOM_ATTR_SET_TCP_USER_MSS,
-  VPPCOM_ATTR_GET_REFCNT,
   VPPCOM_ATTR_SET_SHUT,
   VPPCOM_ATTR_GET_SHUT,
 } vppcom_attr_op_t;
@@ -284,7 +283,6 @@ extern int vppcom_poll (vcl_poll_t * vp, uint32_t n_sids,
 extern int vppcom_mq_epoll_fd (void);
 extern int vppcom_session_index (vcl_session_handle_t session_handle);
 extern int vppcom_session_worker (vcl_session_handle_t session_handle);
-extern int vppcom_session_handle (uint32_t session_index);
 
 extern int vppcom_session_read_segments (uint32_t session_handle,
 					 vppcom_data_segments_t ds);
@@ -309,6 +307,14 @@ extern int vppcom_worker_register (void);
  * Retrieve current worker index
  */
 extern int vppcom_worker_index (void);
+
+/**
+ * Returns the current worker's message queues epoll fd
+ *
+ * This only works if vcl is configured to do eventfd based message queue
+ * notifications.
+ */
+extern int vppcom_worker_mqs_epfd (void);
 
 /* *INDENT-OFF* */
 #ifdef __cplusplus

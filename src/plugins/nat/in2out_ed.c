@@ -29,6 +29,7 @@
 #include <nat/nat_reass.h>
 #include <nat/nat_inlines.h>
 #include <nat/nat_syslog.h>
+#include <nat/nat_ha.h>
 
 #define foreach_nat_in2out_ed_error                     \
 _(UNSUPPORTED_PROTOCOL, "unsupported protocol")         \
@@ -80,12 +81,6 @@ typedef struct
   u32 session_index;
   u32 is_slow_path;
 } nat_in2out_ed_trace_t;
-
-vlib_node_registration_t nat44_ed_in2out_node;
-vlib_node_registration_t nat44_ed_in2out_slowpath_node;
-vlib_node_registration_t nat44_ed_in2out_output_node;
-vlib_node_registration_t nat44_ed_in2out_output_slowpath_node;
-vlib_node_registration_t nat44_ed_in2out_reass_node;
 
 static u8 *
 format_nat_in2out_ed_trace (u8 * s, va_list * args)
@@ -154,6 +149,7 @@ icmp_get_ed_key (ip4_header_t * ip0, nat_ed_ses_key_t * p_key0)
   return 0;
 }
 
+#ifndef CLIB_MARCH_VARIANT
 int
 nat44_i2o_ed_is_idle_session_cb (clib_bihash_kv_16_8_t * kv, void *arg)
 {
@@ -199,7 +195,8 @@ nat44_i2o_ed_is_idle_session_cb (clib_bihash_kv_16_8_t * kv, void *arg)
       if (snat_is_unk_proto_session (s))
 	goto delete;
 
-      snat_ipfix_logging_nat44_ses_delete (s->in2out.addr.as_u32,
+      snat_ipfix_logging_nat44_ses_delete (ctx->thread_index,
+					   s->in2out.addr.as_u32,
 					   s->out2in.addr.as_u32,
 					   s->in2out.protocol,
 					   s->in2out.port,
@@ -212,6 +209,10 @@ nat44_i2o_ed_is_idle_session_cb (clib_bihash_kv_16_8_t * kv, void *arg)
 			     &s->out2in.addr, s->out2in.port,
 			     &s->ext_host_addr, s->ext_host_port,
 			     s->in2out.protocol, is_twice_nat_session (s));
+
+      nat_ha_sdel (&s->out2in.addr, s->out2in.port, &s->ext_host_addr,
+		   s->ext_host_port, s->out2in.protocol, s->out2in.fib_index,
+		   ctx->thread_index);
 
       if (is_twice_nat_session (s))
 	{
@@ -242,6 +243,7 @@ nat44_i2o_ed_is_idle_session_cb (clib_bihash_kv_16_8_t * kv, void *arg)
 
   return 0;
 }
+#endif
 
 static inline u32
 icmp_in2out_ed_slow_path (snat_main_t * sm, vlib_buffer_t * b0,
@@ -258,7 +260,7 @@ icmp_in2out_ed_slow_path (snat_main_t * sm, vlib_buffer_t * b0,
       /* Accounting */
       nat44_session_update_counters (s0, now,
 				     vlib_buffer_length_in_chain
-				     (sm->vlib_main, b0));
+				     (sm->vlib_main, b0), thread_index);
       /* Per-user LRU list maintenance */
       nat44_session_update_lru (sm, s0, thread_index);
     }
@@ -296,7 +298,7 @@ slow_path_ed (snat_main_t * sm,
   if (PREDICT_FALSE (maximum_sessions_exceeded (sm, thread_index)))
     {
       b->error = node->errors[NAT_IN2OUT_ED_ERROR_MAX_SESSIONS_EXCEEDED];
-      nat_ipfix_logging_max_sessions (sm->max_translations);
+      nat_ipfix_logging_max_sessions (thread_index, sm->max_translations);
       nat_log_notice ("maximum sessions exceeded");
       return NAT_IN2OUT_ED_NEXT_DROP;
     }
@@ -420,7 +422,8 @@ slow_path_ed (snat_main_t * sm,
   *sessionp = s;
 
   /* log NAT event */
-  snat_ipfix_logging_nat44_ses_create (s->in2out.addr.as_u32,
+  snat_ipfix_logging_nat44_ses_create (thread_index,
+				       s->in2out.addr.as_u32,
 				       s->out2in.addr.as_u32,
 				       s->in2out.protocol,
 				       s->in2out.port,
@@ -432,6 +435,12 @@ slow_path_ed (snat_main_t * sm,
 			 &s->out2in.addr, s->out2in.port,
 			 &s->ext_host_addr, s->ext_host_port,
 			 s->in2out.protocol, 0);
+
+  nat_ha_sadd (&s->in2out.addr, s->in2out.port, &s->out2in.addr,
+	       s->out2in.port, &s->ext_host_addr, s->ext_host_port,
+	       &s->ext_host_nat_addr, s->ext_host_nat_port,
+	       s->in2out.protocol, s->in2out.fib_index, s->flags,
+	       thread_index, 0);
 
   return next;
 }
@@ -519,7 +528,8 @@ nat_not_translate_output_feature_fwd (snat_main_t * sm, ip4_header_t * ip,
 	    }
 	  /* Accounting */
 	  nat44_session_update_counters (s, now,
-					 vlib_buffer_length_in_chain (vm, b));
+					 vlib_buffer_length_in_chain (vm, b),
+					 thread_index);
 	  /* Per-user LRU list maintenance */
 	  nat44_session_update_lru (sm, s, thread_index);
 	  return 1;
@@ -554,7 +564,7 @@ nat44_ed_not_translate_output_feature (snat_main_t * sm, ip4_header_t * ip,
 	{
 	  nat_log_debug ("TCP close connection %U", format_snat_session,
 			 &sm->per_thread_data[thread_index], s);
-	  nat_free_session_data (sm, s, thread_index);
+	  nat_free_session_data (sm, s, thread_index, 0);
 	  nat44_delete_session (sm, s, thread_index);
 	}
       else
@@ -585,6 +595,7 @@ nat44_ed_not_translate_output_feature (snat_main_t * sm, ip4_header_t * ip,
   return 0;
 }
 
+#ifndef CLIB_MARCH_VARIANT
 u32
 icmp_match_in2out_ed (snat_main_t * sm, vlib_node_runtime_t * node,
 		      u32 thread_index, vlib_buffer_t * b, ip4_header_t * ip,
@@ -694,6 +705,7 @@ out:
     *(snat_session_t **) d = s;
   return next;
 }
+#endif
 
 static snat_session_t *
 nat44_ed_in2out_unknown_proto (snat_main_t * sm,
@@ -767,7 +779,7 @@ nat44_ed_in2out_unknown_proto (snat_main_t * sm,
       if (PREDICT_FALSE (maximum_sessions_exceeded (sm, thread_index)))
 	{
 	  b->error = node->errors[NAT_IN2OUT_ED_ERROR_MAX_SESSIONS_EXCEEDED];
-	  nat_ipfix_logging_max_sessions (sm->max_translations);
+	  nat_ipfix_logging_max_sessions (thread_index, sm->max_translations);
 	  nat_log_notice ("maximum sessions exceeded");
 	  return 0;
 	}
@@ -881,7 +893,8 @@ nat44_ed_in2out_unknown_proto (snat_main_t * sm,
   ip->checksum = ip_csum_fold (sum);
 
   /* Accounting */
-  nat44_session_update_counters (s, now, vlib_buffer_length_in_chain (vm, b));
+  nat44_session_update_counters (s, now, vlib_buffer_length_in_chain (vm, b),
+				 thread_index);
   /* Per-user LRU list maintenance */
   nat44_session_update_lru (sm, s, thread_index);
 
@@ -910,8 +923,8 @@ nat44_ed_in2out_node_fn_inline (vlib_main_t * vm,
   u32 tcp_packets = 0, udp_packets = 0, icmp_packets = 0, other_packets =
     0, fragments = 0;
 
-  stats_node_index = is_slow_path ? nat44_ed_in2out_slowpath_node.index :
-    nat44_ed_in2out_node.index;
+  stats_node_index = is_slow_path ? sm->ed_in2out_slowpath_node_index :
+    sm->ed_in2out_node_index;
 
   from = vlib_frame_vector_args (frame);
   n_left_from = frame->n_vectors;
@@ -1153,7 +1166,8 @@ nat44_ed_in2out_node_fn_inline (vlib_main_t * vm,
 	  /* Accounting */
 	  nat44_session_update_counters (s0, now,
 					 vlib_buffer_length_in_chain (vm,
-								      b0));
+								      b0),
+					 thread_index);
 	  /* Per-user LRU list maintenance */
 	  nat44_session_update_lru (sm, s0, thread_index);
 
@@ -1361,8 +1375,8 @@ nat44_ed_in2out_node_fn_inline (vlib_main_t * vm,
 
 	  /* Accounting */
 	  nat44_session_update_counters (s1, now,
-					 vlib_buffer_length_in_chain (vm,
-								      b1));
+					 vlib_buffer_length_in_chain (vm, b1),
+					 thread_index);
 	  /* Per-user LRU list maintenance */
 	  nat44_session_update_lru (sm, s1, thread_index);
 
@@ -1599,8 +1613,8 @@ nat44_ed_in2out_node_fn_inline (vlib_main_t * vm,
 
 	  /* Accounting */
 	  nat44_session_update_counters (s0, now,
-					 vlib_buffer_length_in_chain (vm,
-								      b0));
+					 vlib_buffer_length_in_chain (vm, b0),
+					 thread_index);
 	  /* Per-user LRU list maintenance */
 	  nat44_session_update_lru (sm, s0, thread_index);
 
@@ -1648,17 +1662,15 @@ nat44_ed_in2out_node_fn_inline (vlib_main_t * vm,
   return frame->n_vectors;
 }
 
-static uword
-nat44_ed_in2out_fast_path_fn (vlib_main_t * vm,
-			      vlib_node_runtime_t * node,
-			      vlib_frame_t * frame)
+VLIB_NODE_FN (nat44_ed_in2out_node) (vlib_main_t * vm,
+				     vlib_node_runtime_t * node,
+				     vlib_frame_t * frame)
 {
   return nat44_ed_in2out_node_fn_inline (vm, node, frame, 0, 0);
 }
 
 /* *INDENT-OFF* */
 VLIB_REGISTER_NODE (nat44_ed_in2out_node) = {
-  .function = nat44_ed_in2out_fast_path_fn,
   .name = "nat44-ed-in2out",
   .vector_size = sizeof (u32),
   .format_trace = format_nat_in2out_ed_trace,
@@ -1677,20 +1689,15 @@ VLIB_REGISTER_NODE (nat44_ed_in2out_node) = {
 };
 /* *INDENT-ON* */
 
-VLIB_NODE_FUNCTION_MULTIARCH (nat44_ed_in2out_node,
-			      nat44_ed_in2out_fast_path_fn);
-
-static uword
-nat44_ed_in2out_output_fast_path_fn (vlib_main_t * vm,
-				     vlib_node_runtime_t * node,
-				     vlib_frame_t * frame)
+VLIB_NODE_FN (nat44_ed_in2out_output_node) (vlib_main_t * vm,
+					    vlib_node_runtime_t * node,
+					    vlib_frame_t * frame)
 {
   return nat44_ed_in2out_node_fn_inline (vm, node, frame, 0, 1);
 }
 
 /* *INDENT-OFF* */
 VLIB_REGISTER_NODE (nat44_ed_in2out_output_node) = {
-  .function = nat44_ed_in2out_output_fast_path_fn,
   .name = "nat44-ed-in2out-output",
   .vector_size = sizeof (u32),
   .format_trace = format_nat_in2out_ed_trace,
@@ -1709,20 +1716,15 @@ VLIB_REGISTER_NODE (nat44_ed_in2out_output_node) = {
 };
 /* *INDENT-ON* */
 
-VLIB_NODE_FUNCTION_MULTIARCH (nat44_ed_in2out_output_node,
-			      nat44_ed_in2out_output_fast_path_fn);
-
-static uword
-nat44_ed_in2out_slow_path_fn (vlib_main_t * vm,
-			      vlib_node_runtime_t * node,
-			      vlib_frame_t * frame)
+VLIB_NODE_FN (nat44_ed_in2out_slowpath_node) (vlib_main_t * vm,
+					      vlib_node_runtime_t * node,
+					      vlib_frame_t * frame)
 {
   return nat44_ed_in2out_node_fn_inline (vm, node, frame, 1, 0);
 }
 
 /* *INDENT-OFF* */
 VLIB_REGISTER_NODE (nat44_ed_in2out_slowpath_node) = {
-  .function = nat44_ed_in2out_slow_path_fn,
   .name = "nat44-ed-in2out-slowpath",
   .vector_size = sizeof (u32),
   .format_trace = format_nat_in2out_ed_trace,
@@ -1741,20 +1743,16 @@ VLIB_REGISTER_NODE (nat44_ed_in2out_slowpath_node) = {
 };
 /* *INDENT-ON* */
 
-VLIB_NODE_FUNCTION_MULTIARCH (nat44_ed_in2out_slowpath_node,
-			      nat44_ed_in2out_slow_path_fn);
-
-static uword
-nat44_ed_in2out_output_slow_path_fn (vlib_main_t * vm,
-				     vlib_node_runtime_t * node,
-				     vlib_frame_t * frame)
+VLIB_NODE_FN (nat44_ed_in2out_output_slowpath_node) (vlib_main_t * vm,
+						     vlib_node_runtime_t *
+						     node,
+						     vlib_frame_t * frame)
 {
   return nat44_ed_in2out_node_fn_inline (vm, node, frame, 1, 1);
 }
 
 /* *INDENT-OFF* */
 VLIB_REGISTER_NODE (nat44_ed_in2out_output_slowpath_node) = {
-  .function = nat44_ed_in2out_output_slow_path_fn,
   .name = "nat44-ed-in2out-output-slowpath",
   .vector_size = sizeof (u32),
   .format_trace = format_nat_in2out_ed_trace,
@@ -1772,9 +1770,6 @@ VLIB_REGISTER_NODE (nat44_ed_in2out_output_slowpath_node) = {
   },
 };
 /* *INDENT-ON* */
-
-VLIB_NODE_FUNCTION_MULTIARCH (nat44_ed_in2out_output_slowpath_node,
-			      nat44_ed_in2out_output_slow_path_fn);
 
 static inline uword
 nat44_ed_in2out_reass_node_fn_inline (vlib_main_t * vm,
@@ -1965,7 +1960,7 @@ nat44_ed_in2out_reass_node_fn_inline (vlib_main_t * vm,
 	      if (PREDICT_FALSE (reass0->sess_index == (u32) ~ 0))
 		{
 		  if (nat_ip4_reass_add_fragment
-		      (reass0, bi0, &fragments_to_drop))
+		      (thread_index, reass0, bi0, &fragments_to_drop))
 		    {
 		      b0->error = node->errors[NAT_IN2OUT_ED_ERROR_MAX_FRAG];
 		      nat_log_notice
@@ -2043,8 +2038,8 @@ nat44_ed_in2out_reass_node_fn_inline (vlib_main_t * vm,
 
 	  /* Accounting */
 	  nat44_session_update_counters (s0, now,
-					 vlib_buffer_length_in_chain (vm,
-								      b0));
+					 vlib_buffer_length_in_chain (vm, b0),
+					 thread_index);
 	  /* Per-user LRU list maintenance */
 	  nat44_session_update_lru (sm, s0, thread_index);
 
@@ -2100,10 +2095,10 @@ nat44_ed_in2out_reass_node_fn_inline (vlib_main_t * vm,
       vlib_put_next_frame (vm, node, next_index, n_left_to_next);
     }
 
-  vlib_node_increment_counter (vm, nat44_ed_in2out_reass_node.index,
+  vlib_node_increment_counter (vm, sm->ed_in2out_reass_node_index,
 			       NAT_IN2OUT_ED_ERROR_PROCESSED_FRAGMENTS,
 			       pkts_processed);
-  vlib_node_increment_counter (vm, nat44_ed_in2out_reass_node.index,
+  vlib_node_increment_counter (vm, sm->ed_in2out_reass_node_index,
 			       NAT_IN2OUT_ED_ERROR_CACHED_FRAGMENTS,
 			       cached_fragments);
 
@@ -2116,17 +2111,15 @@ nat44_ed_in2out_reass_node_fn_inline (vlib_main_t * vm,
   return frame->n_vectors;
 }
 
-static uword
-nat44_ed_in2out_reass_node_fn (vlib_main_t * vm,
-			       vlib_node_runtime_t * node,
-			       vlib_frame_t * frame)
+VLIB_NODE_FN (nat44_ed_in2out_reass_node) (vlib_main_t * vm,
+					   vlib_node_runtime_t * node,
+					   vlib_frame_t * frame)
 {
   return nat44_ed_in2out_reass_node_fn_inline (vm, node, frame, 0);
 }
 
 /* *INDENT-OFF* */
 VLIB_REGISTER_NODE (nat44_ed_in2out_reass_node) = {
-  .function = nat44_ed_in2out_reass_node_fn,
   .name = "nat44-ed-in2out-reass",
   .vector_size = sizeof (u32),
   .format_trace = format_nat44_reass_trace,
@@ -2144,20 +2137,15 @@ VLIB_REGISTER_NODE (nat44_ed_in2out_reass_node) = {
 };
 /* *INDENT-ON* */
 
-VLIB_NODE_FUNCTION_MULTIARCH (nat44_ed_in2out_reass_node,
-			      nat44_ed_in2out_reass_node_fn);
-
-static uword
-nat44_ed_in2out_reass_output_node_fn (vlib_main_t * vm,
-				      vlib_node_runtime_t * node,
-				      vlib_frame_t * frame)
+VLIB_NODE_FN (nat44_ed_in2out_reass_output_node) (vlib_main_t * vm,
+						  vlib_node_runtime_t * node,
+						  vlib_frame_t * frame)
 {
   return nat44_ed_in2out_reass_node_fn_inline (vm, node, frame, 1);
 }
 
 /* *INDENT-OFF* */
 VLIB_REGISTER_NODE (nat44_ed_in2out_reass_output_node) = {
-  .function = nat44_ed_in2out_reass_output_node_fn,
   .name = "nat44-ed-in2out-reass-output",
   .vector_size = sizeof (u32),
   .format_trace = format_nat44_reass_trace,
@@ -2174,9 +2162,6 @@ VLIB_REGISTER_NODE (nat44_ed_in2out_reass_output_node) = {
   },
 };
 /* *INDENT-ON* */
-
-VLIB_NODE_FUNCTION_MULTIARCH (nat44_ed_in2out_reass_output_node,
-			      nat44_ed_in2out_reass_output_node_fn);
 
 /*
  * fd.io coding-style-patch-verification: ON

@@ -1,0 +1,880 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>2.18. test_acl_plugin module &mdash; VPP test framework 0.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="2.19. test_acl_plugin_conns module" href="test_acl_plugin_conns.html" />
+    <link rel="prev" title="2.17. test_abf module" href="test_abf.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> VPP test framework
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="overview.html">1. VPP Test Framework</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">2. Module documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="bfd.html">2.1. bfd module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="debug.html">2.2. debug module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="debug_internal.html">2.3. debug_internal module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="discover_tests.html">2.4. discover_tests module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="framework.html">2.5. framework module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hook.html">2.6. hook module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ipfix.html">2.7. ipfix module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lisp.html">2.8. lisp module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="log.html">2.9. log module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="remote_test.html">2.10. remote_test module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run_tests.html">2.11. run_tests module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sanity_import_vpp_papi.html">2.12. sanity_import_vpp_papi module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sanity_run_vpp.html">2.13. sanity_run_vpp module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="scapy_handlers.html">2.14. scapy_handlers package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="template_bd.html">2.15. template_bd module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="template_ipsec.html">2.16. template_ipsec module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_abf.html">2.17. test_abf module</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">2.18. test_acl_plugin module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_acl_plugin_conns.html">2.19. test_acl_plugin_conns module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_acl_plugin_l2l3.html">2.20. test_acl_plugin_l2l3 module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_acl_plugin_macip.html">2.21. test_acl_plugin_macip module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_bfd.html">2.22. test_bfd module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_bier.html">2.23. test_bier module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_bihash.html">2.24. test_bihash module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_bond.html">2.25. test_bond module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_cdp.html">2.26. test_cdp module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_classifier.html">2.27. test_classifier module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_classifier_ip6.html">2.28. test_classifier_ip6 module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_classify_l2_acl.html">2.29. test_classify_l2_acl module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_container.html">2.30. test_container module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_dhcp.html">2.31. test_dhcp module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_dhcp6.html">2.32. test_dhcp6 module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_dvr.html">2.33. test_dvr module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_fib.html">2.34. test_fib module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_flowprobe.html">2.35. test_flowprobe module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_gbp.html">2.36. test_gbp module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_geneve.html">2.37. test_geneve module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_gre.html">2.38. test_gre module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_gtpu.html">2.39. test_gtpu module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_igmp.html">2.40. test_igmp module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_interface_crud.html">2.41. test_interface_crud module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_ip4.html">2.42. test_ip4 module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_ip4_irb.html">2.43. test_ip4_irb module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_ip4_vrf_multi_instance.html">2.44. test_ip4_vrf_multi_instance module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_ip6.html">2.45. test_ip6 module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_ip6_vrf_multi_instance.html">2.46. test_ip6_vrf_multi_instance module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_ip_ecmp.html">2.47. test_ip_ecmp module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_ip_mcast.html">2.48. test_ip_mcast module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_ipip.html">2.49. test_ipip module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_ipsec_ah.html">2.50. test_ipsec_ah module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_ipsec_api.html">2.51. test_ipsec_api module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_ipsec_esp.html">2.52. test_ipsec_esp module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_ipsec_nat.html">2.53. test_ipsec_nat module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_ipsec_tun_if_esp.html">2.54. test_ipsec_tun_if_esp module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_l2_fib.html">2.55. test_l2_fib module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_l2_flood.html">2.56. test_l2_flood module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_l2bd.html">2.57. test_l2bd module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_l2bd_arp_term.html">2.58. test_l2bd_arp_term module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_l2bd_multi_instance.html">2.59. test_l2bd_multi_instance module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_l2xc.html">2.60. test_l2xc module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_l2xc_multi_instance.html">2.61. test_l2xc_multi_instance module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_lb.html">2.62. test_lb module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_lisp.html">2.63. test_lisp module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_map.html">2.64. test_map module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_memif.html">2.65. test_memif module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_mpls.html">2.66. test_mpls module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_mtu.html">2.67. test_mtu module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_nat.html">2.68. test_nat module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_neighbor.html">2.69. test_neighbor module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_p2p_ethernet.html">2.70. test_p2p_ethernet module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_ping.html">2.71. test_ping module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_pipe.html">2.72. test_pipe module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_pppoe.html">2.73. test_pppoe module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_punt.html">2.74. test_punt module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_qos.html">2.75. test_qos module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_reassembly.html">2.76. test_reassembly module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_sctp.html">2.77. test_sctp module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_session.html">2.78. test_session module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_sixrd.html">2.79. test_sixrd module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_span.html">2.80. test_span module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_srmpls.html">2.81. test_srmpls module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_srv6.html">2.82. test_srv6 module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_srv6_ad.html">2.83. test_srv6_ad module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_srv6_as.html">2.84. test_srv6_as module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_stats_client.html">2.85. test_stats_client module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_string.html">2.86. test_string module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_svs.html">2.87. test_svs module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_syslog.html">2.88. test_syslog module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_tcp.html">2.89. test_tcp module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_udp.html">2.90. test_udp module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_util.html">2.91. test_util module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_vapi.html">2.92. test_vapi module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_vcl.html">2.93. test_vcl module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_vhost.html">2.94. test_vhost module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_vom.html">2.95. test_vom module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_vtr.html">2.96. test_vtr module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_vxlan.html">2.97. test_vxlan module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_vxlan6.html">2.98. test_vxlan6 module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_vxlan_gbp.html">2.99. test_vxlan_gbp module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_vxlan_gpe.html">2.100. test_vxlan_gpe module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="util.html">2.101. util module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpp_bier.html">2.102. vpp_bier module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpp_bond_interface.html">2.103. vpp_bond_interface module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpp_bvi_interface.html">2.104. vpp_bvi_interface module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpp_gre_interface.html">2.105. vpp_gre_interface module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpp_igmp.html">2.106. vpp_igmp module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpp_interface.html">2.107. vpp_interface module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpp_ip.html">2.108. vpp_ip module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpp_ip_route.html">2.109. vpp_ip_route module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpp_ipsec.html">2.110. vpp_ipsec module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpp_ipsec_tun_interface.html">2.111. vpp_ipsec_tun_interface module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpp_l2.html">2.112. vpp_l2 module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpp_lo_interface.html">2.113. vpp_lo_interface module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpp_memif.html">2.114. vpp_memif module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpp_mpls_tunnel_interface.html">2.115. vpp_mpls_tunnel_interface module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpp_neighbor.html">2.116. vpp_neighbor module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpp_object.html">2.117. vpp_object module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpp_papi_provider.html">2.118. vpp_papi_provider module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpp_pg_interface.html">2.119. vpp_pg_interface module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpp_pppoe_interface.html">2.120. vpp_pppoe_interface module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpp_srv6.html">2.121. vpp_srv6 module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpp_sub_interface.html">2.122. vpp_sub_interface module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpp_tunnel_interface.html">2.123. vpp_tunnel_interface module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpp_udp_encap.html">2.124. vpp_udp_encap module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpp_vhost_interface.html">2.125. vpp_vhost_interface module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpp_vxlan_gbp_tunnel.html">2.126. vpp_vxlan_gbp_tunnel module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vrf.html">2.127. vrf module</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="indices.html">3. Indices and tables</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">VPP test framework</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="modules.html">2. Module documentation</a> &raquo;</li>
+        
+      <li>2.18. test_acl_plugin module</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/test_acl_plugin.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-test_acl_plugin">
+<span id="test-acl-plugin-module"></span><h1>2.18. test_acl_plugin module<a class="headerlink" href="#module-test_acl_plugin" title="Permalink to this headline">¶</a></h1>
+<p>ACL plugin Test Case HLD:</p>
+<dl class="class">
+<dt id="test_acl_plugin.TestACLplugin">
+<em class="property">class </em><code class="descclassname">test_acl_plugin.</code><code class="descname">TestACLplugin</code><span class="sig-paren">(</span><em>methodName='runTest'</em><span class="sig-paren">)</span><a class="headerlink" href="#test_acl_plugin.TestACLplugin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="framework.html#framework.VppTestCase" title="framework.VppTestCase"><code class="xref py py-class docutils literal notranslate"><span class="pre">framework.VppTestCase</span></code></a></p>
+<p>ACL plugin Test Case</p>
+<dl class="attribute">
+<dt id="test_acl_plugin.TestACLplugin.DENY">
+<code class="descname">DENY</code><em class="property"> = 0</em><a class="headerlink" href="#test_acl_plugin.TestACLplugin.DENY" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="test_acl_plugin.TestACLplugin.ICMP">
+<code class="descname">ICMP</code><em class="property"> = 1</em><a class="headerlink" href="#test_acl_plugin.TestACLplugin.ICMP" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="test_acl_plugin.TestACLplugin.ICMPv4">
+<code class="descname">ICMPv4</code><em class="property"> = 0</em><a class="headerlink" href="#test_acl_plugin.TestACLplugin.ICMPv4" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="test_acl_plugin.TestACLplugin.ICMPv6">
+<code class="descname">ICMPv6</code><em class="property"> = 1</em><a class="headerlink" href="#test_acl_plugin.TestACLplugin.ICMPv6" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="test_acl_plugin.TestACLplugin.IP">
+<code class="descname">IP</code><em class="property"> = 0</em><a class="headerlink" href="#test_acl_plugin.TestACLplugin.IP" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="test_acl_plugin.TestACLplugin.IPRANDOM">
+<code class="descname">IPRANDOM</code><em class="property"> = -1</em><a class="headerlink" href="#test_acl_plugin.TestACLplugin.IPRANDOM" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="test_acl_plugin.TestACLplugin.IPV4">
+<code class="descname">IPV4</code><em class="property"> = 0</em><a class="headerlink" href="#test_acl_plugin.TestACLplugin.IPV4" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="test_acl_plugin.TestACLplugin.IPV6">
+<code class="descname">IPV6</code><em class="property"> = 1</em><a class="headerlink" href="#test_acl_plugin.TestACLplugin.IPV6" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="test_acl_plugin.TestACLplugin.PERMIT">
+<code class="descname">PERMIT</code><em class="property"> = 1</em><a class="headerlink" href="#test_acl_plugin.TestACLplugin.PERMIT" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="test_acl_plugin.TestACLplugin.PORTS_ALL">
+<code class="descname">PORTS_ALL</code><em class="property"> = -1</em><a class="headerlink" href="#test_acl_plugin.TestACLplugin.PORTS_ALL" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="test_acl_plugin.TestACLplugin.PORTS_RANGE">
+<code class="descname">PORTS_RANGE</code><em class="property"> = 0</em><a class="headerlink" href="#test_acl_plugin.TestACLplugin.PORTS_RANGE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="test_acl_plugin.TestACLplugin.PORTS_RANGE_2">
+<code class="descname">PORTS_RANGE_2</code><em class="property"> = 1</em><a class="headerlink" href="#test_acl_plugin.TestACLplugin.PORTS_RANGE_2" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="test_acl_plugin.TestACLplugin.PROTO_ALL">
+<code class="descname">PROTO_ALL</code><em class="property"> = 0</em><a class="headerlink" href="#test_acl_plugin.TestACLplugin.PROTO_ALL" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="test_acl_plugin.TestACLplugin.TCP">
+<code class="descname">TCP</code><em class="property"> = 0</em><a class="headerlink" href="#test_acl_plugin.TestACLplugin.TCP" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="test_acl_plugin.TestACLplugin.UDP">
+<code class="descname">UDP</code><em class="property"> = 1</em><a class="headerlink" href="#test_acl_plugin.TestACLplugin.UDP" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="test_acl_plugin.TestACLplugin.apply_rules">
+<code class="descname">apply_rules</code><span class="sig-paren">(</span><em>rules</em>, <em>tag=b''</em><span class="sig-paren">)</span><a class="headerlink" href="#test_acl_plugin.TestACLplugin.apply_rules" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="test_acl_plugin.TestACLplugin.apply_rules_to">
+<code class="descname">apply_rules_to</code><span class="sig-paren">(</span><em>rules</em>, <em>tag=b''</em>, <em>sw_if_index=4294967295</em><span class="sig-paren">)</span><a class="headerlink" href="#test_acl_plugin.TestACLplugin.apply_rules_to" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="test_acl_plugin.TestACLplugin.bd_id">
+<code class="descname">bd_id</code><em class="property"> = 1</em><a class="headerlink" href="#test_acl_plugin.TestACLplugin.bd_id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="test_acl_plugin.TestACLplugin.create_rule">
+<code class="descname">create_rule</code><span class="sig-paren">(</span><em>ip=0</em>, <em>permit_deny=0</em>, <em>ports=-1</em>, <em>proto=-1</em>, <em>s_prefix=0</em>, <em>s_ip='\x00\x00\x00\x00'</em>, <em>d_prefix=0</em>, <em>d_ip='\x00\x00\x00\x00'</em><span class="sig-paren">)</span><a class="headerlink" href="#test_acl_plugin.TestACLplugin.create_rule" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="test_acl_plugin.TestACLplugin.create_stream">
+<code class="descname">create_stream</code><span class="sig-paren">(</span><em>src_if</em>, <em>packet_sizes</em>, <em>traffic_type=0</em>, <em>ipv6=0</em>, <em>proto=-1</em>, <em>ports=0</em>, <em>fragments=False</em>, <em>pkt_raw=True</em>, <em>etype=-1</em><span class="sig-paren">)</span><a class="headerlink" href="#test_acl_plugin.TestACLplugin.create_stream" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create input packet stream for defined interface using hosts or
+deleted_hosts list.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>src_if</strong> (<em>object</em>) – Interface to create packet stream for.</li>
+<li><strong>packet_sizes</strong> (<em>list</em>) – List of required packet sizes.</li>
+<li><strong>traffic_type</strong> – 1: ICMP packet, 2: IPv6 with EH, 0: otherwise.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">Stream of packets.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_acl_plugin.TestACLplugin.create_upper_layer">
+<code class="descname">create_upper_layer</code><span class="sig-paren">(</span><em>packet_index</em>, <em>proto</em>, <em>ports=0</em><span class="sig-paren">)</span><a class="headerlink" href="#test_acl_plugin.TestACLplugin.create_upper_layer" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="test_acl_plugin.TestACLplugin.etype_whitelist">
+<code class="descname">etype_whitelist</code><span class="sig-paren">(</span><em>whitelist</em>, <em>n_input</em><span class="sig-paren">)</span><a class="headerlink" href="#test_acl_plugin.TestACLplugin.etype_whitelist" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="test_acl_plugin.TestACLplugin.icmp4_code">
+<code class="descname">icmp4_code</code><em class="property"> = 3</em><a class="headerlink" href="#test_acl_plugin.TestACLplugin.icmp4_code" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="test_acl_plugin.TestACLplugin.icmp4_code_from_2">
+<code class="descname">icmp4_code_from_2</code><em class="property"> = 5</em><a class="headerlink" href="#test_acl_plugin.TestACLplugin.icmp4_code_from_2" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="test_acl_plugin.TestACLplugin.icmp4_code_to_2">
+<code class="descname">icmp4_code_to_2</code><em class="property"> = 20</em><a class="headerlink" href="#test_acl_plugin.TestACLplugin.icmp4_code_to_2" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="test_acl_plugin.TestACLplugin.icmp4_type">
+<code class="descname">icmp4_type</code><em class="property"> = 8</em><a class="headerlink" href="#test_acl_plugin.TestACLplugin.icmp4_type" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="test_acl_plugin.TestACLplugin.icmp4_type_2">
+<code class="descname">icmp4_type_2</code><em class="property"> = 8</em><a class="headerlink" href="#test_acl_plugin.TestACLplugin.icmp4_type_2" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="test_acl_plugin.TestACLplugin.icmp6_code">
+<code class="descname">icmp6_code</code><em class="property"> = 3</em><a class="headerlink" href="#test_acl_plugin.TestACLplugin.icmp6_code" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="test_acl_plugin.TestACLplugin.icmp6_code_from_2">
+<code class="descname">icmp6_code_from_2</code><em class="property"> = 8</em><a class="headerlink" href="#test_acl_plugin.TestACLplugin.icmp6_code_from_2" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="test_acl_plugin.TestACLplugin.icmp6_code_to_2">
+<code class="descname">icmp6_code_to_2</code><em class="property"> = 42</em><a class="headerlink" href="#test_acl_plugin.TestACLplugin.icmp6_code_to_2" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="test_acl_plugin.TestACLplugin.icmp6_type">
+<code class="descname">icmp6_type</code><em class="property"> = 128</em><a class="headerlink" href="#test_acl_plugin.TestACLplugin.icmp6_type" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="test_acl_plugin.TestACLplugin.icmp6_type_2">
+<code class="descname">icmp6_type_2</code><em class="property"> = 128</em><a class="headerlink" href="#test_acl_plugin.TestACLplugin.icmp6_type_2" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="test_acl_plugin.TestACLplugin.proto">
+<code class="descname">proto</code><em class="property"> = [[6, 17], [1, 58]]</em><a class="headerlink" href="#test_acl_plugin.TestACLplugin.proto" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="test_acl_plugin.TestACLplugin.proto_map">
+<code class="descname">proto_map</code><em class="property"> = {1: 'ICMP', 6: 'TCP', 17: 'UDP', 58: 'ICMPv6EchoRequest'}</em><a class="headerlink" href="#test_acl_plugin.TestACLplugin.proto_map" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="test_acl_plugin.TestACLplugin.run_traffic_no_check">
+<code class="descname">run_traffic_no_check</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_acl_plugin.TestACLplugin.run_traffic_no_check" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="test_acl_plugin.TestACLplugin.run_verify_negat_test">
+<code class="descname">run_verify_negat_test</code><span class="sig-paren">(</span><em>traffic_type=0</em>, <em>ip_type=0</em>, <em>proto=-1</em>, <em>ports=0</em>, <em>frags=False</em>, <em>etype=-1</em><span class="sig-paren">)</span><a class="headerlink" href="#test_acl_plugin.TestACLplugin.run_verify_negat_test" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="test_acl_plugin.TestACLplugin.run_verify_test">
+<code class="descname">run_verify_test</code><span class="sig-paren">(</span><em>traffic_type=0</em>, <em>ip_type=0</em>, <em>proto=-1</em>, <em>ports=0</em>, <em>frags=False</em>, <em>pkt_raw=True</em>, <em>etype=-1</em><span class="sig-paren">)</span><a class="headerlink" href="#test_acl_plugin.TestACLplugin.run_verify_test" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="test_acl_plugin.TestACLplugin.setUp">
+<code class="descname">setUp</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_acl_plugin.TestACLplugin.setUp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Clear trace before running each test</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="test_acl_plugin.TestACLplugin.setUpClass">
+<em class="property">classmethod </em><code class="descname">setUpClass</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_acl_plugin.TestACLplugin.setUpClass" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform standard class setup (defined by class method setUpClass in
+class VppTestCase) before running the test case, set test case related
+variables and configure VPP.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="test_acl_plugin.TestACLplugin.tcp_dport_from">
+<code class="descname">tcp_dport_from</code><em class="property"> = 40000</em><a class="headerlink" href="#test_acl_plugin.TestACLplugin.tcp_dport_from" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="test_acl_plugin.TestACLplugin.tcp_dport_from_2">
+<code class="descname">tcp_dport_from_2</code><em class="property"> = 20000</em><a class="headerlink" href="#test_acl_plugin.TestACLplugin.tcp_dport_from_2" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="test_acl_plugin.TestACLplugin.tcp_dport_to">
+<code class="descname">tcp_dport_to</code><em class="property"> = 45000</em><a class="headerlink" href="#test_acl_plugin.TestACLplugin.tcp_dport_to" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="test_acl_plugin.TestACLplugin.tcp_dport_to_2">
+<code class="descname">tcp_dport_to_2</code><em class="property"> = 25000</em><a class="headerlink" href="#test_acl_plugin.TestACLplugin.tcp_dport_to_2" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="test_acl_plugin.TestACLplugin.tcp_sport_from">
+<code class="descname">tcp_sport_from</code><em class="property"> = 30</em><a class="headerlink" href="#test_acl_plugin.TestACLplugin.tcp_sport_from" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="test_acl_plugin.TestACLplugin.tcp_sport_from_2">
+<code class="descname">tcp_sport_from_2</code><em class="property"> = 130</em><a class="headerlink" href="#test_acl_plugin.TestACLplugin.tcp_sport_from_2" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="test_acl_plugin.TestACLplugin.tcp_sport_to">
+<code class="descname">tcp_sport_to</code><em class="property"> = 35</em><a class="headerlink" href="#test_acl_plugin.TestACLplugin.tcp_sport_to" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="test_acl_plugin.TestACLplugin.tcp_sport_to_2">
+<code class="descname">tcp_sport_to_2</code><em class="property"> = 135</em><a class="headerlink" href="#test_acl_plugin.TestACLplugin.tcp_sport_to_2" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="test_acl_plugin.TestACLplugin.tearDown">
+<code class="descname">tearDown</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_acl_plugin.TestACLplugin.tearDown" title="Permalink to this definition">¶</a></dt>
+<dd><p>Show various debug prints after each test.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_acl_plugin.TestACLplugin.test_0000_warmup_test">
+<code class="descname">test_0000_warmup_test</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_acl_plugin.TestACLplugin.test_0000_warmup_test" title="Permalink to this definition">¶</a></dt>
+<dd><p>ACL plugin version check; learn MACs</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_acl_plugin.TestACLplugin.test_0001_acl_create">
+<code class="descname">test_0001_acl_create</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_acl_plugin.TestACLplugin.test_0001_acl_create" title="Permalink to this definition">¶</a></dt>
+<dd><p>ACL create/delete test</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_acl_plugin.TestACLplugin.test_0002_acl_permit_apply">
+<code class="descname">test_0002_acl_permit_apply</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_acl_plugin.TestACLplugin.test_0002_acl_permit_apply" title="Permalink to this definition">¶</a></dt>
+<dd><p>permit ACL apply test</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_acl_plugin.TestACLplugin.test_0003_acl_deny_apply">
+<code class="descname">test_0003_acl_deny_apply</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_acl_plugin.TestACLplugin.test_0003_acl_deny_apply" title="Permalink to this definition">¶</a></dt>
+<dd><p>deny ACL apply test</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_acl_plugin.TestACLplugin.test_0004_vpp624_permit_icmpv4">
+<code class="descname">test_0004_vpp624_permit_icmpv4</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_acl_plugin.TestACLplugin.test_0004_vpp624_permit_icmpv4" title="Permalink to this definition">¶</a></dt>
+<dd><p>VPP_624 permit ICMPv4</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_acl_plugin.TestACLplugin.test_0005_vpp624_permit_icmpv6">
+<code class="descname">test_0005_vpp624_permit_icmpv6</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_acl_plugin.TestACLplugin.test_0005_vpp624_permit_icmpv6" title="Permalink to this definition">¶</a></dt>
+<dd><p>VPP_624 permit ICMPv6</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_acl_plugin.TestACLplugin.test_0006_vpp624_deny_icmpv4">
+<code class="descname">test_0006_vpp624_deny_icmpv4</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_acl_plugin.TestACLplugin.test_0006_vpp624_deny_icmpv4" title="Permalink to this definition">¶</a></dt>
+<dd><p>VPP_624 deny ICMPv4</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_acl_plugin.TestACLplugin.test_0007_vpp624_deny_icmpv6">
+<code class="descname">test_0007_vpp624_deny_icmpv6</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_acl_plugin.TestACLplugin.test_0007_vpp624_deny_icmpv6" title="Permalink to this definition">¶</a></dt>
+<dd><p>VPP_624 deny ICMPv6</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_acl_plugin.TestACLplugin.test_0008_tcp_permit_v4">
+<code class="descname">test_0008_tcp_permit_v4</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_acl_plugin.TestACLplugin.test_0008_tcp_permit_v4" title="Permalink to this definition">¶</a></dt>
+<dd><p>permit TCPv4</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_acl_plugin.TestACLplugin.test_0009_tcp_permit_v6">
+<code class="descname">test_0009_tcp_permit_v6</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_acl_plugin.TestACLplugin.test_0009_tcp_permit_v6" title="Permalink to this definition">¶</a></dt>
+<dd><p>permit TCPv6</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_acl_plugin.TestACLplugin.test_0010_udp_permit_v4">
+<code class="descname">test_0010_udp_permit_v4</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_acl_plugin.TestACLplugin.test_0010_udp_permit_v4" title="Permalink to this definition">¶</a></dt>
+<dd><p>permit UDPv4</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_acl_plugin.TestACLplugin.test_0011_udp_permit_v6">
+<code class="descname">test_0011_udp_permit_v6</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_acl_plugin.TestACLplugin.test_0011_udp_permit_v6" title="Permalink to this definition">¶</a></dt>
+<dd><p>permit UDPv6</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_acl_plugin.TestACLplugin.test_0012_tcp_deny">
+<code class="descname">test_0012_tcp_deny</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_acl_plugin.TestACLplugin.test_0012_tcp_deny" title="Permalink to this definition">¶</a></dt>
+<dd><p>deny TCPv4/v6</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_acl_plugin.TestACLplugin.test_0013_udp_deny">
+<code class="descname">test_0013_udp_deny</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_acl_plugin.TestACLplugin.test_0013_udp_deny" title="Permalink to this definition">¶</a></dt>
+<dd><p>deny UDPv4/v6</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_acl_plugin.TestACLplugin.test_0014_acl_dump">
+<code class="descname">test_0014_acl_dump</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_acl_plugin.TestACLplugin.test_0014_acl_dump" title="Permalink to this definition">¶</a></dt>
+<dd><p>verify add/dump acls</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_acl_plugin.TestACLplugin.test_0015_tcp_permit_port_v4">
+<code class="descname">test_0015_tcp_permit_port_v4</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_acl_plugin.TestACLplugin.test_0015_tcp_permit_port_v4" title="Permalink to this definition">¶</a></dt>
+<dd><p>permit single TCPv4</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_acl_plugin.TestACLplugin.test_0016_udp_permit_port_v4">
+<code class="descname">test_0016_udp_permit_port_v4</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_acl_plugin.TestACLplugin.test_0016_udp_permit_port_v4" title="Permalink to this definition">¶</a></dt>
+<dd><p>permit single UDPv4</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_acl_plugin.TestACLplugin.test_0017_tcp_permit_port_v6">
+<code class="descname">test_0017_tcp_permit_port_v6</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_acl_plugin.TestACLplugin.test_0017_tcp_permit_port_v6" title="Permalink to this definition">¶</a></dt>
+<dd><p>permit single TCPv6</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_acl_plugin.TestACLplugin.test_0018_udp_permit_port_v6">
+<code class="descname">test_0018_udp_permit_port_v6</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_acl_plugin.TestACLplugin.test_0018_udp_permit_port_v6" title="Permalink to this definition">¶</a></dt>
+<dd><p>permit single UPPv6</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_acl_plugin.TestACLplugin.test_0019_udp_deny_port">
+<code class="descname">test_0019_udp_deny_port</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_acl_plugin.TestACLplugin.test_0019_udp_deny_port" title="Permalink to this definition">¶</a></dt>
+<dd><p>deny single TCPv4/v6</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_acl_plugin.TestACLplugin.test_0020_udp_deny_port">
+<code class="descname">test_0020_udp_deny_port</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_acl_plugin.TestACLplugin.test_0020_udp_deny_port" title="Permalink to this definition">¶</a></dt>
+<dd><p>deny single UDPv4/v6</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_acl_plugin.TestACLplugin.test_0021_udp_deny_port_verify_fragment_deny">
+<code class="descname">test_0021_udp_deny_port_verify_fragment_deny</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_acl_plugin.TestACLplugin.test_0021_udp_deny_port_verify_fragment_deny" title="Permalink to this definition">¶</a></dt>
+<dd><p>deny single UDPv4/v6, permit ip any, verify non-initial fragment
+blocked</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_acl_plugin.TestACLplugin.test_0022_zero_length_udp_ipv4">
+<code class="descname">test_0022_zero_length_udp_ipv4</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_acl_plugin.TestACLplugin.test_0022_zero_length_udp_ipv4" title="Permalink to this definition">¶</a></dt>
+<dd><p>VPP-687 zero length udp ipv4 packet</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_acl_plugin.TestACLplugin.test_0023_zero_length_udp_ipv6">
+<code class="descname">test_0023_zero_length_udp_ipv6</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_acl_plugin.TestACLplugin.test_0023_zero_length_udp_ipv6" title="Permalink to this definition">¶</a></dt>
+<dd><p>VPP-687 zero length udp ipv6 packet</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_acl_plugin.TestACLplugin.test_0108_tcp_permit_v4">
+<code class="descname">test_0108_tcp_permit_v4</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_acl_plugin.TestACLplugin.test_0108_tcp_permit_v4" title="Permalink to this definition">¶</a></dt>
+<dd><p>permit TCPv4 + non-match range</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_acl_plugin.TestACLplugin.test_0109_tcp_permit_v6">
+<code class="descname">test_0109_tcp_permit_v6</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_acl_plugin.TestACLplugin.test_0109_tcp_permit_v6" title="Permalink to this definition">¶</a></dt>
+<dd><p>permit TCPv6 + non-match range</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_acl_plugin.TestACLplugin.test_0110_udp_permit_v4">
+<code class="descname">test_0110_udp_permit_v4</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_acl_plugin.TestACLplugin.test_0110_udp_permit_v4" title="Permalink to this definition">¶</a></dt>
+<dd><p>permit UDPv4 + non-match range</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_acl_plugin.TestACLplugin.test_0111_udp_permit_v6">
+<code class="descname">test_0111_udp_permit_v6</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_acl_plugin.TestACLplugin.test_0111_udp_permit_v6" title="Permalink to this definition">¶</a></dt>
+<dd><p>permit UDPv6 + non-match range</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_acl_plugin.TestACLplugin.test_0112_tcp_deny">
+<code class="descname">test_0112_tcp_deny</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_acl_plugin.TestACLplugin.test_0112_tcp_deny" title="Permalink to this definition">¶</a></dt>
+<dd><p>deny TCPv4/v6 + non-match range</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_acl_plugin.TestACLplugin.test_0113_udp_deny">
+<code class="descname">test_0113_udp_deny</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_acl_plugin.TestACLplugin.test_0113_udp_deny" title="Permalink to this definition">¶</a></dt>
+<dd><p>deny UDPv4/v6 + non-match range</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_acl_plugin.TestACLplugin.test_0300_tcp_permit_v4_etype_aaaa">
+<code class="descname">test_0300_tcp_permit_v4_etype_aaaa</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_acl_plugin.TestACLplugin.test_0300_tcp_permit_v4_etype_aaaa" title="Permalink to this definition">¶</a></dt>
+<dd><p>permit TCPv4, send 0xAAAA etype</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_acl_plugin.TestACLplugin.test_0305_tcp_permit_v4_etype_blacklist_aaaa">
+<code class="descname">test_0305_tcp_permit_v4_etype_blacklist_aaaa</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_acl_plugin.TestACLplugin.test_0305_tcp_permit_v4_etype_blacklist_aaaa" title="Permalink to this definition">¶</a></dt>
+<dd><p>permit TCPv4, whitelist 0x0BBB ethertype, send 0xAAAA-blocked</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_acl_plugin.TestACLplugin.test_0306_tcp_permit_v4_etype_blacklist_aaaa">
+<code class="descname">test_0306_tcp_permit_v4_etype_blacklist_aaaa</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_acl_plugin.TestACLplugin.test_0306_tcp_permit_v4_etype_blacklist_aaaa" title="Permalink to this definition">¶</a></dt>
+<dd><p>permit TCPv4, whitelist 0x0BBB ethertype, send 0x0BBB - pass</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_acl_plugin.TestACLplugin.test_0307_tcp_permit_v4_etype_blacklist_aaaa">
+<code class="descname">test_0307_tcp_permit_v4_etype_blacklist_aaaa</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_acl_plugin.TestACLplugin.test_0307_tcp_permit_v4_etype_blacklist_aaaa" title="Permalink to this definition">¶</a></dt>
+<dd><p>permit TCPv4, whitelist 0x0BBB, remove, send 0xAAAA - pass</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_acl_plugin.TestACLplugin.test_0315_del_intf">
+<code class="descname">test_0315_del_intf</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_acl_plugin.TestACLplugin.test_0315_del_intf" title="Permalink to this definition">¶</a></dt>
+<dd><p>apply an acl and delete the interface</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="test_acl_plugin.TestACLplugin.udp_dport_from">
+<code class="descname">udp_dport_from</code><em class="property"> = 20000</em><a class="headerlink" href="#test_acl_plugin.TestACLplugin.udp_dport_from" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="test_acl_plugin.TestACLplugin.udp_dport_from_2">
+<code class="descname">udp_dport_from_2</code><em class="property"> = 30000</em><a class="headerlink" href="#test_acl_plugin.TestACLplugin.udp_dport_from_2" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="test_acl_plugin.TestACLplugin.udp_dport_to">
+<code class="descname">udp_dport_to</code><em class="property"> = 25000</em><a class="headerlink" href="#test_acl_plugin.TestACLplugin.udp_dport_to" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="test_acl_plugin.TestACLplugin.udp_dport_to_2">
+<code class="descname">udp_dport_to_2</code><em class="property"> = 35000</em><a class="headerlink" href="#test_acl_plugin.TestACLplugin.udp_dport_to_2" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="test_acl_plugin.TestACLplugin.udp_sport_from">
+<code class="descname">udp_sport_from</code><em class="property"> = 10</em><a class="headerlink" href="#test_acl_plugin.TestACLplugin.udp_sport_from" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="test_acl_plugin.TestACLplugin.udp_sport_from_2">
+<code class="descname">udp_sport_from_2</code><em class="property"> = 90</em><a class="headerlink" href="#test_acl_plugin.TestACLplugin.udp_sport_from_2" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="test_acl_plugin.TestACLplugin.udp_sport_to">
+<code class="descname">udp_sport_to</code><em class="property"> = 15</em><a class="headerlink" href="#test_acl_plugin.TestACLplugin.udp_sport_to" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="test_acl_plugin.TestACLplugin.udp_sport_to_2">
+<code class="descname">udp_sport_to_2</code><em class="property"> = 95</em><a class="headerlink" href="#test_acl_plugin.TestACLplugin.udp_sport_to_2" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="test_acl_plugin.TestACLplugin.verify_capture">
+<code class="descname">verify_capture</code><span class="sig-paren">(</span><em>pg_if</em>, <em>capture</em>, <em>traffic_type=0</em>, <em>ip_type=0</em>, <em>etype=-1</em><span class="sig-paren">)</span><a class="headerlink" href="#test_acl_plugin.TestACLplugin.verify_capture" title="Permalink to this definition">¶</a></dt>
+<dd><p>Verify captured input packet stream for defined interface.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>pg_if</strong> (<em>object</em>) – Interface to verify captured packet stream for.</li>
+<li><strong>capture</strong> (<em>list</em>) – Captured packet stream.</li>
+<li><strong>traffic_type</strong> – 1: ICMP packet, 2: IPv6 with EH, 0: otherwise.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="test_acl_plugin_conns.html" class="btn btn-neutral float-right" title="2.19. test_acl_plugin_conns module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="test_abf.html" class="btn btn-neutral float-left" title="2.17. test_abf module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2016, VPP team
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

@@ -71,6 +71,9 @@ vl_api_vmxnet3_create_t_handler (vl_api_vmxnet3_create_t * mp)
   args.addr.as_u32 = ntohl (mp->pci_addr);
   args.rxq_size = ntohs (mp->rxq_size);
   args.txq_size = ntohs (mp->txq_size);
+  args.txq_num = ntohs (mp->txq_num);
+  args.rxq_num = ntohs (mp->rxq_num);
+  args.bind = mp->bind;
 
   vmxnet3_create_if (vm, &args);
   rv = args.rv;
@@ -111,16 +114,15 @@ reply:
 
 static void
 send_vmxnet3_details (vl_api_registration_t * reg, vmxnet3_device_t * vd,
-		      u16 rx_qid, vmxnet3_rxq_t * rxq, u16 tx_qid,
-		      vmxnet3_txq_t * txq, vnet_sw_interface_t * swif,
-		      u8 * interface_name, u32 context)
+		      vnet_sw_interface_t * swif, u8 * interface_name,
+		      u32 context)
 {
   vl_api_vmxnet3_details_t *mp;
   vnet_main_t *vnm = vnet_get_main ();
   vmxnet3_main_t *vmxm = &vmxnet3_main;
   vnet_hw_interface_t *hwif;
   vmxnet3_rx_ring *ring;
-  u16 rid;
+  u16 rid, qid;
 
   hwif = vnet_get_sup_hw_interface (vnm, swif->sw_if_index);
 
@@ -139,22 +141,38 @@ send_vmxnet3_details (vl_api_registration_t * reg, vmxnet3_device_t * vd,
 
   mp->version = vd->version;
   mp->pci_addr = ntohl (vd->pci_addr.as_u32);
-
-  mp->rx_qsize = htons (rxq->size);
-  mp->rx_next = htons (rxq->rx_comp_ring.next);
-  for (rid = 0; rid < VMXNET3_RX_RING_SIZE; rid++)
-    {
-      ring = &rxq->rx_ring[rid];
-      mp->rx_fill[rid] = htons (ring->fill);
-      mp->rx_produce[rid] = htons (ring->produce);
-      mp->rx_consume[rid] = htons (ring->consume);
-    }
-  mp->tx_qsize = htons (txq->size);
-  mp->tx_next = htons (txq->tx_comp_ring.next);
-  mp->tx_produce = htons (txq->tx_ring.produce);
-  mp->tx_consume = htons (txq->tx_ring.consume);
-
   mp->admin_up_down = (swif->flags & VNET_SW_INTERFACE_FLAG_ADMIN_UP) ? 1 : 0;
+
+  mp->rx_count = clib_min (vec_len (vd->rxqs), VMXNET3_RXQ_MAX);
+  vec_foreach_index (qid, vd->rxqs)
+  {
+    vmxnet3_rxq_t *rxq = vec_elt_at_index (vd->rxqs, qid);
+    vl_api_vmxnet3_rx_list_t *rx_list = &mp->rx_list[qid];
+
+    ASSERT (qid < VMXNET3_RXQ_MAX);
+    rx_list->rx_qsize = htons (rxq->size);
+    rx_list->rx_next = htons (rxq->rx_comp_ring.next);
+    for (rid = 0; rid < VMXNET3_RX_RING_SIZE; rid++)
+      {
+	ring = &rxq->rx_ring[rid];
+	rx_list->rx_fill[rid] = htons (ring->fill);
+	rx_list->rx_produce[rid] = htons (ring->produce);
+	rx_list->rx_consume[rid] = htons (ring->consume);
+      }
+  }
+
+  mp->tx_count = clib_min (vec_len (vd->txqs), VMXNET3_TXQ_MAX);
+  vec_foreach_index (qid, vd->txqs)
+  {
+    vmxnet3_txq_t *txq = vec_elt_at_index (vd->txqs, qid);
+    vl_api_vmxnet3_tx_list_t *tx_list = &mp->tx_list[qid];
+
+    ASSERT (qid < VMXNET3_TXQ_MAX);
+    tx_list->tx_qsize = htons (txq->size);
+    tx_list->tx_next = htons (txq->tx_comp_ring.next);
+    tx_list->tx_produce = htons (txq->tx_ring.produce);
+    tx_list->tx_consume = htons (txq->tx_ring.consume);
+  }
 
   vl_api_send_msg (reg, (u8 *) mp);
 }
@@ -172,9 +190,6 @@ vl_api_vmxnet3_dump_t_handler (vl_api_vmxnet3_dump_t * mp)
   vmxnet3_device_t *vd;
   u8 *if_name = 0;
   vl_api_registration_t *reg;
-  vmxnet3_rxq_t *rxq;
-  vmxnet3_txq_t *txq;
-  u16 qid = 0;
 
   reg = vl_api_client_index_to_registration (mp->client_index);
   if (!reg)
@@ -186,10 +201,7 @@ vl_api_vmxnet3_dump_t_handler (vl_api_vmxnet3_dump_t * mp)
       swif = vnet_get_sw_interface (vnm, vd->sw_if_index);
       if_name = format (if_name, "%U%c", format_vnet_sw_interface_name, vnm,
 			swif, 0);
-      rxq = vec_elt_at_index (vd->rxqs, qid);
-      txq = vec_elt_at_index (vd->txqs, qid);
-      send_vmxnet3_details (reg, vd, qid, rxq, qid, txq, swif, if_name,
-			    mp->context);
+      send_vmxnet3_details (reg, vd, swif, if_name, mp->context);
       _vec_len (if_name) = 0;
     }));
   /* *INDENT-ON* */

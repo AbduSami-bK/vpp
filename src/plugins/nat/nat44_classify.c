@@ -24,11 +24,6 @@
 #include <nat/nat_reass.h>
 #include <nat/nat_inlines.h>
 
-vlib_node_registration_t nat44_classify_node;
-vlib_node_registration_t nat44_ed_classify_node;
-vlib_node_registration_t nat44_det_classify_node;
-vlib_node_registration_t nat44_handoff_classify_node;
-
 #define foreach_nat44_classify_error                      \
 _(MAX_REASS, "Maximum reassemblies exceeded")             \
 _(MAX_FRAG, "Maximum fragments per reassembly exceeded")  \
@@ -217,8 +212,8 @@ nat44_classify_node_fn_inline (vlib_main_t * vm,
 		      !(reass0->flags & NAT_REASS_FLAG_CLASSIFY_ED_CONTINUE))
 		    {
 		      /* first fragment still hasn't arrived, cache this fragment */
-		      if (nat_ip4_reass_add_fragment (reass0, bi0,
-						      &fragments_to_drop))
+		      if (nat_ip4_reass_add_fragment
+			  (thread_index, reass0, bi0, &fragments_to_drop))
 			{
 			  b0->error =
 			    node->errors[NAT44_CLASSIFY_ERROR_MAX_FRAG];
@@ -328,8 +323,8 @@ nat44_classify_node_fn_inline (vlib_main_t * vm,
 		  if (reass0->classify_next == NAT_REASS_IP4_CLASSIFY_NONE)
 		    /* first fragment still hasn't arrived */
 		    {
-		      if (nat_ip4_reass_add_fragment (reass0, bi0,
-						      &fragments_to_drop))
+		      if (nat_ip4_reass_add_fragment
+			  (thread_index, reass0, bi0, &fragments_to_drop))
 			{
 			  b0->error =
 			    node->errors[NAT44_CLASSIFY_ERROR_MAX_FRAG];
@@ -418,16 +413,15 @@ nat44_classify_node_fn_inline (vlib_main_t * vm,
   return frame->n_vectors;
 }
 
-static uword
-nat44_classify_node_fn (vlib_main_t * vm,
-			vlib_node_runtime_t * node, vlib_frame_t * frame)
+VLIB_NODE_FN (nat44_classify_node) (vlib_main_t * vm,
+				    vlib_node_runtime_t * node,
+				    vlib_frame_t * frame)
 {
   return nat44_classify_node_fn_inline (vm, node, frame, 0);
 }
 
 /* *INDENT-OFF* */
 VLIB_REGISTER_NODE (nat44_classify_node) = {
-  .function = nat44_classify_node_fn,
   .name = "nat44-classify",
   .vector_size = sizeof (u32),
   .format_trace = format_nat44_classify_trace,
@@ -443,17 +437,15 @@ VLIB_REGISTER_NODE (nat44_classify_node) = {
 };
 /* *INDENT-ON* */
 
-VLIB_NODE_FUNCTION_MULTIARCH (nat44_classify_node, nat44_classify_node_fn);
-static uword
-nat44_ed_classify_node_fn (vlib_main_t * vm,
-			   vlib_node_runtime_t * node, vlib_frame_t * frame)
+VLIB_NODE_FN (nat44_ed_classify_node) (vlib_main_t * vm,
+				       vlib_node_runtime_t * node,
+				       vlib_frame_t * frame)
 {
   return nat44_classify_node_fn_inline (vm, node, frame, 1);
 }
 
 /* *INDENT-OFF* */
 VLIB_REGISTER_NODE (nat44_ed_classify_node) = {
-  .function = nat44_ed_classify_node_fn,
   .name = "nat44-ed-classify",
   .vector_size = sizeof (u32),
   .format_trace = format_nat44_classify_trace,
@@ -467,19 +459,15 @@ VLIB_REGISTER_NODE (nat44_ed_classify_node) = {
 };
 /* *INDENT-ON* */
 
-VLIB_NODE_FUNCTION_MULTIARCH (nat44_ed_classify_node,
-			      nat44_ed_classify_node_fn);
-
-static uword
-nat44_det_classify_node_fn (vlib_main_t * vm,
-			    vlib_node_runtime_t * node, vlib_frame_t * frame)
+VLIB_NODE_FN (nat44_det_classify_node) (vlib_main_t * vm,
+					vlib_node_runtime_t * node,
+					vlib_frame_t * frame)
 {
   return nat44_classify_node_fn_inline (vm, node, frame, 0);
 }
 
 /* *INDENT-OFF* */
 VLIB_REGISTER_NODE (nat44_det_classify_node) = {
-  .function = nat44_det_classify_node_fn,
   .name = "nat44-det-classify",
   .vector_size = sizeof (u32),
   .format_trace = format_nat44_classify_trace,
@@ -493,20 +481,15 @@ VLIB_REGISTER_NODE (nat44_det_classify_node) = {
 };
 /* *INDENT-ON* */
 
-VLIB_NODE_FUNCTION_MULTIARCH (nat44_det_classify_node,
-			      nat44_det_classify_node_fn);
-
-static uword
-nat44_handoff_classify_node_fn (vlib_main_t * vm,
-				vlib_node_runtime_t * node,
-				vlib_frame_t * frame)
+VLIB_NODE_FN (nat44_handoff_classify_node) (vlib_main_t * vm,
+					    vlib_node_runtime_t * node,
+					    vlib_frame_t * frame)
 {
   return nat44_classify_node_fn_inline (vm, node, frame, 0);
 }
 
 /* *INDENT-OFF* */
 VLIB_REGISTER_NODE (nat44_handoff_classify_node) = {
-  .function = nat44_handoff_classify_node_fn,
   .name = "nat44-handoff-classify",
   .vector_size = sizeof (u32),
   .format_trace = format_nat44_classify_trace,
@@ -519,8 +502,6 @@ VLIB_REGISTER_NODE (nat44_handoff_classify_node) = {
   },
 };
 
-VLIB_NODE_FUNCTION_MULTIARCH (nat44_handoff_classify_node,
-                              nat44_handoff_classify_node_fn);
 /* *INDENT-ON* */
 
 /*

@@ -900,7 +900,9 @@ ip4_sw_interface_add_del (vnet_main_t * vnm, u32 sw_if_index, u32 is_add)
 VNET_SW_INTERFACE_ADD_DEL_FUNCTION (ip4_sw_interface_add_del);
 
 /* Global IP4 main. */
+#ifndef CLIB_MARCH_VARIANT
 ip4_main_t ip4_main;
+#endif /* CLIB_MARCH_VARIANT */
 
 static clib_error_t *
 ip4_lookup_init (vlib_main_t * vm)
@@ -947,10 +949,6 @@ ip4_lookup_init (vlib_main_t * vm)
     ethernet_arp_header_t h;
 
     clib_memset (&h, 0, sizeof (h));
-
-    /* Set target ethernet address to all zeros. */
-    clib_memset (h.ip4_over_ethernet[1].ethernet, 0,
-		 sizeof (h.ip4_over_ethernet[1].ethernet));
 
 #define _16(f,v) h.f = clib_host_to_net_u16 (v);
 #define _8(f,v) h.f = v;
@@ -1872,9 +1870,8 @@ ip4_arp_inline (vlib_main_t * vm,
 	  hw_if0 = vnet_get_sup_hw_interface (vnm, sw_if_index0);
 
 	  /* Src ethernet address in ARP header. */
-	  clib_memcpy_fast (h0->ip4_over_ethernet[0].ethernet,
-			    hw_if0->hw_address,
-			    sizeof (h0->ip4_over_ethernet[0].ethernet));
+	  mac_address_from_bytes (&h0->ip4_over_ethernet[0].mac,
+				  hw_if0->hw_address);
 	  if (is_glean)
 	    {
 	      /* The interface's source address is stashed in the Glean Adj */
@@ -2046,8 +2043,7 @@ ip4_probe_neighbor (vlib_main_t * vm, ip4_address_t * dst, u32 sw_if_index,
 				sw_if_index);
     }
 
-  clib_memcpy_fast (h->ip4_over_ethernet[0].ethernet, hi->hw_address,
-		    sizeof (h->ip4_over_ethernet[0].ethernet));
+  mac_address_from_bytes (&h->ip4_over_ethernet[0].mac, hi->hw_address);
 
   h->ip4_over_ethernet[0].ip4 = src[0];
   h->ip4_over_ethernet[1].ip4 = dst[0];
@@ -2190,10 +2186,11 @@ ip4_ttl_and_checksum_check (vlib_buffer_t * b, ip4_header_t * ip, u16 * next,
 
 
 always_inline uword
-ip4_rewrite_inline (vlib_main_t * vm,
-		    vlib_node_runtime_t * node,
-		    vlib_frame_t * frame,
-		    int do_counters, int is_midchain, int is_mcast)
+ip4_rewrite_inline_with_gso (vlib_main_t * vm,
+			     vlib_node_runtime_t * node,
+			     vlib_frame_t * frame,
+			     int do_counters, int is_midchain, int is_mcast,
+			     int do_gso)
 {
   ip_lookup_main_t *lm = &ip4_main.lookup_main;
   u32 *from = vlib_frame_vector_args (frame);
@@ -2271,12 +2268,20 @@ ip4_rewrite_inline (vlib_main_t * vm,
       CLIB_PREFETCH (p, CLIB_CACHE_LINE_BYTES, LOAD);
 
       /* Check MTU of outgoing interface. */
-      ip4_mtu_check (b[0], clib_net_to_host_u16 (ip0->length),
+      u16 ip0_len = clib_net_to_host_u16 (ip0->length);
+      u16 ip1_len = clib_net_to_host_u16 (ip1->length);
+
+      if (do_gso && (b[0]->flags & VNET_BUFFER_F_GSO))
+	ip0_len = gso_mtu_sz (b[0]);
+      if (do_gso && (b[1]->flags & VNET_BUFFER_F_GSO))
+	ip1_len = gso_mtu_sz (b[1]);
+
+      ip4_mtu_check (b[0], ip0_len,
 		     adj0[0].rewrite_header.max_l3_packet_bytes,
 		     ip0->flags_and_fragment_offset &
 		     clib_host_to_net_u16 (IP4_HEADER_FLAG_DONT_FRAGMENT),
 		     next + 0, &error0);
-      ip4_mtu_check (b[1], clib_net_to_host_u16 (ip1->length),
+      ip4_mtu_check (b[1], ip1_len,
 		     adj1[0].rewrite_header.max_l3_packet_bytes,
 		     ip1->flags_and_fragment_offset &
 		     clib_host_to_net_u16 (IP4_HEADER_FLAG_DONT_FRAGMENT),
@@ -2399,7 +2404,11 @@ ip4_rewrite_inline (vlib_main_t * vm,
       vnet_buffer (b[0])->ip.save_rewrite_length = rw_len0;
 
       /* Check MTU of outgoing interface. */
-      ip4_mtu_check (b[0], clib_net_to_host_u16 (ip0->length),
+      u16 ip0_len = clib_net_to_host_u16 (ip0->length);
+      if (do_gso && (b[0]->flags & VNET_BUFFER_F_GSO))
+	ip0_len = gso_mtu_sz (b[0]);
+
+      ip4_mtu_check (b[0], ip0_len,
 		     adj0[0].rewrite_header.max_l3_packet_bytes,
 		     ip0->flags_and_fragment_offset &
 		     clib_host_to_net_u16 (IP4_HEADER_FLAG_DONT_FRAGMENT),
@@ -2467,6 +2476,23 @@ ip4_rewrite_inline (vlib_main_t * vm,
 
   vlib_buffer_enqueue_to_next (vm, node, from, nexts, frame->n_vectors);
   return frame->n_vectors;
+}
+
+always_inline uword
+ip4_rewrite_inline (vlib_main_t * vm,
+		    vlib_node_runtime_t * node,
+		    vlib_frame_t * frame,
+		    int do_counters, int is_midchain, int is_mcast)
+{
+  vnet_main_t *vnm = vnet_get_main ();
+  if (PREDICT_FALSE (vnm->interface_main.gso_interface_count > 0))
+    return ip4_rewrite_inline_with_gso (vm, node, frame, do_counters,
+					is_midchain, is_mcast,
+					1 /* do_gso */ );
+  else
+    return ip4_rewrite_inline_with_gso (vm, node, frame, do_counters,
+					is_midchain, is_mcast,
+					0 /* no do_gso */ );
 }
 
 

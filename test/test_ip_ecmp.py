@@ -13,6 +13,11 @@ from scapy.layers.l2 import Ether
 from scapy.layers.inet import IP, UDP
 from scapy.layers.inet6 import IPv6
 
+try:
+    text_type = unicode
+except NameError:
+    text_type = str
+
 #
 # The number of packets to sent.
 #
@@ -79,10 +84,10 @@ class TestECMP(VppTestCase):
         :return: Random IPv4 or IPv6 address from required range.
         """
         try:
-            ip_addr = IPv4Address(unicode(ip_addr_start))
+            ip_addr = IPv4Address(text_type(ip_addr_start))
             ip_max_len = 32
         except (AttributeError, AddressValueError):
-            ip_addr = IPv6Address(unicode(ip_addr_start))
+            ip_addr = IPv6Address(text_type(ip_addr_start))
             ip_max_len = 128
 
         return str(ip_addr +
@@ -132,7 +137,7 @@ class TestECMP(VppTestCase):
         for packet in capture:
             try:
                 ip_received = packet[ip_l]
-                payload_info = self.payload_to_info(str(packet[Raw]))
+                payload_info = self.payload_to_info(packet[Raw])
                 packet_index = payload_info.index
                 ip_sent = self._packet_infos[packet_index].data[ip_l]
                 self.logger.debug("Got packet on port %s: src=%u (id=%u)" %
@@ -181,7 +186,9 @@ class TestECMP(VppTestCase):
                 next_hop_address = socket.inet_pton(af, nh_host_ip)
                 next_hop_sw_if_index = pg_if.sw_if_index
                 self.vapi.ip_add_del_route(
-                    dst_ip, dst_prefix_len, next_hop_address,
+                    dst_address=dst_ip,
+                    dst_address_length=dst_prefix_len,
+                    next_hop_address=next_hop_address,
                     next_hop_sw_if_index=next_hop_sw_if_index,
                     is_ipv6=is_ipv6, is_multipath=1)
                 self.logger.info("Route via %s on %s created" %

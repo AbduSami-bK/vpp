@@ -50,10 +50,11 @@ if(ACL_FILE)
     acl_binding.cpp
     acl_ethertype_cmds.cpp
     acl_ethertype.cpp
+    acl_l2_list.cpp
     acl_l2_rule.cpp
+    acl_l3_list.cpp
     acl_l3_rule.cpp
     acl_list_cmds.cpp
-    acl_list.cpp
     acl_types.cpp
   )
 endif()
@@ -146,6 +147,8 @@ list(APPEND VOM_SOURCES
   ip_unnumbered.cpp
   l2_binding_cmds.cpp
   l2_binding.cpp
+  l2_vtr.cpp
+  l2_vtr_cmds.cpp
   l2_xconnect_cmds.cpp
   l2_xconnect.cpp
   l3_binding_cmds.cpp
@@ -187,7 +190,8 @@ if(ACL_FILE)
     acl_ethertype.hpp
     acl_l2_rule.hpp
     acl_l3_rule.hpp
-    acl_list.hpp
+    acl_l3_list.hpp
+    acl_l2_list.hpp
     acl_types.hpp
   )
 endif()
@@ -252,6 +256,7 @@ list(APPEND VOM_HEADERS
   ip_punt_redirect.hpp
   ip_unnumbered.hpp
   l2_binding.hpp
+  l2_vtr.hpp
   l2_xconnect.hpp
   l3_binding.hpp
   lldp_binding.hpp
@@ -279,17 +284,14 @@ list(APPEND VOM_HEADERS
 )
 
 add_definitions(-Wall -Werror -std=gnu++11)
-
-add_vpp_library(vom
-  SOURCES ${VOM_SOURCES}
-
-  INSTALL_HEADERS ${VOM_HEADERS}
-
-  LINK_LIBRARIES ${VPPAPICLIENT_LIB} ${VAPICLIENT_LIB} Threads::Threads
-    ${Boost_SYSTEM_LIBRARY} ${Boost_FILESYSTEM_LIBRARY} m rt
-
-  COMPONENT libvom
-)
+add_library(vom SHARED ${VOM_SOURCES})
+if (VOM_LIB_VERSION)
+  set_target_properties(vom PROPERTIES SOVERSION ${VOM_LIB_VERSION})
+endif()
+target_link_libraries(vom ${VPPAPICLIENT_LIB} ${VAPICLIENT_LIB} Threads::Threads
+    ${Boost_SYSTEM_LIBRARY} ${Boost_FILESYSTEM_LIBRARY} m rt)
+install(TARGETS vom DESTINATION lib COMPONENT vom)
+install(FILES ${VOM_HEADERS} DESTINATION include/vom COMPONENT vom)
 
 if (Boost_FOUND)
   if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")

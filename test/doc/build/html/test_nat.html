@@ -1,0 +1,2082 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>2.68. test_nat module &mdash; VPP test framework 0.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="2.69. test_neighbor module" href="test_neighbor.html" />
+    <link rel="prev" title="2.67. test_mtu module" href="test_mtu.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> VPP test framework
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="overview.html">1. VPP Test Framework</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">2. Module documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="bfd.html">2.1. bfd module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="debug.html">2.2. debug module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="debug_internal.html">2.3. debug_internal module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="discover_tests.html">2.4. discover_tests module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="framework.html">2.5. framework module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hook.html">2.6. hook module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ipfix.html">2.7. ipfix module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lisp.html">2.8. lisp module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="log.html">2.9. log module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="remote_test.html">2.10. remote_test module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run_tests.html">2.11. run_tests module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sanity_import_vpp_papi.html">2.12. sanity_import_vpp_papi module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sanity_run_vpp.html">2.13. sanity_run_vpp module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="scapy_handlers.html">2.14. scapy_handlers package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="template_bd.html">2.15. template_bd module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="template_ipsec.html">2.16. template_ipsec module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_abf.html">2.17. test_abf module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_acl_plugin.html">2.18. test_acl_plugin module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_acl_plugin_conns.html">2.19. test_acl_plugin_conns module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_acl_plugin_l2l3.html">2.20. test_acl_plugin_l2l3 module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_acl_plugin_macip.html">2.21. test_acl_plugin_macip module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_bfd.html">2.22. test_bfd module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_bier.html">2.23. test_bier module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_bihash.html">2.24. test_bihash module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_bond.html">2.25. test_bond module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_cdp.html">2.26. test_cdp module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_classifier.html">2.27. test_classifier module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_classifier_ip6.html">2.28. test_classifier_ip6 module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_classify_l2_acl.html">2.29. test_classify_l2_acl module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_container.html">2.30. test_container module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_dhcp.html">2.31. test_dhcp module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_dhcp6.html">2.32. test_dhcp6 module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_dvr.html">2.33. test_dvr module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_fib.html">2.34. test_fib module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_flowprobe.html">2.35. test_flowprobe module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_gbp.html">2.36. test_gbp module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_geneve.html">2.37. test_geneve module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_gre.html">2.38. test_gre module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_gtpu.html">2.39. test_gtpu module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_igmp.html">2.40. test_igmp module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_interface_crud.html">2.41. test_interface_crud module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_ip4.html">2.42. test_ip4 module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_ip4_irb.html">2.43. test_ip4_irb module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_ip4_vrf_multi_instance.html">2.44. test_ip4_vrf_multi_instance module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_ip6.html">2.45. test_ip6 module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_ip6_vrf_multi_instance.html">2.46. test_ip6_vrf_multi_instance module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_ip_ecmp.html">2.47. test_ip_ecmp module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_ip_mcast.html">2.48. test_ip_mcast module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_ipip.html">2.49. test_ipip module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_ipsec_ah.html">2.50. test_ipsec_ah module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_ipsec_api.html">2.51. test_ipsec_api module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_ipsec_esp.html">2.52. test_ipsec_esp module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_ipsec_nat.html">2.53. test_ipsec_nat module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_ipsec_tun_if_esp.html">2.54. test_ipsec_tun_if_esp module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_l2_fib.html">2.55. test_l2_fib module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_l2_flood.html">2.56. test_l2_flood module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_l2bd.html">2.57. test_l2bd module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_l2bd_arp_term.html">2.58. test_l2bd_arp_term module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_l2bd_multi_instance.html">2.59. test_l2bd_multi_instance module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_l2xc.html">2.60. test_l2xc module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_l2xc_multi_instance.html">2.61. test_l2xc_multi_instance module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_lb.html">2.62. test_lb module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_lisp.html">2.63. test_lisp module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_map.html">2.64. test_map module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_memif.html">2.65. test_memif module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_mpls.html">2.66. test_mpls module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_mtu.html">2.67. test_mtu module</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">2.68. test_nat module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_neighbor.html">2.69. test_neighbor module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_p2p_ethernet.html">2.70. test_p2p_ethernet module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_ping.html">2.71. test_ping module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_pipe.html">2.72. test_pipe module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_pppoe.html">2.73. test_pppoe module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_punt.html">2.74. test_punt module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_qos.html">2.75. test_qos module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_reassembly.html">2.76. test_reassembly module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_sctp.html">2.77. test_sctp module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_session.html">2.78. test_session module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_sixrd.html">2.79. test_sixrd module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_span.html">2.80. test_span module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_srmpls.html">2.81. test_srmpls module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_srv6.html">2.82. test_srv6 module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_srv6_ad.html">2.83. test_srv6_ad module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_srv6_as.html">2.84. test_srv6_as module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_stats_client.html">2.85. test_stats_client module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_string.html">2.86. test_string module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_svs.html">2.87. test_svs module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_syslog.html">2.88. test_syslog module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_tcp.html">2.89. test_tcp module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_udp.html">2.90. test_udp module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_util.html">2.91. test_util module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_vapi.html">2.92. test_vapi module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_vcl.html">2.93. test_vcl module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_vhost.html">2.94. test_vhost module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_vom.html">2.95. test_vom module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_vtr.html">2.96. test_vtr module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_vxlan.html">2.97. test_vxlan module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_vxlan6.html">2.98. test_vxlan6 module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_vxlan_gbp.html">2.99. test_vxlan_gbp module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_vxlan_gpe.html">2.100. test_vxlan_gpe module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="util.html">2.101. util module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpp_bier.html">2.102. vpp_bier module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpp_bond_interface.html">2.103. vpp_bond_interface module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpp_bvi_interface.html">2.104. vpp_bvi_interface module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpp_gre_interface.html">2.105. vpp_gre_interface module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpp_igmp.html">2.106. vpp_igmp module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpp_interface.html">2.107. vpp_interface module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpp_ip.html">2.108. vpp_ip module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpp_ip_route.html">2.109. vpp_ip_route module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpp_ipsec.html">2.110. vpp_ipsec module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpp_ipsec_tun_interface.html">2.111. vpp_ipsec_tun_interface module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpp_l2.html">2.112. vpp_l2 module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpp_lo_interface.html">2.113. vpp_lo_interface module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpp_memif.html">2.114. vpp_memif module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpp_mpls_tunnel_interface.html">2.115. vpp_mpls_tunnel_interface module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpp_neighbor.html">2.116. vpp_neighbor module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpp_object.html">2.117. vpp_object module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpp_papi_provider.html">2.118. vpp_papi_provider module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpp_pg_interface.html">2.119. vpp_pg_interface module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpp_pppoe_interface.html">2.120. vpp_pppoe_interface module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpp_srv6.html">2.121. vpp_srv6 module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpp_sub_interface.html">2.122. vpp_sub_interface module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpp_tunnel_interface.html">2.123. vpp_tunnel_interface module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpp_udp_encap.html">2.124. vpp_udp_encap module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpp_vhost_interface.html">2.125. vpp_vhost_interface module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpp_vxlan_gbp_tunnel.html">2.126. vpp_vxlan_gbp_tunnel module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vrf.html">2.127. vrf module</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="indices.html">3. Indices and tables</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">VPP test framework</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="modules.html">2. Module documentation</a> &raquo;</li>
+        
+      <li>2.68. test_nat module</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/test_nat.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-test_nat">
+<span id="test-nat-module"></span><h1>2.68. test_nat module<a class="headerlink" href="#module-test_nat" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="test_nat.Event">
+<em class="property">class </em><code class="descclassname">test_nat.</code><code class="descname">Event</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.Event" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">sphinx.ext.autodoc.importer._MockObject</span></code></p>
+<dl class="method">
+<dt id="test_nat.Event.extract_padding">
+<code class="descname">extract_padding</code><span class="sig-paren">(</span><em>s</em><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.Event.extract_padding" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="test_nat.Event.fields_desc">
+<code class="descname">fields_desc</code><em class="property"> = [&lt;sphinx.ext.autodoc.importer._MockObject object&gt;, &lt;sphinx.ext.autodoc.importer._MockObject object&gt;, &lt;sphinx.ext.autodoc.importer._MockObject object&gt;, &lt;sphinx.ext.autodoc.importer._MockObject object&gt;, &lt;sphinx.ext.autodoc.importer._MockObject object&gt;, &lt;sphinx.ext.autodoc.importer._MockObject object&gt;, &lt;sphinx.ext.autodoc.importer._MockObject object&gt;, &lt;sphinx.ext.autodoc.importer._MockObject object&gt;, &lt;sphinx.ext.autodoc.importer._MockObject object&gt;, &lt;sphinx.ext.autodoc.importer._MockObject object&gt;, &lt;sphinx.ext.autodoc.importer._MockObject object&gt;, &lt;sphinx.ext.autodoc.importer._MockObject object&gt;, &lt;sphinx.ext.autodoc.importer._MockObject object&gt;, &lt;sphinx.ext.autodoc.importer._MockObject object&gt;]</em><a class="headerlink" href="#test_nat.Event.fields_desc" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="test_nat.Event.name">
+<code class="descname">name</code><em class="property"> = 'Event'</em><a class="headerlink" href="#test_nat.Event.name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="test_nat.HANATStateSync">
+<em class="property">class </em><code class="descclassname">test_nat.</code><code class="descname">HANATStateSync</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.HANATStateSync" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">sphinx.ext.autodoc.importer._MockObject</span></code></p>
+<dl class="attribute">
+<dt id="test_nat.HANATStateSync.fields_desc">
+<code class="descname">fields_desc</code><em class="property"> = [&lt;sphinx.ext.autodoc.importer._MockObject object&gt;, &lt;sphinx.ext.autodoc.importer._MockObject object&gt;, &lt;sphinx.ext.autodoc.importer._MockObject object&gt;, &lt;sphinx.ext.autodoc.importer._MockObject object&gt;, &lt;sphinx.ext.autodoc.importer._MockObject object&gt;, &lt;sphinx.ext.autodoc.importer._MockObject object&gt;]</em><a class="headerlink" href="#test_nat.HANATStateSync.fields_desc" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="test_nat.HANATStateSync.name">
+<code class="descname">name</code><em class="property"> = 'HA NAT state sync'</em><a class="headerlink" href="#test_nat.HANATStateSync.name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="test_nat.MethodHolder">
+<em class="property">class </em><code class="descclassname">test_nat.</code><code class="descname">MethodHolder</code><span class="sig-paren">(</span><em>methodName='runTest'</em><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.MethodHolder" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="framework.html#framework.VppTestCase" title="framework.VppTestCase"><code class="xref py py-class docutils literal notranslate"><span class="pre">framework.VppTestCase</span></code></a></p>
+<p>NAT create capture and verify method holder</p>
+<dl class="method">
+<dt id="test_nat.MethodHolder.clear_nat44">
+<code class="descname">clear_nat44</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.MethodHolder.clear_nat44" title="Permalink to this definition">¶</a></dt>
+<dd><p>Clear NAT44 configuration.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_nat.MethodHolder.compose_ip6">
+<code class="descname">compose_ip6</code><span class="sig-paren">(</span><em>ip4</em>, <em>pref</em>, <em>plen</em><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.MethodHolder.compose_ip6" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compose IPv4-embedded IPv6 addresses</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>ip4</strong> – IPv4 address</li>
+<li><strong>pref</strong> – IPv6 prefix</li>
+<li><strong>plen</strong> – IPv6 prefix length</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">IPv4-embedded IPv6 addresses</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_nat.MethodHolder.create_stream_frag">
+<code class="descname">create_stream_frag</code><span class="sig-paren">(</span><em>src_if</em>, <em>dst</em>, <em>sport</em>, <em>dport</em>, <em>data</em>, <em>proto=&lt;sphinx.ext.autodoc.importer._MockObject object&gt;</em>, <em>echo_reply=False</em><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.MethodHolder.create_stream_frag" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create fragmented packet stream</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>src_if</strong> – Source interface</li>
+<li><strong>dst</strong> – Destination IPv4 address</li>
+<li><strong>sport</strong> – Source port</li>
+<li><strong>dport</strong> – Destination port</li>
+<li><strong>data</strong> – Payload data</li>
+<li><strong>proto</strong> – protocol (TCP, UDP, ICMP)</li>
+<li><strong>echo_reply</strong> – use echo_reply if protocol is ICMP</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">Fragmets</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_nat.MethodHolder.create_stream_frag_ip6">
+<code class="descname">create_stream_frag_ip6</code><span class="sig-paren">(</span><em>src_if</em>, <em>dst</em>, <em>sport</em>, <em>dport</em>, <em>data</em>, <em>pref=None</em>, <em>plen=0</em>, <em>frag_size=128</em><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.MethodHolder.create_stream_frag_ip6" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create fragmented packet stream</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>src_if</strong> – Source interface</li>
+<li><strong>dst</strong> – Destination IPv4 address</li>
+<li><strong>sport</strong> – Source TCP port</li>
+<li><strong>dport</strong> – Destination TCP port</li>
+<li><strong>data</strong> – Payload data</li>
+<li><strong>pref</strong> – NAT64 prefix</li>
+<li><strong>plen</strong> – NAT64 prefix length</li>
+<li><strong>fragsize</strong> – size of fragments</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">Fragmets</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_nat.MethodHolder.create_stream_in">
+<code class="descname">create_stream_in</code><span class="sig-paren">(</span><em>in_if</em>, <em>out_if</em>, <em>dst_ip=None</em>, <em>ttl=64</em><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.MethodHolder.create_stream_in" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create packet stream for inside network</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>in_if</strong> – Inside interface</li>
+<li><strong>out_if</strong> – Outside interface</li>
+<li><strong>dst_ip</strong> – Destination address</li>
+<li><strong>ttl</strong> – TTL of generated packets</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_nat.MethodHolder.create_stream_in_ip6">
+<code class="descname">create_stream_in_ip6</code><span class="sig-paren">(</span><em>in_if</em>, <em>out_if</em>, <em>hlim=64</em>, <em>pref=None</em>, <em>plen=0</em><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.MethodHolder.create_stream_in_ip6" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create IPv6 packet stream for inside network</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>in_if</strong> – Inside interface</li>
+<li><strong>out_if</strong> – Outside interface</li>
+<li><strong>ttl</strong> – Hop Limit of generated packets</li>
+<li><strong>pref</strong> – NAT64 prefix</li>
+<li><strong>plen</strong> – NAT64 prefix length</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_nat.MethodHolder.create_stream_out">
+<code class="descname">create_stream_out</code><span class="sig-paren">(</span><em>out_if</em>, <em>dst_ip=None</em>, <em>ttl=64</em>, <em>use_inside_ports=False</em><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.MethodHolder.create_stream_out" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create packet stream for outside network</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>out_if</strong> – Outside interface</li>
+<li><strong>dst_ip</strong> – Destination IP address (Default use global NAT address)</li>
+<li><strong>ttl</strong> – TTL of generated packets</li>
+<li><strong>use_inside_ports</strong> – Use inside NAT ports as destination ports
+instead of outside ports</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_nat.MethodHolder.create_stream_out_ip6">
+<code class="descname">create_stream_out_ip6</code><span class="sig-paren">(</span><em>out_if</em>, <em>src_ip</em>, <em>dst_ip</em>, <em>hl=64</em><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.MethodHolder.create_stream_out_ip6" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create packet stream for outside network</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>out_if</strong> – Outside interface</li>
+<li><strong>dst_ip</strong> – Destination IP address (Default use global NAT address)</li>
+<li><strong>hl</strong> – HL of generated packets</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_nat.MethodHolder.extract_ip4">
+<code class="descname">extract_ip4</code><span class="sig-paren">(</span><em>ip6</em>, <em>plen</em><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.MethodHolder.extract_ip4" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extract IPv4 address embedded in IPv6 addresses</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>ip6</strong> – IPv6 address</li>
+<li><strong>plen</strong> – IPv6 prefix length</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">extracted IPv4 address</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_nat.MethodHolder.frag_in_order">
+<code class="descname">frag_in_order</code><span class="sig-paren">(</span><em>proto=&lt;sphinx.ext.autodoc.importer._MockObject object&gt;</em>, <em>dont_translate=False</em><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.MethodHolder.frag_in_order" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="test_nat.MethodHolder.frag_in_order_in_plus_out">
+<code class="descname">frag_in_order_in_plus_out</code><span class="sig-paren">(</span><em>proto=&lt;sphinx.ext.autodoc.importer._MockObject object&gt;</em><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.MethodHolder.frag_in_order_in_plus_out" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="test_nat.MethodHolder.frag_out_of_order">
+<code class="descname">frag_out_of_order</code><span class="sig-paren">(</span><em>proto=&lt;sphinx.ext.autodoc.importer._MockObject object&gt;</em>, <em>dont_translate=False</em><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.MethodHolder.frag_out_of_order" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="test_nat.MethodHolder.frag_out_of_order_in_plus_out">
+<code class="descname">frag_out_of_order_in_plus_out</code><span class="sig-paren">(</span><em>proto=&lt;sphinx.ext.autodoc.importer._MockObject object&gt;</em><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.MethodHolder.frag_out_of_order_in_plus_out" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="test_nat.MethodHolder.initiate_tcp_session">
+<code class="descname">initiate_tcp_session</code><span class="sig-paren">(</span><em>in_if</em>, <em>out_if</em><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.MethodHolder.initiate_tcp_session" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initiates TCP session</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>in_if</strong> – Inside interface</li>
+<li><strong>out_if</strong> – Outside interface</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_nat.MethodHolder.nat44_add_address">
+<code class="descname">nat44_add_address</code><span class="sig-paren">(</span><em>ip</em>, <em>is_add=1</em>, <em>vrf_id=4294967295</em>, <em>twice_nat=0</em><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.MethodHolder.nat44_add_address" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add/delete NAT44 address</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>ip</strong> – IP address</li>
+<li><strong>is_add</strong> – 1 if add, 0 if delete (Default add)</li>
+<li><strong>twice_nat</strong> – twice NAT address for extenal hosts</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_nat.MethodHolder.nat44_add_static_mapping">
+<code class="descname">nat44_add_static_mapping</code><span class="sig-paren">(</span><em>local_ip</em>, <em>external_ip='0.0.0.0'</em>, <em>local_port=0</em>, <em>external_port=0</em>, <em>vrf_id=0</em>, <em>is_add=1</em>, <em>external_sw_if_index=4294967295</em>, <em>proto=0</em>, <em>twice_nat=0</em>, <em>self_twice_nat=0</em>, <em>out2in_only=0</em>, <em>tag=''</em><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.MethodHolder.nat44_add_static_mapping" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add/delete NAT44 static mapping</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>local_ip</strong> – Local IP address</li>
+<li><strong>external_ip</strong> – External IP address</li>
+<li><strong>local_port</strong> – Local port number (Optional)</li>
+<li><strong>external_port</strong> – External port number (Optional)</li>
+<li><strong>vrf_id</strong> – VRF ID (Default 0)</li>
+<li><strong>is_add</strong> – 1 if add, 0 if delete (Default add)</li>
+<li><strong>external_sw_if_index</strong> – External interface instead of IP address</li>
+<li><strong>proto</strong> – IP protocol (Mandatory if port specified)</li>
+<li><strong>twice_nat</strong> – 1 if translate external host address and port</li>
+<li><strong>self_twice_nat</strong> – 1 if translate external host address and port
+whenever external host address equals
+local address of internal host</li>
+<li><strong>out2in_only</strong> – if 1 rule is matching only out2in direction</li>
+<li><strong>tag</strong> – Opaque string tag</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="test_nat.MethodHolder.proto2layer">
+<em class="property">static </em><code class="descname">proto2layer</code><span class="sig-paren">(</span><em>proto</em><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.MethodHolder.proto2layer" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="test_nat.MethodHolder.reass_frags_and_verify">
+<code class="descname">reass_frags_and_verify</code><span class="sig-paren">(</span><em>frags</em>, <em>src</em>, <em>dst</em><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.MethodHolder.reass_frags_and_verify" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reassemble and verify fragmented packet</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>frags</strong> – Captured fragments</li>
+<li><strong>src</strong> – Source IPv4 address to verify</li>
+<li><strong>dst</strong> – Destination IPv4 address to verify</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">Reassembled IPv4 packet</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_nat.MethodHolder.reass_frags_and_verify_ip6">
+<code class="descname">reass_frags_and_verify_ip6</code><span class="sig-paren">(</span><em>frags</em>, <em>src</em>, <em>dst</em><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.MethodHolder.reass_frags_and_verify_ip6" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reassemble and verify fragmented packet</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>frags</strong> – Captured fragments</li>
+<li><strong>src</strong> – Source IPv6 address to verify</li>
+<li><strong>dst</strong> – Destination IPv6 address to verify</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">Reassembled IPv6 packet</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_nat.MethodHolder.reass_hairpinning">
+<code class="descname">reass_hairpinning</code><span class="sig-paren">(</span><em>proto=&lt;sphinx.ext.autodoc.importer._MockObject object&gt;</em><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.MethodHolder.reass_hairpinning" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="test_nat.MethodHolder.verify_capture_in">
+<code class="descname">verify_capture_in</code><span class="sig-paren">(</span><em>capture</em>, <em>in_if</em><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.MethodHolder.verify_capture_in" title="Permalink to this definition">¶</a></dt>
+<dd><p>Verify captured packets on inside network</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>capture</strong> – Captured packets</li>
+<li><strong>in_if</strong> – Inside interface</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_nat.MethodHolder.verify_capture_in_ip6">
+<code class="descname">verify_capture_in_ip6</code><span class="sig-paren">(</span><em>capture</em>, <em>src_ip</em>, <em>dst_ip</em><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.MethodHolder.verify_capture_in_ip6" title="Permalink to this definition">¶</a></dt>
+<dd><p>Verify captured IPv6 packets on inside network</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>capture</strong> – Captured packets</li>
+<li><strong>src_ip</strong> – Source IP</li>
+<li><strong>dst_ip</strong> – Destination IP address</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_nat.MethodHolder.verify_capture_in_with_icmp_errors">
+<code class="descname">verify_capture_in_with_icmp_errors</code><span class="sig-paren">(</span><em>capture</em>, <em>in_if</em>, <em>icmp_type=11</em><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.MethodHolder.verify_capture_in_with_icmp_errors" title="Permalink to this definition">¶</a></dt>
+<dd><p>Verify captured packets with ICMP errors on inside network</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>capture</strong> – Captured packets</li>
+<li><strong>in_if</strong> – Inside interface</li>
+<li><strong>icmp_type</strong> – Type of error ICMP packet
+we are expecting (Default 11)</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_nat.MethodHolder.verify_capture_no_translation">
+<code class="descname">verify_capture_no_translation</code><span class="sig-paren">(</span><em>capture</em>, <em>ingress_if</em>, <em>egress_if</em><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.MethodHolder.verify_capture_no_translation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Verify captured packet that don’t have to be translated</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>capture</strong> – Captured packets</li>
+<li><strong>ingress_if</strong> – Ingress interface</li>
+<li><strong>egress_if</strong> – Egress interface</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_nat.MethodHolder.verify_capture_out">
+<code class="descname">verify_capture_out</code><span class="sig-paren">(</span><em>capture</em>, <em>nat_ip=None</em>, <em>same_port=False</em>, <em>dst_ip=None</em>, <em>is_ip6=False</em><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.MethodHolder.verify_capture_out" title="Permalink to this definition">¶</a></dt>
+<dd><p>Verify captured packets on outside network</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>capture</strong> – Captured packets</li>
+<li><strong>nat_ip</strong> – Translated IP address (Default use global NAT address)</li>
+<li><strong>same_port</strong> – Sorce port number is not translated (Default False)</li>
+<li><strong>dst_ip</strong> – Destination IP address (Default do not verify)</li>
+<li><strong>is_ip6</strong> – If L3 protocol is IPv6 (Default False)</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_nat.MethodHolder.verify_capture_out_ip6">
+<code class="descname">verify_capture_out_ip6</code><span class="sig-paren">(</span><em>capture</em>, <em>nat_ip</em>, <em>same_port=False</em>, <em>dst_ip=None</em><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.MethodHolder.verify_capture_out_ip6" title="Permalink to this definition">¶</a></dt>
+<dd><p>Verify captured packets on outside network</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>capture</strong> – Captured packets</li>
+<li><strong>nat_ip</strong> – Translated IP address</li>
+<li><strong>same_port</strong> – Sorce port number is not translated (Default False)</li>
+<li><strong>dst_ip</strong> – Destination IP address (Default do not verify)</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_nat.MethodHolder.verify_capture_out_with_icmp_errors">
+<code class="descname">verify_capture_out_with_icmp_errors</code><span class="sig-paren">(</span><em>capture</em>, <em>src_ip=None</em>, <em>icmp_type=11</em><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.MethodHolder.verify_capture_out_with_icmp_errors" title="Permalink to this definition">¶</a></dt>
+<dd><p>Verify captured packets with ICMP errors on outside network</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>capture</strong> – Captured packets</li>
+<li><strong>src_ip</strong> – Translated IP address or IP address of VPP
+(Default use global NAT address)</li>
+<li><strong>icmp_type</strong> – Type of error ICMP packet
+we are expecting (Default 11)</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_nat.MethodHolder.verify_ipfix_addr_exhausted">
+<code class="descname">verify_ipfix_addr_exhausted</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.MethodHolder.verify_ipfix_addr_exhausted" title="Permalink to this definition">¶</a></dt>
+<dd><p>Verify IPFIX NAT addresses event</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>data</strong> – Decoded IPFIX data records</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_nat.MethodHolder.verify_ipfix_bib">
+<code class="descname">verify_ipfix_bib</code><span class="sig-paren">(</span><em>data</em>, <em>is_create</em>, <em>src_addr</em><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.MethodHolder.verify_ipfix_bib" title="Permalink to this definition">¶</a></dt>
+<dd><p>Verify IPFIX NAT64 BIB create and delete events</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>data</strong> – Decoded IPFIX data records</li>
+<li><strong>is_create</strong> – Create event if nonzero value otherwise delete event</li>
+<li><strong>src_addr</strong> – IPv6 source address</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_nat.MethodHolder.verify_ipfix_max_bibs">
+<code class="descname">verify_ipfix_max_bibs</code><span class="sig-paren">(</span><em>data</em>, <em>limit</em><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.MethodHolder.verify_ipfix_max_bibs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Verify IPFIX maximum BIB entries exceeded event</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>data</strong> – Decoded IPFIX data records</li>
+<li><strong>limit</strong> – Number of maximum BIB entries that can be created.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_nat.MethodHolder.verify_ipfix_max_entries_per_user">
+<code class="descname">verify_ipfix_max_entries_per_user</code><span class="sig-paren">(</span><em>data</em>, <em>limit</em>, <em>src_addr</em><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.MethodHolder.verify_ipfix_max_entries_per_user" title="Permalink to this definition">¶</a></dt>
+<dd><p>Verify IPFIX maximum entries per user exceeded event</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>data</strong> – Decoded IPFIX data records</li>
+<li><strong>limit</strong> – Number of maximum entries per user</li>
+<li><strong>src_addr</strong> – IPv4 source address</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_nat.MethodHolder.verify_ipfix_max_fragments_ip4">
+<code class="descname">verify_ipfix_max_fragments_ip4</code><span class="sig-paren">(</span><em>data</em>, <em>limit</em>, <em>src_addr</em><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.MethodHolder.verify_ipfix_max_fragments_ip4" title="Permalink to this definition">¶</a></dt>
+<dd><p>Verify IPFIX maximum IPv4 fragments pending reassembly exceeded event</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>data</strong> – Decoded IPFIX data records</li>
+<li><strong>limit</strong> – Number of maximum fragments pending reassembly</li>
+<li><strong>src_addr</strong> – IPv4 source address</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_nat.MethodHolder.verify_ipfix_max_fragments_ip6">
+<code class="descname">verify_ipfix_max_fragments_ip6</code><span class="sig-paren">(</span><em>data</em>, <em>limit</em>, <em>src_addr</em><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.MethodHolder.verify_ipfix_max_fragments_ip6" title="Permalink to this definition">¶</a></dt>
+<dd><p>Verify IPFIX maximum IPv6 fragments pending reassembly exceeded event</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>data</strong> – Decoded IPFIX data records</li>
+<li><strong>limit</strong> – Number of maximum fragments pending reassembly</li>
+<li><strong>src_addr</strong> – IPv6 source address</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_nat.MethodHolder.verify_ipfix_max_sessions">
+<code class="descname">verify_ipfix_max_sessions</code><span class="sig-paren">(</span><em>data</em>, <em>limit</em><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.MethodHolder.verify_ipfix_max_sessions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Verify IPFIX maximum session entries exceeded event</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>data</strong> – Decoded IPFIX data records</li>
+<li><strong>limit</strong> – Number of maximum session entries that can be created.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_nat.MethodHolder.verify_ipfix_nat44_ses">
+<code class="descname">verify_ipfix_nat44_ses</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.MethodHolder.verify_ipfix_nat44_ses" title="Permalink to this definition">¶</a></dt>
+<dd><p>Verify IPFIX NAT44 session create/delete event</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>data</strong> – Decoded IPFIX data records</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_nat.MethodHolder.verify_ipfix_nat64_ses">
+<code class="descname">verify_ipfix_nat64_ses</code><span class="sig-paren">(</span><em>data</em>, <em>is_create</em>, <em>src_addr</em>, <em>dst_addr</em>, <em>dst_port</em><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.MethodHolder.verify_ipfix_nat64_ses" title="Permalink to this definition">¶</a></dt>
+<dd><p>Verify IPFIX NAT64 session create and delete events</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>data</strong> – Decoded IPFIX data records</li>
+<li><strong>is_create</strong> – Create event if nonzero value otherwise delete event</li>
+<li><strong>src_addr</strong> – IPv6 source address</li>
+<li><strong>dst_addr</strong> – IPv4 destination address</li>
+<li><strong>dst_port</strong> – destination TCP port</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_nat.MethodHolder.verify_mss_value">
+<code class="descname">verify_mss_value</code><span class="sig-paren">(</span><em>pkt</em>, <em>mss</em><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.MethodHolder.verify_mss_value" title="Permalink to this definition">¶</a></dt>
+<dd><p>Verify TCP MSS value</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>pkt</strong> – </li>
+<li><strong>mss</strong> – </li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_nat.MethodHolder.verify_no_nat44_user">
+<code class="descname">verify_no_nat44_user</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.MethodHolder.verify_no_nat44_user" title="Permalink to this definition">¶</a></dt>
+<dd><p>Verify that there is no NAT44 user</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_nat.MethodHolder.verify_syslog_apmap">
+<code class="descname">verify_syslog_apmap</code><span class="sig-paren">(</span><em>data</em>, <em>is_add=True</em><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.MethodHolder.verify_syslog_apmap" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="test_nat.MethodHolder.verify_syslog_sess">
+<code class="descname">verify_syslog_sess</code><span class="sig-paren">(</span><em>data</em>, <em>is_add=True</em>, <em>is_ip6=False</em><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.MethodHolder.verify_syslog_sess" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="test_nat.TestDSlite">
+<em class="property">class </em><code class="descclassname">test_nat.</code><code class="descname">TestDSlite</code><span class="sig-paren">(</span><em>methodName='runTest'</em><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.TestDSlite" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#test_nat.MethodHolder" title="test_nat.MethodHolder"><code class="xref py py-class docutils literal notranslate"><span class="pre">test_nat.MethodHolder</span></code></a></p>
+<p>DS-Lite Test Cases</p>
+<dl class="classmethod">
+<dt id="test_nat.TestDSlite.setUpClass">
+<em class="property">classmethod </em><code class="descname">setUpClass</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.TestDSlite.setUpClass" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform class setup before running the testcase
+Remove shared memory files, start vpp and connect the vpp-api</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_nat.TestDSlite.tearDown">
+<code class="descname">tearDown</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.TestDSlite.tearDown" title="Permalink to this definition">¶</a></dt>
+<dd><p>Show various debug prints after each test</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_nat.TestDSlite.test_dslite">
+<code class="descname">test_dslite</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.TestDSlite.test_dslite" title="Permalink to this definition">¶</a></dt>
+<dd><p>Test DS-Lite</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_nat.TestDSlite.verify_syslog_apmadd">
+<code class="descname">verify_syslog_apmadd</code><span class="sig-paren">(</span><em>data</em>, <em>isaddr</em>, <em>isport</em>, <em>xsaddr</em>, <em>xsport</em>, <em>sv6enc</em>, <em>proto</em><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.TestDSlite.verify_syslog_apmadd" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="test_nat.TestDSliteCE">
+<em class="property">class </em><code class="descclassname">test_nat.</code><code class="descname">TestDSliteCE</code><span class="sig-paren">(</span><em>methodName='runTest'</em><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.TestDSliteCE" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#test_nat.MethodHolder" title="test_nat.MethodHolder"><code class="xref py py-class docutils literal notranslate"><span class="pre">test_nat.MethodHolder</span></code></a></p>
+<p>DS-Lite CE Test Cases</p>
+<dl class="classmethod">
+<dt id="test_nat.TestDSliteCE.setUpClass">
+<em class="property">classmethod </em><code class="descname">setUpClass</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.TestDSliteCE.setUpClass" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform class setup before running the testcase
+Remove shared memory files, start vpp and connect the vpp-api</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="test_nat.TestDSliteCE.setUpConstants">
+<em class="property">classmethod </em><code class="descname">setUpConstants</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.TestDSliteCE.setUpConstants" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set-up the test case class based on environment variables</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_nat.TestDSliteCE.tearDown">
+<code class="descname">tearDown</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.TestDSliteCE.tearDown" title="Permalink to this definition">¶</a></dt>
+<dd><p>Show various debug prints after each test</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_nat.TestDSliteCE.test_dslite_ce">
+<code class="descname">test_dslite_ce</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.TestDSliteCE.test_dslite_ce" title="Permalink to this definition">¶</a></dt>
+<dd><p>Test DS-Lite CE</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="test_nat.TestDeterministicNAT">
+<em class="property">class </em><code class="descclassname">test_nat.</code><code class="descname">TestDeterministicNAT</code><span class="sig-paren">(</span><em>methodName='runTest'</em><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.TestDeterministicNAT" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#test_nat.MethodHolder" title="test_nat.MethodHolder"><code class="xref py py-class docutils literal notranslate"><span class="pre">test_nat.MethodHolder</span></code></a></p>
+<p>Deterministic NAT Test Cases</p>
+<dl class="method">
+<dt id="test_nat.TestDeterministicNAT.clear_nat_det">
+<code class="descname">clear_nat_det</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.TestDeterministicNAT.clear_nat_det" title="Permalink to this definition">¶</a></dt>
+<dd><p>Clear deterministic NAT configuration.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_nat.TestDeterministicNAT.create_stream_in">
+<code class="descname">create_stream_in</code><span class="sig-paren">(</span><em>in_if</em>, <em>out_if</em>, <em>ttl=64</em><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.TestDeterministicNAT.create_stream_in" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create packet stream for inside network</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>in_if</strong> – Inside interface</li>
+<li><strong>out_if</strong> – Outside interface</li>
+<li><strong>ttl</strong> – TTL of generated packets</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_nat.TestDeterministicNAT.create_stream_out">
+<code class="descname">create_stream_out</code><span class="sig-paren">(</span><em>out_if</em>, <em>dst_ip=None</em>, <em>ttl=64</em><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.TestDeterministicNAT.create_stream_out" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create packet stream for outside network</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>out_if</strong> – Outside interface</li>
+<li><strong>dst_ip</strong> – Destination IP address (Default use global NAT address)</li>
+<li><strong>ttl</strong> – TTL of generated packets</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="test_nat.TestDeterministicNAT.setUpClass">
+<em class="property">classmethod </em><code class="descname">setUpClass</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.TestDeterministicNAT.setUpClass" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform class setup before running the testcase
+Remove shared memory files, start vpp and connect the vpp-api</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="test_nat.TestDeterministicNAT.setUpConstants">
+<em class="property">classmethod </em><code class="descname">setUpConstants</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.TestDeterministicNAT.setUpConstants" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set-up the test case class based on environment variables</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_nat.TestDeterministicNAT.tearDown">
+<code class="descname">tearDown</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.TestDeterministicNAT.tearDown" title="Permalink to this definition">¶</a></dt>
+<dd><p>Show various debug prints after each test</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_nat.TestDeterministicNAT.test_det_in">
+<code class="descname">test_det_in</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.TestDeterministicNAT.test_det_in" title="Permalink to this definition">¶</a></dt>
+<dd><p>Deterministic NAT translation test (TCP, UDP, ICMP)</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_nat.TestDeterministicNAT.test_deterministic_mode">
+<code class="descname">test_deterministic_mode</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.TestDeterministicNAT.test_deterministic_mode" title="Permalink to this definition">¶</a></dt>
+<dd><p>NAT plugin run deterministic mode</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_nat.TestDeterministicNAT.test_multiple_users">
+<code class="descname">test_multiple_users</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.TestDeterministicNAT.test_multiple_users" title="Permalink to this definition">¶</a></dt>
+<dd><p>Deterministic NAT multiple users</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_nat.TestDeterministicNAT.test_session_limit_per_user">
+<code class="descname">test_session_limit_per_user</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.TestDeterministicNAT.test_session_limit_per_user" title="Permalink to this definition">¶</a></dt>
+<dd><p>Deterministic NAT maximum sessions per user limit</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_nat.TestDeterministicNAT.test_session_timeout">
+<code class="descname">test_session_timeout</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.TestDeterministicNAT.test_session_timeout" title="Permalink to this definition">¶</a></dt>
+<dd><p>Deterministic NAT session timeouts</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_nat.TestDeterministicNAT.test_set_timeouts">
+<code class="descname">test_set_timeouts</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.TestDeterministicNAT.test_set_timeouts" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set deterministic NAT timeouts</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_nat.TestDeterministicNAT.test_tcp_session_close_detection_in">
+<code class="descname">test_tcp_session_close_detection_in</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.TestDeterministicNAT.test_tcp_session_close_detection_in" title="Permalink to this definition">¶</a></dt>
+<dd><p>Deterministic NAT TCP session close from inside network</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_nat.TestDeterministicNAT.test_tcp_session_close_detection_out">
+<code class="descname">test_tcp_session_close_detection_out</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.TestDeterministicNAT.test_tcp_session_close_detection_out" title="Permalink to this definition">¶</a></dt>
+<dd><p>Deterministic NAT TCP session close from outside network</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_nat.TestDeterministicNAT.verify_capture_out">
+<code class="descname">verify_capture_out</code><span class="sig-paren">(</span><em>capture</em>, <em>nat_ip=None</em><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.TestDeterministicNAT.verify_capture_out" title="Permalink to this definition">¶</a></dt>
+<dd><p>Verify captured packets on outside network</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>capture</strong> – Captured packets</li>
+<li><strong>nat_ip</strong> – Translated IP address (Default use global NAT address)</li>
+<li><strong>same_port</strong> – Sorce port number is not translated (Default False)</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="test_nat.TestNAT44">
+<em class="property">class </em><code class="descclassname">test_nat.</code><code class="descname">TestNAT44</code><span class="sig-paren">(</span><em>methodName='runTest'</em><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.TestNAT44" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#test_nat.MethodHolder" title="test_nat.MethodHolder"><code class="xref py py-class docutils literal notranslate"><span class="pre">test_nat.MethodHolder</span></code></a></p>
+<p>NAT44 Test Cases</p>
+<dl class="classmethod">
+<dt id="test_nat.TestNAT44.setUpClass">
+<em class="property">classmethod </em><code class="descname">setUpClass</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.TestNAT44.setUpClass" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform class setup before running the testcase
+Remove shared memory files, start vpp and connect the vpp-api</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_nat.TestNAT44.tearDown">
+<code class="descname">tearDown</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.TestNAT44.tearDown" title="Permalink to this definition">¶</a></dt>
+<dd><p>Show various debug prints after each test</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_nat.TestNAT44.test_del_session">
+<code class="descname">test_del_session</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.TestNAT44.test_del_session" title="Permalink to this definition">¶</a></dt>
+<dd><p>Delete NAT44 session</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_nat.TestNAT44.test_dynamic">
+<code class="descname">test_dynamic</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.TestNAT44.test_dynamic" title="Permalink to this definition">¶</a></dt>
+<dd><p>NAT44 dynamic translation test</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_nat.TestNAT44.test_dynamic_icmp_errors_in2out_ttl_1">
+<code class="descname">test_dynamic_icmp_errors_in2out_ttl_1</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.TestNAT44.test_dynamic_icmp_errors_in2out_ttl_1" title="Permalink to this definition">¶</a></dt>
+<dd><p>NAT44 handling of client packets with TTL=1</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_nat.TestNAT44.test_dynamic_icmp_errors_in2out_ttl_2">
+<code class="descname">test_dynamic_icmp_errors_in2out_ttl_2</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.TestNAT44.test_dynamic_icmp_errors_in2out_ttl_2" title="Permalink to this definition">¶</a></dt>
+<dd><p>NAT44 handling of error responses to client packets with TTL=2</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_nat.TestNAT44.test_dynamic_icmp_errors_out2in_ttl_1">
+<code class="descname">test_dynamic_icmp_errors_out2in_ttl_1</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.TestNAT44.test_dynamic_icmp_errors_out2in_ttl_1" title="Permalink to this definition">¶</a></dt>
+<dd><p>NAT44 handling of server packets with TTL=1</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_nat.TestNAT44.test_dynamic_icmp_errors_out2in_ttl_2">
+<code class="descname">test_dynamic_icmp_errors_out2in_ttl_2</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.TestNAT44.test_dynamic_icmp_errors_out2in_ttl_2" title="Permalink to this definition">¶</a></dt>
+<dd><p>NAT44 handling of error responses to server packets with TTL=2</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_nat.TestNAT44.test_dynamic_ipless_interfaces">
+<code class="descname">test_dynamic_ipless_interfaces</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.TestNAT44.test_dynamic_ipless_interfaces" title="Permalink to this definition">¶</a></dt>
+<dd><p>NAT44 interfaces without configured IP address</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_nat.TestNAT44.test_dynamic_to_static">
+<code class="descname">test_dynamic_to_static</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.TestNAT44.test_dynamic_to_static" title="Permalink to this definition">¶</a></dt>
+<dd><p>Switch from dynamic translation to 1:1NAT</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_nat.TestNAT44.test_forwarding">
+<code class="descname">test_forwarding</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.TestNAT44.test_forwarding" title="Permalink to this definition">¶</a></dt>
+<dd><p>NAT44 forwarding test</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_nat.TestNAT44.test_frag_forwarding">
+<code class="descname">test_frag_forwarding</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.TestNAT44.test_frag_forwarding" title="Permalink to this definition">¶</a></dt>
+<dd><p>NAT44 forwarding fragment test</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_nat.TestNAT44.test_frag_in_order">
+<code class="descname">test_frag_in_order</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.TestNAT44.test_frag_in_order" title="Permalink to this definition">¶</a></dt>
+<dd><p>NAT44 translate fragments arriving in order</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_nat.TestNAT44.test_frag_out_of_order">
+<code class="descname">test_frag_out_of_order</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.TestNAT44.test_frag_out_of_order" title="Permalink to this definition">¶</a></dt>
+<dd><p>NAT44 translate fragments arriving out of order</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_nat.TestNAT44.test_ha_recv">
+<code class="descname">test_ha_recv</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.TestNAT44.test_ha_recv" title="Permalink to this definition">¶</a></dt>
+<dd><p>Receive HA session synchronization events (passive)</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_nat.TestNAT44.test_ha_send">
+<code class="descname">test_ha_send</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.TestNAT44.test_ha_send" title="Permalink to this definition">¶</a></dt>
+<dd><p>Send HA session synchronization events (active)</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_nat.TestNAT44.test_hairpinning">
+<code class="descname">test_hairpinning</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.TestNAT44.test_hairpinning" title="Permalink to this definition">¶</a></dt>
+<dd><p>NAT44 hairpinning - 1:1 NAPT</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_nat.TestNAT44.test_hairpinning2">
+<code class="descname">test_hairpinning2</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.TestNAT44.test_hairpinning2" title="Permalink to this definition">¶</a></dt>
+<dd><p>NAT44 hairpinning - 1:1 NAT</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_nat.TestNAT44.test_hairpinning_static_unknown_proto">
+<code class="descname">test_hairpinning_static_unknown_proto</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.TestNAT44.test_hairpinning_static_unknown_proto" title="Permalink to this definition">¶</a></dt>
+<dd><p>1:1 NAT translate packet with unknown protocol - hairpinning</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_nat.TestNAT44.test_identity_nat">
+<code class="descname">test_identity_nat</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.TestNAT44.test_identity_nat" title="Permalink to this definition">¶</a></dt>
+<dd><p>Identity NAT</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_nat.TestNAT44.test_inside_overlapping_interfaces">
+<code class="descname">test_inside_overlapping_interfaces</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.TestNAT44.test_inside_overlapping_interfaces" title="Permalink to this definition">¶</a></dt>
+<dd><p>NAT44 multiple inside interfaces with overlapping address space</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_nat.TestNAT44.test_interface_addr">
+<code class="descname">test_interface_addr</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.TestNAT44.test_interface_addr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Acquire NAT44 addresses from interface</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_nat.TestNAT44.test_interface_addr_identity_nat">
+<code class="descname">test_interface_addr_identity_nat</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.TestNAT44.test_interface_addr_identity_nat" title="Permalink to this definition">¶</a></dt>
+<dd><p>Identity NAT with addresses from interface</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_nat.TestNAT44.test_interface_addr_static_mapping">
+<code class="descname">test_interface_addr_static_mapping</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.TestNAT44.test_interface_addr_static_mapping" title="Permalink to this definition">¶</a></dt>
+<dd><p>Static mapping with addresses from interface</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_nat.TestNAT44.test_ipfix_addr_exhausted">
+<code class="descname">test_ipfix_addr_exhausted</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.TestNAT44.test_ipfix_addr_exhausted" title="Permalink to this definition">¶</a></dt>
+<dd><p>IPFIX logging NAT addresses exhausted</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_nat.TestNAT44.test_ipfix_max_frags">
+<code class="descname">test_ipfix_max_frags</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.TestNAT44.test_ipfix_max_frags" title="Permalink to this definition">¶</a></dt>
+<dd><p>IPFIX logging maximum fragments pending reassembly exceeded</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_nat.TestNAT44.test_ipfix_max_sessions">
+<code class="descname">test_ipfix_max_sessions</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.TestNAT44.test_ipfix_max_sessions" title="Permalink to this definition">¶</a></dt>
+<dd><p>IPFIX logging maximum session entries exceeded</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_nat.TestNAT44.test_ipfix_nat44_sess">
+<code class="descname">test_ipfix_nat44_sess</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.TestNAT44.test_ipfix_nat44_sess" title="Permalink to this definition">¶</a></dt>
+<dd><p>IPFIX logging NAT44 session created/delted</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_nat.TestNAT44.test_max_translations_per_user">
+<code class="descname">test_max_translations_per_user</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.TestNAT44.test_max_translations_per_user" title="Permalink to this definition">¶</a></dt>
+<dd><p>MAX translations per user - recycle the least recently used</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_nat.TestNAT44.test_mss_clamping">
+<code class="descname">test_mss_clamping</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.TestNAT44.test_mss_clamping" title="Permalink to this definition">¶</a></dt>
+<dd><p>TCP MSS clamping</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_nat.TestNAT44.test_multiple_inside_interfaces">
+<code class="descname">test_multiple_inside_interfaces</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.TestNAT44.test_multiple_inside_interfaces" title="Permalink to this definition">¶</a></dt>
+<dd><p>NAT44 multiple non-overlapping address space inside interfaces</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_nat.TestNAT44.test_multiple_outside_vrf">
+<code class="descname">test_multiple_outside_vrf</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.TestNAT44.test_multiple_outside_vrf" title="Permalink to this definition">¶</a></dt>
+<dd><p>Multiple outside VRF</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_nat.TestNAT44.test_one_armed_nat44">
+<code class="descname">test_one_armed_nat44</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.TestNAT44.test_one_armed_nat44" title="Permalink to this definition">¶</a></dt>
+<dd><p>One armed NAT44</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_nat.TestNAT44.test_output_feature">
+<code class="descname">test_output_feature</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.TestNAT44.test_output_feature" title="Permalink to this definition">¶</a></dt>
+<dd><p>NAT44 interface output feature (in2out postrouting)</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_nat.TestNAT44.test_output_feature_hairpinning">
+<code class="descname">test_output_feature_hairpinning</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.TestNAT44.test_output_feature_hairpinning" title="Permalink to this definition">¶</a></dt>
+<dd><p>NAT44 interface output feature hairpinning (in2out postrouting)</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_nat.TestNAT44.test_output_feature_vrf_aware">
+<code class="descname">test_output_feature_vrf_aware</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.TestNAT44.test_output_feature_vrf_aware" title="Permalink to this definition">¶</a></dt>
+<dd><p>NAT44 interface output feature VRF aware (in2out postrouting)</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_nat.TestNAT44.test_ping_internal_host_from_outside">
+<code class="descname">test_ping_internal_host_from_outside</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.TestNAT44.test_ping_internal_host_from_outside" title="Permalink to this definition">¶</a></dt>
+<dd><p>Ping internal host from outside network</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_nat.TestNAT44.test_ping_out_interface_from_outside">
+<code class="descname">test_ping_out_interface_from_outside</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.TestNAT44.test_ping_out_interface_from_outside" title="Permalink to this definition">¶</a></dt>
+<dd><p>Ping NAT44 out interface from outside network</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_nat.TestNAT44.test_pool_addr_fib">
+<code class="descname">test_pool_addr_fib</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.TestNAT44.test_pool_addr_fib" title="Permalink to this definition">¶</a></dt>
+<dd><p>NAT44 add pool addresses to FIB</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_nat.TestNAT44.test_port_range">
+<code class="descname">test_port_range</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.TestNAT44.test_port_range" title="Permalink to this definition">¶</a></dt>
+<dd><p>External address port range</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_nat.TestNAT44.test_port_restricted">
+<code class="descname">test_port_restricted</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.TestNAT44.test_port_restricted" title="Permalink to this definition">¶</a></dt>
+<dd><p>Port restricted NAT44 (MAP-E CE)</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_nat.TestNAT44.test_reass_hairpinning">
+<code class="descname">test_reass_hairpinning</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.TestNAT44.test_reass_hairpinning" title="Permalink to this definition">¶</a></dt>
+<dd><p>NAT44 fragments hairpinning</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_nat.TestNAT44.test_session_timeout">
+<code class="descname">test_session_timeout</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.TestNAT44.test_session_timeout" title="Permalink to this definition">¶</a></dt>
+<dd><p>NAT44 session timeouts</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_nat.TestNAT44.test_set_get_reass">
+<code class="descname">test_set_get_reass</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.TestNAT44.test_set_get_reass" title="Permalink to this definition">¶</a></dt>
+<dd><p>NAT44 set/get virtual fragmentation reassembly</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_nat.TestNAT44.test_static_in">
+<code class="descname">test_static_in</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.TestNAT44.test_static_in" title="Permalink to this definition">¶</a></dt>
+<dd><p>1:1 NAT initialized from inside network</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_nat.TestNAT44.test_static_ipless_interfaces">
+<code class="descname">test_static_ipless_interfaces</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.TestNAT44.test_static_ipless_interfaces" title="Permalink to this definition">¶</a></dt>
+<dd><p>NAT44 interfaces without configured IP address - 1:1 NAT</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_nat.TestNAT44.test_static_out">
+<code class="descname">test_static_out</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.TestNAT44.test_static_out" title="Permalink to this definition">¶</a></dt>
+<dd><p>1:1 NAT initialized from outside network</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_nat.TestNAT44.test_static_unknown_proto">
+<code class="descname">test_static_unknown_proto</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.TestNAT44.test_static_unknown_proto" title="Permalink to this definition">¶</a></dt>
+<dd><p>1:1 NAT translate packet with unknown protocol</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_nat.TestNAT44.test_static_vrf_aware">
+<code class="descname">test_static_vrf_aware</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.TestNAT44.test_static_vrf_aware" title="Permalink to this definition">¶</a></dt>
+<dd><p>1:1 NAT VRF awareness</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_nat.TestNAT44.test_static_with_port_in">
+<code class="descname">test_static_with_port_in</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.TestNAT44.test_static_with_port_in" title="Permalink to this definition">¶</a></dt>
+<dd><p>1:1 NAPT initialized from inside network</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_nat.TestNAT44.test_static_with_port_ipless_interfaces">
+<code class="descname">test_static_with_port_ipless_interfaces</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.TestNAT44.test_static_with_port_ipless_interfaces" title="Permalink to this definition">¶</a></dt>
+<dd><p>NAT44 interfaces without configured IP address - 1:1 NAPT</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_nat.TestNAT44.test_static_with_port_out">
+<code class="descname">test_static_with_port_out</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.TestNAT44.test_static_with_port_out" title="Permalink to this definition">¶</a></dt>
+<dd><p>1:1 NAPT initialized from outside network</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_nat.TestNAT44.test_syslog_apmap">
+<code class="descname">test_syslog_apmap</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.TestNAT44.test_syslog_apmap" title="Permalink to this definition">¶</a></dt>
+<dd><p>Test syslog address and port mapping creation and deletion</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_nat.TestNAT44.test_vrf_feature_independent">
+<code class="descname">test_vrf_feature_independent</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.TestNAT44.test_vrf_feature_independent" title="Permalink to this definition">¶</a></dt>
+<dd><p>NAT44 tenant VRF independent address pool mode</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_nat.TestNAT44.test_vrf_mode">
+<code class="descname">test_vrf_mode</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.TestNAT44.test_vrf_mode" title="Permalink to this definition">¶</a></dt>
+<dd><p>NAT44 tenant VRF aware address pool mode</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="test_nat.TestNAT44EndpointDependent">
+<em class="property">class </em><code class="descclassname">test_nat.</code><code class="descname">TestNAT44EndpointDependent</code><span class="sig-paren">(</span><em>methodName='runTest'</em><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.TestNAT44EndpointDependent" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#test_nat.MethodHolder" title="test_nat.MethodHolder"><code class="xref py py-class docutils literal notranslate"><span class="pre">test_nat.MethodHolder</span></code></a></p>
+<p>Endpoint-Dependent mapping and filtering test cases</p>
+<dl class="classmethod">
+<dt id="test_nat.TestNAT44EndpointDependent.setUpClass">
+<em class="property">classmethod </em><code class="descname">setUpClass</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.TestNAT44EndpointDependent.setUpClass" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform class setup before running the testcase
+Remove shared memory files, start vpp and connect the vpp-api</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="test_nat.TestNAT44EndpointDependent.setUpConstants">
+<em class="property">classmethod </em><code class="descname">setUpConstants</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.TestNAT44EndpointDependent.setUpConstants" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set-up the test case class based on environment variables</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_nat.TestNAT44EndpointDependent.tearDown">
+<code class="descname">tearDown</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.TestNAT44EndpointDependent.tearDown" title="Permalink to this definition">¶</a></dt>
+<dd><p>Show various debug prints after each test</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_nat.TestNAT44EndpointDependent.test_dynamic">
+<code class="descname">test_dynamic</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.TestNAT44EndpointDependent.test_dynamic" title="Permalink to this definition">¶</a></dt>
+<dd><p>NAT44 dynamic translation test</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_nat.TestNAT44EndpointDependent.test_forwarding">
+<code class="descname">test_forwarding</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.TestNAT44EndpointDependent.test_forwarding" title="Permalink to this definition">¶</a></dt>
+<dd><p>NAT44 forwarding test</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_nat.TestNAT44EndpointDependent.test_frag_in_order">
+<code class="descname">test_frag_in_order</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.TestNAT44EndpointDependent.test_frag_in_order" title="Permalink to this definition">¶</a></dt>
+<dd><p>NAT44 translate fragments arriving in order</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_nat.TestNAT44EndpointDependent.test_frag_in_order_dont_translate">
+<code class="descname">test_frag_in_order_dont_translate</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.TestNAT44EndpointDependent.test_frag_in_order_dont_translate" title="Permalink to this definition">¶</a></dt>
+<dd><p>NAT44 don’t translate fragments arriving in order</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_nat.TestNAT44EndpointDependent.test_frag_in_order_in_plus_out">
+<code class="descname">test_frag_in_order_in_plus_out</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.TestNAT44EndpointDependent.test_frag_in_order_in_plus_out" title="Permalink to this definition">¶</a></dt>
+<dd><p>in+out interface fragments in order</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_nat.TestNAT44EndpointDependent.test_frag_out_of_order">
+<code class="descname">test_frag_out_of_order</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.TestNAT44EndpointDependent.test_frag_out_of_order" title="Permalink to this definition">¶</a></dt>
+<dd><p>NAT44 translate fragments arriving out of order</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_nat.TestNAT44EndpointDependent.test_frag_out_of_order_dont_translate">
+<code class="descname">test_frag_out_of_order_dont_translate</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.TestNAT44EndpointDependent.test_frag_out_of_order_dont_translate" title="Permalink to this definition">¶</a></dt>
+<dd><p>NAT44 don’t translate fragments arriving out of order</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_nat.TestNAT44EndpointDependent.test_frag_out_of_order_in_plus_out">
+<code class="descname">test_frag_out_of_order_in_plus_out</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.TestNAT44EndpointDependent.test_frag_out_of_order_in_plus_out" title="Permalink to this definition">¶</a></dt>
+<dd><p>in+out interface fragments out of order</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_nat.TestNAT44EndpointDependent.test_hairpinning_unknown_proto">
+<code class="descname">test_hairpinning_unknown_proto</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.TestNAT44EndpointDependent.test_hairpinning_unknown_proto" title="Permalink to this definition">¶</a></dt>
+<dd><p>NAT44 translate packet with unknown protocol - hairpinning</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_nat.TestNAT44EndpointDependent.test_lb_affinity">
+<code class="descname">test_lb_affinity</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.TestNAT44EndpointDependent.test_lb_affinity" title="Permalink to this definition">¶</a></dt>
+<dd><p>NAT44 local service load balancing affinity</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_nat.TestNAT44EndpointDependent.test_multiple_vrf">
+<code class="descname">test_multiple_vrf</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.TestNAT44EndpointDependent.test_multiple_vrf" title="Permalink to this definition">¶</a></dt>
+<dd><p>Multiple VRF setup</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_nat.TestNAT44EndpointDependent.test_next_src_nat">
+<code class="descname">test_next_src_nat</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.TestNAT44EndpointDependent.test_next_src_nat" title="Permalink to this definition">¶</a></dt>
+<dd><p>On way back forward packet to nat44-in2out node.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_nat.TestNAT44EndpointDependent.test_one_armed_nat44_static">
+<code class="descname">test_one_armed_nat44_static</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.TestNAT44EndpointDependent.test_one_armed_nat44_static" title="Permalink to this definition">¶</a></dt>
+<dd><p>One armed NAT44 and 1:1 NAPT asymmetrical rule</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_nat.TestNAT44EndpointDependent.test_output_feature">
+<code class="descname">test_output_feature</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.TestNAT44EndpointDependent.test_output_feature" title="Permalink to this definition">¶</a></dt>
+<dd><p>NAT44 interface output feature (in2out postrouting)</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_nat.TestNAT44EndpointDependent.test_output_feature_and_service">
+<code class="descname">test_output_feature_and_service</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.TestNAT44EndpointDependent.test_output_feature_and_service" title="Permalink to this definition">¶</a></dt>
+<dd><p>NAT44 interface output feature and services</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_nat.TestNAT44EndpointDependent.test_output_feature_and_service2">
+<code class="descname">test_output_feature_and_service2</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.TestNAT44EndpointDependent.test_output_feature_and_service2" title="Permalink to this definition">¶</a></dt>
+<dd><p>NAT44 interface output feature and service host direct access</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_nat.TestNAT44EndpointDependent.test_output_feature_and_service3">
+<code class="descname">test_output_feature_and_service3</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.TestNAT44EndpointDependent.test_output_feature_and_service3" title="Permalink to this definition">¶</a></dt>
+<dd><p>NAT44 interface output feature and DST NAT</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_nat.TestNAT44EndpointDependent.test_reass_hairpinning">
+<code class="descname">test_reass_hairpinning</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.TestNAT44EndpointDependent.test_reass_hairpinning" title="Permalink to this definition">¶</a></dt>
+<dd><p>NAT44 fragments hairpinning</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_nat.TestNAT44EndpointDependent.test_self_twice_nat_lb_negative">
+<code class="descname">test_self_twice_nat_lb_negative</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.TestNAT44EndpointDependent.test_self_twice_nat_lb_negative" title="Permalink to this definition">¶</a></dt>
+<dd><p>Self Twice NAT44 local service load balancing (negative test)</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_nat.TestNAT44EndpointDependent.test_self_twice_nat_lb_positive">
+<code class="descname">test_self_twice_nat_lb_positive</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.TestNAT44EndpointDependent.test_self_twice_nat_lb_positive" title="Permalink to this definition">¶</a></dt>
+<dd><p>Self Twice NAT44 local service load balancing (positive test)</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_nat.TestNAT44EndpointDependent.test_self_twice_nat_negative">
+<code class="descname">test_self_twice_nat_negative</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.TestNAT44EndpointDependent.test_self_twice_nat_negative" title="Permalink to this definition">¶</a></dt>
+<dd><p>Self Twice NAT44 (negative test)</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_nat.TestNAT44EndpointDependent.test_self_twice_nat_positive">
+<code class="descname">test_self_twice_nat_positive</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.TestNAT44EndpointDependent.test_self_twice_nat_positive" title="Permalink to this definition">¶</a></dt>
+<dd><p>Self Twice NAT44 (positive test)</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_nat.TestNAT44EndpointDependent.test_session_limit_per_user">
+<code class="descname">test_session_limit_per_user</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.TestNAT44EndpointDependent.test_session_limit_per_user" title="Permalink to this definition">¶</a></dt>
+<dd><p>Maximum sessions per user limit</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_nat.TestNAT44EndpointDependent.test_session_rst_timeout">
+<code class="descname">test_session_rst_timeout</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.TestNAT44EndpointDependent.test_session_rst_timeout" title="Permalink to this definition">¶</a></dt>
+<dd><p>NAT44 session RST timeouts</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_nat.TestNAT44EndpointDependent.test_session_timeout">
+<code class="descname">test_session_timeout</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.TestNAT44EndpointDependent.test_session_timeout" title="Permalink to this definition">¶</a></dt>
+<dd><p>NAT44 session timeouts</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_nat.TestNAT44EndpointDependent.test_static_lb">
+<code class="descname">test_static_lb</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.TestNAT44EndpointDependent.test_static_lb" title="Permalink to this definition">¶</a></dt>
+<dd><p>NAT44 local service load balancing</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_nat.TestNAT44EndpointDependent.test_static_lb_2">
+<code class="descname">test_static_lb_2</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.TestNAT44EndpointDependent.test_static_lb_2" title="Permalink to this definition">¶</a></dt>
+<dd><p>NAT44 local service load balancing (asymmetrical rule)</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_nat.TestNAT44EndpointDependent.test_static_lb_multi_clients">
+<code class="descname">test_static_lb_multi_clients</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.TestNAT44EndpointDependent.test_static_lb_multi_clients" title="Permalink to this definition">¶</a></dt>
+<dd><p>NAT44 local service load balancing - multiple clients</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_nat.TestNAT44EndpointDependent.test_static_with_port_out2">
+<code class="descname">test_static_with_port_out2</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.TestNAT44EndpointDependent.test_static_with_port_out2" title="Permalink to this definition">¶</a></dt>
+<dd><p>1:1 NAPT asymmetrical rule</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_nat.TestNAT44EndpointDependent.test_syslog_sess">
+<code class="descname">test_syslog_sess</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.TestNAT44EndpointDependent.test_syslog_sess" title="Permalink to this definition">¶</a></dt>
+<dd><p>Test syslog session creation and deletion</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_nat.TestNAT44EndpointDependent.test_tcp_close">
+<code class="descname">test_tcp_close</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.TestNAT44EndpointDependent.test_tcp_close" title="Permalink to this definition">¶</a></dt>
+<dd><p>Close TCP session from inside network - output feature</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_nat.TestNAT44EndpointDependent.test_tcp_session_close_in">
+<code class="descname">test_tcp_session_close_in</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.TestNAT44EndpointDependent.test_tcp_session_close_in" title="Permalink to this definition">¶</a></dt>
+<dd><p>Close TCP session from inside network</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_nat.TestNAT44EndpointDependent.test_tcp_session_close_out">
+<code class="descname">test_tcp_session_close_out</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.TestNAT44EndpointDependent.test_tcp_session_close_out" title="Permalink to this definition">¶</a></dt>
+<dd><p>Close TCP session from outside network</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_nat.TestNAT44EndpointDependent.test_tcp_session_close_simultaneous">
+<code class="descname">test_tcp_session_close_simultaneous</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.TestNAT44EndpointDependent.test_tcp_session_close_simultaneous" title="Permalink to this definition">¶</a></dt>
+<dd><p>Close TCP session from inside network</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_nat.TestNAT44EndpointDependent.test_twice_nat">
+<code class="descname">test_twice_nat</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.TestNAT44EndpointDependent.test_twice_nat" title="Permalink to this definition">¶</a></dt>
+<dd><p>Twice NAT44</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_nat.TestNAT44EndpointDependent.test_twice_nat_interface_addr">
+<code class="descname">test_twice_nat_interface_addr</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.TestNAT44EndpointDependent.test_twice_nat_interface_addr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Acquire twice NAT44 addresses from interface</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_nat.TestNAT44EndpointDependent.test_twice_nat_lb">
+<code class="descname">test_twice_nat_lb</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.TestNAT44EndpointDependent.test_twice_nat_lb" title="Permalink to this definition">¶</a></dt>
+<dd><p>Twice NAT44 local service load balancing</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_nat.TestNAT44EndpointDependent.test_unknown_proto">
+<code class="descname">test_unknown_proto</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.TestNAT44EndpointDependent.test_unknown_proto" title="Permalink to this definition">¶</a></dt>
+<dd><p>NAT44 translate packet with unknown protocol</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_nat.TestNAT44EndpointDependent.twice_nat_common">
+<code class="descname">twice_nat_common</code><span class="sig-paren">(</span><em>self_twice_nat=False</em>, <em>same_pg=False</em>, <em>lb=False</em>, <em>client_id=None</em><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.TestNAT44EndpointDependent.twice_nat_common" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="test_nat.TestNAT44Out2InDPO">
+<em class="property">class </em><code class="descclassname">test_nat.</code><code class="descname">TestNAT44Out2InDPO</code><span class="sig-paren">(</span><em>methodName='runTest'</em><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.TestNAT44Out2InDPO" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#test_nat.MethodHolder" title="test_nat.MethodHolder"><code class="xref py py-class docutils literal notranslate"><span class="pre">test_nat.MethodHolder</span></code></a></p>
+<p>NAT44 Test Cases using out2in DPO</p>
+<dl class="method">
+<dt id="test_nat.TestNAT44Out2InDPO.configure_xlat">
+<code class="descname">configure_xlat</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.TestNAT44Out2InDPO.configure_xlat" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="classmethod">
+<dt id="test_nat.TestNAT44Out2InDPO.setUpClass">
+<em class="property">classmethod </em><code class="descname">setUpClass</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.TestNAT44Out2InDPO.setUpClass" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform class setup before running the testcase
+Remove shared memory files, start vpp and connect the vpp-api</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="test_nat.TestNAT44Out2InDPO.setUpConstants">
+<em class="property">classmethod </em><code class="descname">setUpConstants</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.TestNAT44Out2InDPO.setUpConstants" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set-up the test case class based on environment variables</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_nat.TestNAT44Out2InDPO.test_464xlat_ce">
+<code class="descname">test_464xlat_ce</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.TestNAT44Out2InDPO.test_464xlat_ce" title="Permalink to this definition">¶</a></dt>
+<dd><p>Test 464XLAT CE with NAT44</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_nat.TestNAT44Out2InDPO.test_464xlat_ce_no_nat">
+<code class="descname">test_464xlat_ce_no_nat</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.TestNAT44Out2InDPO.test_464xlat_ce_no_nat" title="Permalink to this definition">¶</a></dt>
+<dd><p>Test 464XLAT CE without NAT44</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="test_nat.TestNAT64">
+<em class="property">class </em><code class="descclassname">test_nat.</code><code class="descname">TestNAT64</code><span class="sig-paren">(</span><em>methodName='runTest'</em><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.TestNAT64" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#test_nat.MethodHolder" title="test_nat.MethodHolder"><code class="xref py py-class docutils literal notranslate"><span class="pre">test_nat.MethodHolder</span></code></a></p>
+<p>NAT64 Test Cases</p>
+<dl class="method">
+<dt id="test_nat.TestNAT64.clear_nat64">
+<code class="descname">clear_nat64</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.TestNAT64.clear_nat64" title="Permalink to this definition">¶</a></dt>
+<dd><p>Clear NAT64 configuration.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_nat.TestNAT64.nat64_get_ses_num">
+<code class="descname">nat64_get_ses_num</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.TestNAT64.nat64_get_ses_num" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return number of active NAT64 sessions.</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="test_nat.TestNAT64.setUpClass">
+<em class="property">classmethod </em><code class="descname">setUpClass</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.TestNAT64.setUpClass" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform class setup before running the testcase
+Remove shared memory files, start vpp and connect the vpp-api</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="test_nat.TestNAT64.setUpConstants">
+<em class="property">classmethod </em><code class="descname">setUpConstants</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.TestNAT64.setUpConstants" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set-up the test case class based on environment variables</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_nat.TestNAT64.tearDown">
+<code class="descname">tearDown</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.TestNAT64.tearDown" title="Permalink to this definition">¶</a></dt>
+<dd><p>Show various debug prints after each test</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_nat.TestNAT64.test_dynamic">
+<code class="descname">test_dynamic</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.TestNAT64.test_dynamic" title="Permalink to this definition">¶</a></dt>
+<dd><p>NAT64 dynamic translation test</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_nat.TestNAT64.test_frag_in_order">
+<code class="descname">test_frag_in_order</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.TestNAT64.test_frag_in_order" title="Permalink to this definition">¶</a></dt>
+<dd><p>NAT64 translate fragments arriving in order</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_nat.TestNAT64.test_frag_out_of_order">
+<code class="descname">test_frag_out_of_order</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.TestNAT64.test_frag_out_of_order" title="Permalink to this definition">¶</a></dt>
+<dd><p>NAT64 translate fragments arriving out of order</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_nat.TestNAT64.test_hairpinning">
+<code class="descname">test_hairpinning</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.TestNAT64.test_hairpinning" title="Permalink to this definition">¶</a></dt>
+<dd><p>NAT64 hairpinning</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_nat.TestNAT64.test_hairpinning_unknown_proto">
+<code class="descname">test_hairpinning_unknown_proto</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.TestNAT64.test_hairpinning_unknown_proto" title="Permalink to this definition">¶</a></dt>
+<dd><p>NAT64 translate packet with unknown protocol - hairpinning</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_nat.TestNAT64.test_icmp_error">
+<code class="descname">test_icmp_error</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.TestNAT64.test_icmp_error" title="Permalink to this definition">¶</a></dt>
+<dd><p>NAT64 ICMP Error message translation</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_nat.TestNAT64.test_interface">
+<code class="descname">test_interface</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.TestNAT64.test_interface" title="Permalink to this definition">¶</a></dt>
+<dd><p>Enable/disable NAT64 feature on the interface</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_nat.TestNAT64.test_interface_addr">
+<code class="descname">test_interface_addr</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.TestNAT64.test_interface_addr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Acquire NAT64 pool addresses from interface</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_nat.TestNAT64.test_ipfix_bib_ses">
+<code class="descname">test_ipfix_bib_ses</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.TestNAT64.test_ipfix_bib_ses" title="Permalink to this definition">¶</a></dt>
+<dd><p>IPFIX logging NAT64 BIB/session create and delete events</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_nat.TestNAT64.test_ipfix_max_bibs_sessions">
+<code class="descname">test_ipfix_max_bibs_sessions</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.TestNAT64.test_ipfix_max_bibs_sessions" title="Permalink to this definition">¶</a></dt>
+<dd><p>IPFIX logging maximum session and BIB entries exceeded</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_nat.TestNAT64.test_ipfix_max_frags">
+<code class="descname">test_ipfix_max_frags</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.TestNAT64.test_ipfix_max_frags" title="Permalink to this definition">¶</a></dt>
+<dd><p>IPFIX logging maximum fragments pending reassembly exceeded</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_nat.TestNAT64.test_nat64_inside_interface_handles_neighbor_advertisement">
+<code class="descname">test_nat64_inside_interface_handles_neighbor_advertisement</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.TestNAT64.test_nat64_inside_interface_handles_neighbor_advertisement" title="Permalink to this definition">¶</a></dt>
+<dd><p>NAT64 inside interface handles Neighbor Advertisement</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_nat.TestNAT64.test_one_armed_nat64">
+<code class="descname">test_one_armed_nat64</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.TestNAT64.test_one_armed_nat64" title="Permalink to this definition">¶</a></dt>
+<dd><p>One armed NAT64</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_nat.TestNAT64.test_pool">
+<code class="descname">test_pool</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.TestNAT64.test_pool" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add/delete address to NAT64 pool</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_nat.TestNAT64.test_prefix">
+<code class="descname">test_prefix</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.TestNAT64.test_prefix" title="Permalink to this definition">¶</a></dt>
+<dd><p>NAT64 Network-Specific Prefix</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_nat.TestNAT64.test_reass_hairpinning">
+<code class="descname">test_reass_hairpinning</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.TestNAT64.test_reass_hairpinning" title="Permalink to this definition">¶</a></dt>
+<dd><p>NAT64 fragments hairpinning</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_nat.TestNAT64.test_session_timeout">
+<code class="descname">test_session_timeout</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.TestNAT64.test_session_timeout" title="Permalink to this definition">¶</a></dt>
+<dd><p>NAT64 session timeout</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_nat.TestNAT64.test_set_timeouts">
+<code class="descname">test_set_timeouts</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.TestNAT64.test_set_timeouts" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set NAT64 timeouts</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_nat.TestNAT64.test_static">
+<code class="descname">test_static</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.TestNAT64.test_static" title="Permalink to this definition">¶</a></dt>
+<dd><p>NAT64 static translation test</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_nat.TestNAT64.test_static_bib">
+<code class="descname">test_static_bib</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.TestNAT64.test_static_bib" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add/delete static BIB entry</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_nat.TestNAT64.test_syslog_sess">
+<code class="descname">test_syslog_sess</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.TestNAT64.test_syslog_sess" title="Permalink to this definition">¶</a></dt>
+<dd><p>Test syslog session creation and deletion</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_nat.TestNAT64.test_unknown_proto">
+<code class="descname">test_unknown_proto</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.TestNAT64.test_unknown_proto" title="Permalink to this definition">¶</a></dt>
+<dd><p>NAT64 translate packet with unknown protocol</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="test_nat.TestNAT66">
+<em class="property">class </em><code class="descclassname">test_nat.</code><code class="descname">TestNAT66</code><span class="sig-paren">(</span><em>methodName='runTest'</em><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.TestNAT66" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#test_nat.MethodHolder" title="test_nat.MethodHolder"><code class="xref py py-class docutils literal notranslate"><span class="pre">test_nat.MethodHolder</span></code></a></p>
+<p>NAT66 Test Cases</p>
+<dl class="method">
+<dt id="test_nat.TestNAT66.clear_nat66">
+<code class="descname">clear_nat66</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.TestNAT66.clear_nat66" title="Permalink to this definition">¶</a></dt>
+<dd><p>Clear NAT66 configuration.</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="test_nat.TestNAT66.setUpClass">
+<em class="property">classmethod </em><code class="descname">setUpClass</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.TestNAT66.setUpClass" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform class setup before running the testcase
+Remove shared memory files, start vpp and connect the vpp-api</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_nat.TestNAT66.tearDown">
+<code class="descname">tearDown</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.TestNAT66.tearDown" title="Permalink to this definition">¶</a></dt>
+<dd><p>Show various debug prints after each test</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_nat.TestNAT66.test_check_no_translate">
+<code class="descname">test_check_no_translate</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.TestNAT66.test_check_no_translate" title="Permalink to this definition">¶</a></dt>
+<dd><p>NAT66 translate only when egress interface is outside interface</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_nat.TestNAT66.test_static">
+<code class="descname">test_static</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_nat.TestNAT66.test_static" title="Permalink to this definition">¶</a></dt>
+<dd><p>1:1 NAT66 test</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="test_neighbor.html" class="btn btn-neutral float-right" title="2.69. test_neighbor module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="test_mtu.html" class="btn btn-neutral float-left" title="2.67. test_mtu module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2016, VPP team
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

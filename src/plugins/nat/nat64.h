@@ -39,7 +39,7 @@ typedef enum
 #undef _
 } nat64_tcp_ses_state_t;
 
-enum
+typedef enum
 {
   NAT64_CLEANER_RESCHEDULE = 1,
 } nat64_cleaner_process_event_e;
@@ -89,8 +89,6 @@ typedef struct
   /** Pool of static BIB entries to be added/deleted in worker threads */
   nat64_static_bib_to_update_t *static_bibs;
 
-  u32 error_node_index;
-
   /** config parameters */
   u32 bib_buckets;
   u32 bib_memory_size;
@@ -112,6 +110,16 @@ typedef struct
   vlib_simple_counter_main_t total_bibs;
   vlib_simple_counter_main_t total_sessions;
 
+  /** node index **/
+  u32 error_node_index;
+
+  u32 in2out_node_index;
+  u32 in2out_slowpath_node_index;
+  u32 in2out_reass_node_index;
+
+  u32 out2in_node_index;
+  u32 out2in_reass_node_index;
+
   ip4_main_t *ip4_main;
   snat_main_t *sm;
 } nat64_main_t;
@@ -123,13 +131,15 @@ extern vlib_node_registration_t nat64_out2in_node;
 /**
  * @brief Add/delete address to NAT64 pool.
  *
+ * @param thread_index Thread index used by ipfix nat logging (not address per thread).
  * @param addr   IPv4 address.
  * @param vrf_id VRF id of tenant, ~0 means independent of VRF.
  * @param is_add 1 if add, 0 if delete.
  *
  * @returns 0 on success, non-zero value otherwise.
  */
-int nat64_add_del_pool_addr (ip4_address_t * addr, u32 vrf_id, u8 is_add);
+int nat64_add_del_pool_addr (u32 thread_index,
+			     ip4_address_t * addr, u32 vrf_id, u8 is_add);
 
 /**
  * @brief Call back function when walking addresses in NAT64 pool, non-zero

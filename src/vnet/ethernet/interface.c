@@ -41,6 +41,7 @@
 #include <vnet/ip/ip.h>
 #include <vnet/pg/pg.h>
 #include <vnet/ethernet/ethernet.h>
+#include <vnet/ethernet/arp.h>
 #include <vnet/l2/l2_input.h>
 #include <vnet/l2/l2_bd.h>
 #include <vnet/adj/adj.h>
@@ -277,7 +278,7 @@ clib_error_t *
 ethernet_register_interface (vnet_main_t * vnm,
 			     u32 dev_class_index,
 			     u32 dev_instance,
-			     u8 * address,
+			     const u8 * address,
 			     u32 * hw_if_index_return,
 			     ethernet_flag_change_function_t flag_change)
 {
@@ -657,9 +658,6 @@ VNET_DEVICE_CLASS (ethernet_simulated_device_class) = {
   .mac_addr_change_function = simulated_ethernet_mac_change,
 };
 /* *INDENT-ON* */
-
-VLIB_DEVICE_TX_FUNCTION_MULTIARCH (ethernet_simulated_device_class,
-				   simulated_ethernet_interface_tx);
 
 /*
  * Maintain a bitmap of allocated loopback instance numbers.

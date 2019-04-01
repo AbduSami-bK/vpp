@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 Cisco and/or its affiliates.
+ * Copyright (c) 2017-2019 Cisco and/or its affiliates.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at:
@@ -78,9 +78,9 @@ session_table_init (session_table_t * slt, u8 fib_proto)
 #undef _
 
 #define _(af,table,parm,value)                                          \
-  if (session_manager_main.configured_##af##_##table##_table_##parm)    \
+  if (session_main.configured_##af##_##table##_table_##parm)    \
     configured_##af##_##table##_table_##parm =                          \
-      session_manager_main.configured_##af##_##table##_table_##parm;
+      session_main.configured_##af##_##table##_table_##parm;
   foreach_hash_table_parameter;
 #undef _
 

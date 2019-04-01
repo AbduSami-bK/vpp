@@ -22,6 +22,7 @@
 #include <vnet/ipsec/ipsec.h>
 #include <vnet/ipsec/esp.h>
 #include <vnet/udp/udp.h>
+#include <dpdk/buffer.h>
 #include <dpdk/ipsec/ipsec.h>
 #include <dpdk/device/dpdk.h>
 #include <dpdk/device/dpdk_priv.h>
@@ -111,7 +112,7 @@ dpdk_esp_encrypt_inline (vlib_main_t * vm,
 			 vlib_node_runtime_t * node,
 			 vlib_frame_t * from_frame, int is_ip6)
 {
-  u32 n_left_from, *from, *to_next, next_index;
+  u32 n_left_from, *from, *to_next, next_index, thread_index;
   ipsec_main_t *im = &ipsec_main;
   u32 thread_idx = vlib_get_thread_index ();
   dpdk_crypto_main_t *dcm = &dpdk_crypto_main;
@@ -128,6 +129,7 @@ dpdk_esp_encrypt_inline (vlib_main_t * vm,
 
   from = vlib_frame_vector_args (from_frame);
   n_left_from = from_frame->n_vectors;
+  thread_index = vm->thread_index;
 
   ret = crypto_alloc_ops (numa, ops, n_left_from);
   if (ret)
@@ -191,6 +193,8 @@ dpdk_esp_encrypt_inline (vlib_main_t * vm,
 	  ASSERT (op->status == RTE_CRYPTO_OP_STATUS_NOT_PROCESSED);
 
 	  dpdk_op_priv_t *priv = crypto_op_get_priv (op);
+	  /* store bi in op private */
+	  priv->bi = bi0;
 
 	  u16 op_len =
 	    sizeof (op[0]) + sizeof (op[0].sym[0]) + sizeof (priv[0]);
@@ -277,7 +281,9 @@ dpdk_esp_encrypt_inline (vlib_main_t * vm,
 	  orig_sz = b0->current_length;
 
 	  /* TODO multi-seg support - total_length_not_including_first_buffer */
-	  sa0->total_data_size += b0->current_length;
+	  vlib_increment_combined_counter
+	    (&ipsec_sa_counters, thread_index, sa_index0,
+	     1, b0->current_length);
 
 	  res->ops[res->n_ops] = op;
 	  res->bi[res->n_ops] = bi0;
@@ -547,7 +553,7 @@ dpdk_esp_encrypt_inline (vlib_main_t * vm,
 				   ESP_ENCRYPT_ERROR_RX_PKTS,
 				   from_frame->n_vectors);
 
-      crypto_enqueue_ops (vm, cwm, 1, dpdk_esp6_encrypt_node.index,
+      crypto_enqueue_ops (vm, cwm, dpdk_esp6_encrypt_node.index,
 			  ESP_ENCRYPT_ERROR_ENQ_FAIL, numa);
     }
   else
@@ -556,7 +562,7 @@ dpdk_esp_encrypt_inline (vlib_main_t * vm,
 				   ESP_ENCRYPT_ERROR_RX_PKTS,
 				   from_frame->n_vectors);
 
-      crypto_enqueue_ops (vm, cwm, 1, dpdk_esp4_encrypt_node.index,
+      crypto_enqueue_ops (vm, cwm, dpdk_esp4_encrypt_node.index,
 			  ESP_ENCRYPT_ERROR_ENQ_FAIL, numa);
     }
 

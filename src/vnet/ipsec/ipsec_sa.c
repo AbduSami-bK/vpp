@@ -16,6 +16,16 @@
 #include <vnet/ipsec/ipsec.h>
 #include <vnet/fib/fib_table.h>
 
+/**
+ * @brief
+ * SA packet & bytes counters
+ */
+vlib_combined_counter_main_t ipsec_sa_counters = {
+  .name = "SA",
+  .stat_segment_name = "/net/ipsec/sa",
+};
+
+
 static clib_error_t *
 ipsec_call_add_del_callbacks (ipsec_main_t * im, ipsec_sa_t * sa,
 			      u32 sa_index, int is_add)
@@ -78,6 +88,26 @@ ipsec_sa_stack (ipsec_sa_t * sa)
   dpo_reset (&tmp);
 }
 
+void
+ipsec_sa_set_crypto_alg (ipsec_sa_t * sa, ipsec_crypto_alg_t crypto_alg)
+{
+  ipsec_main_t *im = &ipsec_main;
+  sa->crypto_alg = crypto_alg;
+  sa->crypto_iv_size = im->crypto_algs[crypto_alg].iv_size;
+  sa->crypto_block_size = im->crypto_algs[crypto_alg].block_size;
+  sa->crypto_enc_op_type = im->crypto_algs[crypto_alg].enc_op_type;
+  sa->crypto_dec_op_type = im->crypto_algs[crypto_alg].dec_op_type;
+}
+
+void
+ipsec_sa_set_integ_alg (ipsec_sa_t * sa, ipsec_integ_alg_t integ_alg)
+{
+  ipsec_main_t *im = &ipsec_main;
+  sa->integ_alg = integ_alg;
+  sa->integ_trunc_size = im->integ_algs[integ_alg].trunc_size;
+  sa->integ_op_type = im->integ_algs[integ_alg].op_type;
+}
+
 int
 ipsec_sa_add (u32 id,
 	      u32 spi,
@@ -106,12 +136,16 @@ ipsec_sa_add (u32 id,
   fib_node_init (&sa->node, FIB_NODE_TYPE_IPSEC_SA);
   sa_index = sa - im->sad;
 
+  vlib_validate_combined_counter (&ipsec_sa_counters, sa_index);
+  vlib_zero_combined_counter (&ipsec_sa_counters, sa_index);
+
   sa->id = id;
   sa->spi = spi;
+  sa->stat_index = sa_index;
   sa->protocol = proto;
-  sa->crypto_alg = crypto_alg;
+  ipsec_sa_set_crypto_alg (sa, crypto_alg);
   clib_memcpy (&sa->crypto_key, ck, sizeof (sa->crypto_key));
-  sa->integ_alg = integ_alg;
+  ipsec_sa_set_integ_alg (sa, integ_alg);
   clib_memcpy (&sa->integ_key, ik, sizeof (sa->integ_key));
   ip46_address_copy (&sa->tunnel_src_addr, tun_src);
   ip46_address_copy (&sa->tunnel_dst_addr, tun_dst);

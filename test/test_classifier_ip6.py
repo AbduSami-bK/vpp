@@ -126,7 +126,7 @@ class TestClassifier(VppTestCase):
             try:
                 ip6_received = packet[IPv6]
                 proto_received = packet[proto_l]
-                payload_info = self.payload_to_info(str(packet[Raw]))
+                payload_info = self.payload_to_info(packet[Raw])
                 packet_index = payload_info.index
                 self.assertEqual(payload_info.dst, dst_sw_if_index)
                 self.logger.debug(
@@ -168,7 +168,7 @@ class TestClassifier(VppTestCase):
         :param str dst_port: destination port number <0-ffff>
         """
 
-        return ('{:0>14}{:0>34}{:0>32}{:0>4}{:0>4}'.format(
+        return ('{!s:0>14}{!s:0>34}{!s:0>32}{!s:0>4}{!s:0>4}'.format(
             nh, src_ip, dst_ip, src_port, dst_port)).rstrip('0')
 
     @staticmethod
@@ -190,7 +190,7 @@ class TestClassifier(VppTestCase):
             dst_ip = binascii.hexlify(socket.inet_pton(
                 socket.AF_INET6, dst_ip))
 
-        return ('{:0>14}{:0>34}{:0>32}{:0>4}{:0>4}'.format(
+        return ('{!s:0>14}{!s:0>34}{!s:0>32}{!s:0>4}{!s:0>4}'.format(
             hex(nh)[2:], src_ip, dst_ip, hex(src_port)[2:],
             hex(dst_port)[2:])).rstrip('0')
 
@@ -203,8 +203,8 @@ class TestClassifier(VppTestCase):
         :param str ether_type: ethernet type <0-ffff>
         """
 
-        return ('{:0>12}{:0>12}{:0>4}'.format(dst_mac, src_mac,
-                                              ether_type)).rstrip('0')
+        return ('{!s:0>12}{!s:0>12}{!s:0>4}'.format(
+            dst_mac, src_mac, ether_type)).rstrip('0')
 
     @staticmethod
     def build_mac_match(dst_mac='', src_mac='', ether_type=''):
@@ -219,8 +219,8 @@ class TestClassifier(VppTestCase):
         if src_mac:
             src_mac = src_mac.replace(':', '')
 
-        return ('{:0>12}{:0>12}{:0>4}'.format(dst_mac, src_mac,
-                                              ether_type)).rstrip('0')
+        return ('{!s:0>12}{!s:0>12}{!s:0>4}'.format(
+            dst_mac, src_mac, ether_type)).rstrip('0')
 
     def create_classify_table(self, key, mask, data_offset=0):
         """Create Classify Table
@@ -236,7 +236,7 @@ class TestClassifier(VppTestCase):
             miss_next_index=0,
             current_data_flag=1,
             current_data_offset=data_offset)
-        self.assertIsNotNone(r, msg='No response msg for add_del_table')
+        self.assertIsNotNone(r, 'No response msg for add_del_table')
         self.acl_tbl_idx[key] = r.new_table_index
 
     def create_classify_session(self, table_index, match, vrfid=0, is_add=1):
@@ -254,7 +254,7 @@ class TestClassifier(VppTestCase):
             binascii.unhexlify(match),
             opaque_index=0,
             metadata=vrfid)
-        self.assertIsNotNone(r, msg='No response msg for add_del_session')
+        self.assertIsNotNone(r, 'No response msg for add_del_session')
 
     def input_acl_set_interface(self, intf, table_index, is_add=1):
         """Configure Input ACL interface
@@ -268,7 +268,7 @@ class TestClassifier(VppTestCase):
             is_add,
             intf.sw_if_index,
             ip6_table_index=table_index)
-        self.assertIsNotNone(r, msg='No response msg for acl_set_interface')
+        self.assertIsNotNone(r, 'No response msg for acl_set_interface')
 
     def output_acl_set_interface(self, intf, table_index, is_add=1):
         """Configure Output ACL interface
@@ -282,7 +282,7 @@ class TestClassifier(VppTestCase):
             is_add,
             intf.sw_if_index,
             ip6_table_index=table_index)
-        self.assertIsNotNone(r, msg='No response msg for acl_set_interface')
+        self.assertIsNotNone(r, 'No response msg for acl_set_interface')
 
 
 class TestClassifierIP6(TestClassifier):

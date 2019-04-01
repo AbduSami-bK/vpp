@@ -15,7 +15,14 @@ add_vpp_plugin(unittest
   SOURCES
   bier_test.c
   bihash_test.c
+  crypto_test.c
+  crypto/aes_cbc.c
+  crypto/rfc2202_hmac_sha1.c
+  crypto/rfc2202_hmac_md5.c
+  crypto/rfc4231.c
   fib_test.c
+  ipsec_test.c
+  interface_test.c
   mfib_test.c
   session_test.c
   string_test.c

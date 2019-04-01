@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 Cisco and/or its affiliates.
+ * Copyright (c) 2016-2019 Cisco and/or its affiliates.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at:
@@ -303,6 +303,8 @@ typedef struct _tcp_connection
   tcp_options_t rcv_opts;	/**< Rx options for connection */
 
   sack_block_t *snd_sacks;	/**< Vector of SACKs to send. XXX Fixed size? */
+  u8 snd_sack_pos;		/**< Position in vec of first block to send */
+  sack_block_t *snd_sacks_fl;	/**< Vector for building new list */
   sack_scoreboard_t sack_sb;	/**< SACK "scoreboard" that tracks holes */
 
   u16 rcv_dupacks;	/**< Number of DUPACKs received */
@@ -484,6 +486,9 @@ typedef struct _tcp_main
    *  rfc 7323 window scaling factor */
   u32 max_rx_fifo;
 
+  /** Default MTU to be used when establishing connections */
+  u16 default_mtu;
+
   /** Number of preallocated connections */
   u32 preallocated_connections;
   u32 preallocated_half_open_connections;
@@ -513,6 +518,14 @@ extern vlib_node_registration_t tcp4_input_node;
 extern vlib_node_registration_t tcp6_input_node;
 extern vlib_node_registration_t tcp4_output_node;
 extern vlib_node_registration_t tcp6_output_node;
+extern vlib_node_registration_t tcp4_established_node;
+extern vlib_node_registration_t tcp6_established_node;
+extern vlib_node_registration_t tcp4_syn_sent_node;
+extern vlib_node_registration_t tcp6_syn_sent_node;
+extern vlib_node_registration_t tcp4_rcv_process_node;
+extern vlib_node_registration_t tcp6_rcv_process_node;
+extern vlib_node_registration_t tcp4_listen_node;
+extern vlib_node_registration_t tcp6_listen_node;
 
 always_inline tcp_main_t *
 vnet_get_tcp_main ()
@@ -612,7 +625,6 @@ tcp_half_open_connection_get (u32 conn_index)
   return tc;
 }
 
-void tcp_make_ack (tcp_connection_t * ts, vlib_buffer_t * b);
 void tcp_make_fin (tcp_connection_t * tc, vlib_buffer_t * b);
 void tcp_make_synack (tcp_connection_t * ts, vlib_buffer_t * b);
 void tcp_send_reset_w_pkt (tcp_connection_t * tc, vlib_buffer_t * pkt,
@@ -671,7 +683,7 @@ tcp_flight_size (const tcp_connection_t * tc)
 {
   int flight_size;
 
-  flight_size = (int) (tc->snd_una_max - tc->snd_una) - tcp_bytes_out (tc)
+  flight_size = (int) (tc->snd_nxt - tc->snd_una) - tcp_bytes_out (tc)
     + tc->snd_rxt_bytes;
 
   if (flight_size < 0)
@@ -811,7 +823,8 @@ tcp_set_time_now (tcp_worker_ctx_t * wrk)
   return wrk->time_now;
 }
 
-u32 tcp_push_header (tcp_connection_t * tconn, vlib_buffer_t * b);
+u32 tcp_session_push_header (transport_connection_t * tconn,
+			     vlib_buffer_t * b);
 
 void tcp_connection_timers_init (tcp_connection_t * tc);
 void tcp_connection_timers_reset (tcp_connection_t * tc);
@@ -914,7 +927,7 @@ tcp_persist_timer_reset (tcp_connection_t * tc)
 always_inline void
 tcp_retransmit_timer_update (tcp_connection_t * tc)
 {
-  if (tc->snd_una == tc->snd_una_max)
+  if (tc->snd_una == tc->snd_nxt)
     {
       tcp_retransmit_timer_reset (tc);
       if (tc->snd_wnd < tc->snd_mss)
@@ -933,7 +946,7 @@ tcp_timer_is_active (tcp_connection_t * tc, tcp_timers_e timer)
 
 #define tcp_validate_txf_size(_tc, _a) 					\
   ASSERT(_tc->state != TCP_STATE_ESTABLISHED 				\
-	 || session_tx_fifo_max_dequeue (&_tc->connection) >= _a)
+	 || transport_max_tx_dequeue (&_tc->connection) >= _a)
 
 void tcp_rcv_sacks (tcp_connection_t * tc, u32 ack);
 u8 *tcp_scoreboard_replay (u8 * s, tcp_connection_t * tc, u8 verbose);

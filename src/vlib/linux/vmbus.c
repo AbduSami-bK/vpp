@@ -157,7 +157,7 @@ vlib_vmbus_raise_lower (int fd, const char *upper_name)
   u8 *dev_net_dir;
   DIR *dir;
 
-  memset (&ifr, 0, sizeof (ifr));
+  clib_memset (&ifr, 0, sizeof (ifr));
 
   dev_net_dir = format (0, "%s/%s%c", sysfs_class_net_path, upper_name, 0);
 
@@ -175,7 +175,7 @@ vlib_vmbus_raise_lower (int fd, const char *upper_name)
       if (strncmp (e->d_name, "lower_", 6))
 	continue;
 
-      strncpy (ifr.ifr_name, e->d_name + 6, IFNAMSIZ);
+      strncpy (ifr.ifr_name, e->d_name + 6, IFNAMSIZ - 1);
       break;
     }
   closedir (dir);
@@ -197,6 +197,16 @@ vlib_vmbus_raise_lower (int fd, const char *upper_name)
 done:
   vec_free (dev_net_dir);
   return error;
+}
+
+static int
+directory_exists (char *path)
+{
+  struct stat s = { 0 };
+  if (stat (path, &s) == -1)
+    return 0;
+
+  return S_ISDIR (s.st_mode);
 }
 
 clib_error_t *
@@ -221,6 +231,10 @@ vlib_vmbus_bind_to_uio (vlib_vmbus_addr_t * addr)
 
   /* skip if not using the Linux kernel netvsc driver */
   if (!driver_name || strcmp ("hv_netvsc", (char *) driver_name) != 0)
+    goto done;
+
+  /* if uio_hv_generic is not loaded, then can't use native DPDK driver. */
+  if (!directory_exists ("/sys/module/uio_hv_generic"))
     goto done;
 
   s = format (s, "%v/net%c", dev_dir_name, 0);
@@ -249,8 +263,8 @@ vlib_vmbus_bind_to_uio (vlib_vmbus_addr_t * addr)
     }
 
 
-  memset (&ifr, 0, sizeof (ifr));
-  strncpy (ifr.ifr_name, ifname, IFNAMSIZ);
+  clib_memset (&ifr, 0, sizeof (ifr));
+  strncpy (ifr.ifr_name, ifname, IFNAMSIZ - 1);
 
   /* read up/down flags */
   fd = socket (PF_INET, SOCK_DGRAM, 0);
@@ -277,26 +291,28 @@ vlib_vmbus_bind_to_uio (vlib_vmbus_addr_t * addr)
       goto done;
     }
 
-  error = vlib_vmbus_raise_lower (fd, ifname);
-  close (fd);
-
-  if (error)
-    goto done;
-
-
   /* tell uio_hv_generic about netvsc device type */
   if (uio_new_id_needed)
     {
-      uio_new_id_needed = 0;
-
       vec_reset_length (s);
       s = format (s, "%s/%s/new_id%c", sysfs_vmbus_drv_path, uio_drv_name, 0);
       error = clib_sysfs_write ((char *) s, "%s", netvsc_uuid);
 
       if (error)
-	goto done;
+	{
+	  close (fd);
+	  goto done;
+	}
+
+      uio_new_id_needed = 0;
 
     }
+
+  error = vlib_vmbus_raise_lower (fd, ifname);
+  close (fd);
+
+  if (error)
+    goto done;
 
   /* prefer the simplier driver_override model */
   vec_reset_length (s);

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 Cisco and/or its affiliates.
+ * Copyright (c) 2016-2019 Cisco and/or its affiliates.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at:
@@ -15,11 +15,48 @@
 #ifndef __included_uri_h__
 #define __included_uri_h__
 
+#include <vlibmemory/api.h>
+#include <svm/message_queue.h>
 #include <svm/svm_fifo_segment.h>
-#include <vnet/session/session.h>
-#include <vnet/session/application.h>
-#include <vnet/session/transport.h>
-#include <vnet/tls/tls.h>
+#include <vnet/session/session_types.h>
+#include <vnet/tls/tls_test.h>
+
+typedef struct _stream_session_cb_vft
+{
+  /** Notify server of new segment */
+  int (*add_segment_callback) (u32 api_client_index, u64 segment_handle);
+
+  /** Notify server of new segment */
+  int (*del_segment_callback) (u32 api_client_index, u64 segment_handle);
+
+  /** Notify server of newly accepted session */
+  int (*session_accept_callback) (session_t * new_session);
+
+  /** Connection request callback */
+  int (*session_connected_callback) (u32 app_wrk_index, u32 opaque,
+				     session_t * s, u8 code);
+
+  /** Notify app that session is closing */
+  void (*session_disconnect_callback) (session_t * s);
+
+  /** Notify app that session was reset */
+  void (*session_reset_callback) (session_t * s);
+
+  /** Direct RX callback for built-in application */
+  int (*builtin_app_rx_callback) (session_t * session);
+
+  /** Direct TX callback for built-in application */
+  int (*builtin_app_tx_callback) (session_t * session);
+
+} session_cb_vft_t;
+
+#define foreach_app_init_args			\
+  _(u32, api_client_index)			\
+  _(u8 *, name)					\
+  _(u64 *, options)				\
+  _(u8 *, namespace_id)				\
+  _(session_cb_vft_t *, session_cb_vft)		\
+  _(u32, app_index)				\
 
 typedef struct _vnet_app_attach_args_t
 {
@@ -56,9 +93,9 @@ typedef struct _vnet_bind_args_t
   u32 segment_name_length;
   u64 server_event_queue_address;
   u64 handle;
-} vnet_bind_args_t;
+} vnet_listen_args_t;
 
-typedef struct _vnet_unbind_args_t
+typedef struct _vnet_unlisten_args_t
 {
   union
   {
@@ -67,7 +104,7 @@ typedef struct _vnet_unbind_args_t
   };
   u32 app_index;		/**< Owning application index */
   u32 wrk_map_index;		/**< App's local pool worker index */
-} vnet_unbind_args_t;
+} vnet_unlisten_args_t;
 
 typedef struct _vnet_connect_args
 {
@@ -102,6 +139,14 @@ typedef struct _vnet_application_add_tls_key_args_t
   u8 *key;
 } vnet_app_add_tls_key_args_t;
 
+typedef enum tls_engine_type_
+{
+  TLS_ENGINE_NONE,
+  TLS_ENGINE_MBEDTLS,
+  TLS_ENGINE_OPENSSL,
+  TLS_N_ENGINES
+} tls_engine_type_t;
+
 /* Application attach options */
 typedef enum
 {
@@ -129,7 +174,6 @@ typedef enum
   _(IS_PROXY, "Application is proxying")			\
   _(USE_GLOBAL_SCOPE, "App can use global session scope")	\
   _(USE_LOCAL_SCOPE, "App can use local session scope")		\
-  _(USE_MQ_FOR_CTRL_MSGS, "Use message queue for ctr msgs")	\
   _(EVT_MQ_USE_EVENTFD, "Use eventfds for signaling")		\
 
 typedef enum _app_options
@@ -167,24 +211,19 @@ typedef enum session_fd_flag_
 #undef _
 } session_fd_flag_t;
 
-int vnet_bind_uri (vnet_bind_args_t *);
-int vnet_unbind_uri (vnet_unbind_args_t * a);
-clib_error_t *vnet_connect_uri (vnet_connect_args_t * a);
+int vnet_bind_uri (vnet_listen_args_t *);
+int vnet_unbind_uri (vnet_unlisten_args_t * a);
+int vnet_connect_uri (vnet_connect_args_t * a);
 
-clib_error_t *vnet_application_attach (vnet_app_attach_args_t * a);
-clib_error_t *vnet_bind (vnet_bind_args_t * a);
-clib_error_t *vnet_connect (vnet_connect_args_t * a);
-clib_error_t *vnet_unbind (vnet_unbind_args_t * a);
+int vnet_application_attach (vnet_app_attach_args_t * a);
 int vnet_application_detach (vnet_app_detach_args_t * a);
+int vnet_listen (vnet_listen_args_t * a);
+int vnet_connect (vnet_connect_args_t * a);
+int vnet_unlisten (vnet_unlisten_args_t * a);
 int vnet_disconnect_session (vnet_disconnect_args_t * a);
 
 clib_error_t *vnet_app_add_tls_cert (vnet_app_add_tls_cert_args_t * a);
 clib_error_t *vnet_app_add_tls_key (vnet_app_add_tls_key_args_t * a);
-
-extern const char test_srv_crt_rsa[];
-extern const u32 test_srv_crt_rsa_len;
-extern const char test_srv_key_rsa[];
-extern const u32 test_srv_key_rsa_len;
 
 typedef struct app_session_transport_
 {
@@ -228,6 +267,13 @@ typedef struct session_bound_msg_
   u8 segment_name[128];
 } __clib_packed session_bound_msg_t;
 
+typedef struct session_unlisten_reply_msg_
+{
+  u32 context;
+  u64 handle;
+  i32 retval;
+} __clib_packed session_unlisten_reply_msg_t;
+
 typedef struct session_accepted_msg_
 {
   u32 context;
@@ -237,8 +283,6 @@ typedef struct session_accepted_msg_
   uword server_tx_fifo;
   u64 segment_handle;
   uword vpp_event_queue_address;
-  uword server_event_queue_address;
-  uword client_event_queue_address;
   u16 port;
   u8 is_ip4;
   u8 ip[16];
@@ -263,9 +307,10 @@ typedef struct session_connected_msg_
   uword server_rx_fifo;
   uword server_tx_fifo;
   u64 segment_handle;
+  uword ct_rx_fifo;
+  uword ct_tx_fifo;
+  u64 ct_segment_handle;
   uword vpp_event_queue_address;
-  uword client_event_queue_address;
-  uword server_event_queue_address;
   u32 segment_size;
   u8 segment_name_length;
   u8 segment_name[64];
@@ -362,7 +407,7 @@ app_send_ctrl_evt_to_vpp (svm_msg_q_t * mq, app_session_evt_t * app_evt)
  * @return		0 if success, negative integer otherwise
  */
 static inline int
-app_send_io_evt_to_vpp (svm_msg_q_t * mq, svm_fifo_t * f, u8 evt_type,
+app_send_io_evt_to_vpp (svm_msg_q_t * mq, u32 session_index, u8 evt_type,
 			u8 noblock)
 {
   session_event_t *evt;
@@ -384,7 +429,7 @@ app_send_io_evt_to_vpp (svm_msg_q_t * mq, svm_fifo_t * f, u8 evt_type,
 	  return -2;
 	}
       evt = (session_event_t *) svm_msg_q_msg_data (mq, &msg);
-      evt->fifo = f;
+      evt->session_index = session_index;
       evt->event_type = evt_type;
       svm_msg_q_add_and_unlock (mq, &msg);
       return 0;
@@ -396,7 +441,7 @@ app_send_io_evt_to_vpp (svm_msg_q_t * mq, svm_fifo_t * f, u8 evt_type,
 	svm_msg_q_wait (mq);
       msg = svm_msg_q_alloc_msg_w_ring (mq, SESSION_MQ_IO_EVT_RING);
       evt = (session_event_t *) svm_msg_q_msg_data (mq, &msg);
-      evt->fifo = f;
+      evt->session_index = session_index;
       evt->event_type = evt_type;
       if (svm_msg_q_is_full (mq))
 	svm_msg_q_wait (mq);
@@ -408,7 +453,7 @@ app_send_io_evt_to_vpp (svm_msg_q_t * mq, svm_fifo_t * f, u8 evt_type,
 always_inline int
 app_send_dgram_raw (svm_fifo_t * f, app_session_transport_t * at,
 		    svm_msg_q_t * vpp_evt_q, u8 * data, u32 len, u8 evt_type,
-		    u8 noblock)
+		    u8 do_evt, u8 noblock)
 {
   u32 max_enqueue, actual_write;
   session_dgram_hdr_t hdr;
@@ -430,10 +475,12 @@ app_send_dgram_raw (svm_fifo_t * f, app_session_transport_t * at,
   rv = svm_fifo_enqueue_nowait (f, sizeof (hdr), (u8 *) & hdr);
   ASSERT (rv == sizeof (hdr));
 
-  if ((rv = svm_fifo_enqueue_nowait (f, actual_write, data)) > 0)
+  rv = svm_fifo_enqueue_nowait (f, actual_write, data);
+  if (do_evt)
     {
-      if (svm_fifo_set_event (f))
-	app_send_io_evt_to_vpp (vpp_evt_q, f, evt_type, noblock);
+      if (rv > 0 && svm_fifo_set_event (f))
+	app_send_io_evt_to_vpp (vpp_evt_q, f->master_session_index, evt_type,
+				noblock);
     }
   ASSERT (rv);
   return rv;
@@ -443,19 +490,22 @@ always_inline int
 app_send_dgram (app_session_t * s, u8 * data, u32 len, u8 noblock)
 {
   return app_send_dgram_raw (s->tx_fifo, &s->transport, s->vpp_evt_q, data,
-			     len, FIFO_EVENT_APP_TX, noblock);
+			     len, SESSION_IO_EVT_TX, 1 /* do_evt */ ,
+			     noblock);
 }
 
 always_inline int
 app_send_stream_raw (svm_fifo_t * f, svm_msg_q_t * vpp_evt_q, u8 * data,
-		     u32 len, u8 evt_type, u8 noblock)
+		     u32 len, u8 evt_type, u8 do_evt, u8 noblock)
 {
   int rv;
 
-  if ((rv = svm_fifo_enqueue_nowait (f, len, data)) > 0)
+  rv = svm_fifo_enqueue_nowait (f, len, data);
+  if (do_evt)
     {
-      if (svm_fifo_set_event (f))
-	app_send_io_evt_to_vpp (vpp_evt_q, f, evt_type, noblock);
+      if (rv > 0 && svm_fifo_set_event (f))
+	app_send_io_evt_to_vpp (vpp_evt_q, f->master_session_index, evt_type,
+				noblock);
     }
   return rv;
 }
@@ -464,7 +514,7 @@ always_inline int
 app_send_stream (app_session_t * s, u8 * data, u32 len, u8 noblock)
 {
   return app_send_stream_raw (s->tx_fifo, s->vpp_evt_q, data, len,
-			      FIFO_EVENT_APP_TX, noblock);
+			      SESSION_IO_EVT_TX, 1 /* do_evt */ , noblock);
 }
 
 always_inline int

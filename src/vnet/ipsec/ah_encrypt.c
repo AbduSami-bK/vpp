@@ -59,6 +59,7 @@ static char *ah_encrypt_error_strings[] = {
 
 typedef struct
 {
+  u32 sa_index;
   u32 spi;
   u32 seq;
   ipsec_integ_alg_t integ_alg;
@@ -72,8 +73,9 @@ format_ah_encrypt_trace (u8 * s, va_list * args)
   CLIB_UNUSED (vlib_node_t * node) = va_arg (*args, vlib_node_t *);
   ah_encrypt_trace_t *t = va_arg (*args, ah_encrypt_trace_t *);
 
-  s = format (s, "ah: spi %u seq %u integrity %U",
-	      t->spi, t->seq, format_ipsec_integ_alg, t->integ_alg);
+  s = format (s, "ah: sa-index %d spi %u seq %u integrity %U",
+	      t->sa_index, t->spi, t->seq,
+	      format_ipsec_integ_alg, t->integ_alg);
   return s;
 }
 
@@ -82,13 +84,13 @@ ah_encrypt_inline (vlib_main_t * vm,
 		   vlib_node_runtime_t * node, vlib_frame_t * from_frame,
 		   int is_ip6)
 {
-  u32 n_left_from, *from, *to_next = 0, next_index;
+  u32 n_left_from, *from, *to_next = 0, next_index, thread_index;
   int icv_size = 0;
   from = vlib_frame_vector_args (from_frame);
   n_left_from = from_frame->n_vectors;
   ipsec_main_t *im = &ipsec_main;
-  ipsec_proto_main_t *em = &ipsec_proto_main;
   next_index = node->cached_next_index;
+  thread_index = vm->thread_index;
 
   while (n_left_from > 0)
     {
@@ -125,18 +127,13 @@ ah_encrypt_inline (vlib_main_t * vm,
 
 	  if (PREDICT_FALSE (esp_seq_advance (sa0)))
 	    {
-	      clib_warning ("sequence number counter has cycled SPI %u",
-			    sa0->spi);
 	      vlib_node_increment_counter (vm, node->node_index,
 					   AH_ENCRYPT_ERROR_SEQ_CYCLED, 1);
-	      //TODO need to confirm if below is needed
-	      to_next[0] = i_bi0;
-	      to_next += 1;
 	      goto trace;
 	    }
-
-
-	  sa0->total_data_size += i_b0->current_length;
+	  vlib_increment_combined_counter
+	    (&ipsec_sa_counters, thread_index, sa_index0,
+	     1, i_b0->current_length);
 
 	  ssize_t adv;
 	  ih0 = vlib_buffer_get_current (i_b0);
@@ -155,8 +152,7 @@ ah_encrypt_inline (vlib_main_t * vm,
 	      adv = -sizeof (ah_header_t);
 	    }
 
-	  icv_size =
-	    em->ipsec_proto_main_integ_algs[sa0->integ_alg].trunc_size;
+	  icv_size = sa0->integ_trunc_size;
 	  const u8 padding_len = ah_calc_icv_padding_len (icv_size, is_ip6);
 	  adv -= padding_len;
 	  /* transport mode save the eth header before it is overwritten */
@@ -242,8 +238,9 @@ ah_encrypt_inline (vlib_main_t * vm,
 	      oh0->ip4.src_address.as_u32 = sa0->tunnel_src_addr.ip4.as_u32;
 	      oh0->ip4.dst_address.as_u32 = sa0->tunnel_dst_addr.ip4.as_u32;
 
-	      next0 = AH_ENCRYPT_NEXT_IP4_LOOKUP;
-	      vnet_buffer (i_b0)->sw_if_index[VLIB_TX] = (u32) ~ 0;
+	      next0 = sa0->dpo[IPSEC_PROTOCOL_AH].dpoi_next_node;
+	      vnet_buffer (i_b0)->ip.adj_index[VLIB_TX] =
+		sa0->dpo[IPSEC_PROTOCOL_AH].dpoi_index;
 	    }
 	  else if (is_ip6 && sa0->is_tunnel && sa0->is_tunnel_ip6)
 	    {
@@ -256,22 +253,20 @@ ah_encrypt_inline (vlib_main_t * vm,
 	      oh6_0->ip6.dst_address.as_u64[1] =
 		sa0->tunnel_dst_addr.ip6.as_u64[1];
 
-	      next0 = AH_ENCRYPT_NEXT_IP6_LOOKUP;
-	      vnet_buffer (i_b0)->sw_if_index[VLIB_TX] = (u32) ~ 0;
+	      next0 = sa0->dpo[IPSEC_PROTOCOL_AH].dpoi_next_node;
+	      vnet_buffer (i_b0)->ip.adj_index[VLIB_TX] =
+		sa0->dpo[IPSEC_PROTOCOL_AH].dpoi_index;
 	    }
 
 	  u8 sig[64];
-	  clib_memset (sig, 0, sizeof (sig));
+
 	  u8 *digest =
 	    vlib_buffer_get_current (i_b0) + ip_hdr_size +
 	    sizeof (ah_header_t);
 	  clib_memset (digest, 0, icv_size);
 
-	  unsigned size = hmac_calc (sa0->integ_alg, sa0->integ_key,
-				     sa0->integ_key_len,
-				     vlib_buffer_get_current (i_b0),
-				     i_b0->current_length, sig, sa0->use_esn,
-				     sa0->seq_hi);
+	  unsigned size = hmac_calc (vm, sa0, vlib_buffer_get_current (i_b0),
+				     i_b0->current_length, sig);
 
 	  memcpy (digest, sig, size);
 	  if (is_ip6)
@@ -296,12 +291,12 @@ ah_encrypt_inline (vlib_main_t * vm,
 	trace:
 	  if (PREDICT_FALSE (i_b0->flags & VLIB_BUFFER_IS_TRACED))
 	    {
-	      i_b0->flags |= VLIB_BUFFER_IS_TRACED;
 	      ah_encrypt_trace_t *tr =
 		vlib_add_trace (vm, node, i_b0, sizeof (*tr));
 	      tr->spi = sa0->spi;
 	      tr->seq = sa0->seq - 1;
 	      tr->integ_alg = sa0->integ_alg;
+	      tr->sa_index = sa_index0;
 	    }
 
 	  vlib_validate_buffer_enqueue_x1 (vm, node, next_index,

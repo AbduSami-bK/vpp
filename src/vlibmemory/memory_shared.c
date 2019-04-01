@@ -176,6 +176,7 @@ vl_msg_api_alloc_internal (int nbytes, int pool, int may_return_null)
     rv = clib_mem_alloc (nbytes);
 
   rv->q = 0;
+  rv->gc_mark_timestamp = 0;
   svm_pop_heap (oldheap);
   pthread_mutex_unlock (&am->vlib_rp->mutex);
 
@@ -514,7 +515,7 @@ vl_map_shmem (const char *region_name, int is_vlib)
   svm_map_region_args_t _a, *a = &_a;
   svm_region_t *vlib_rp, *root_rp;
   api_main_t *am = &api_main;
-  int i, rv;
+  int i;
   struct timespec ts, tsrem;
   char *vpe_api_region_suffix = "-vpe-api";
 
@@ -551,7 +552,7 @@ vl_map_shmem (const char *region_name, int is_vlib)
 	  while (nanosleep (&ts, &tsrem) < 0)
 	    ts = tsrem;
 	  tfd = open ((char *) api_name, O_RDWR);
-	  if (tfd > 0)
+	  if (tfd >= 0)
 	    break;
 	}
       vec_free (api_name);
@@ -561,9 +562,7 @@ vl_map_shmem (const char *region_name, int is_vlib)
 	  return -2;
 	}
       close (tfd);
-      rv = svm_region_init_chroot (am->root_path);
-      if (rv)
-	return rv;
+      svm_region_init_chroot_uid_gid (am->root_path, getuid (), getgid ());
     }
 
   if (a->root_path != NULL)

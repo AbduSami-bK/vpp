@@ -44,7 +44,6 @@
 #include <rte_bus_pci.h>
 #include <rte_flow.h>
 
-#include <vppinfra/pcap.h>
 #include <vnet/devices/devices.h>
 
 #if CLIB_DEBUG > 0
@@ -55,8 +54,6 @@
 
 #include <vlib/pci/pci.h>
 #include <vnet/flow/flow.h>
-
-#define NB_MBUF   (16<<10)
 
 extern vnet_device_class_t dpdk_device_class;
 extern vlib_node_registration_t dpdk_input_node;
@@ -71,6 +68,7 @@ extern vlib_node_registration_t admin_up_down_process_node;
   _ ("net_ixgbe_vf", IXGBEVF)     \
   _ ("net_i40e", I40E)            \
   _ ("net_i40e_vf", I40EVF)       \
+  _ ("net_ice", ICE)              \
   _ ("net_virtio", VIRTIO)        \
   _ ("net_enic", ENIC)            \
   _ ("net_vmxnet3", VMXNET3)      \
@@ -317,7 +315,9 @@ typedef struct dpdk_device_config_hqos_t
 int dpdk_hqos_validate_mask (u64 mask, u32 n);
 void dpdk_device_config_hqos_pipe_profile_default (dpdk_device_config_hqos_t *
 						   hqos, u32 pipe_profile_id);
+#if 0
 void dpdk_device_config_hqos_default (dpdk_device_config_hqos_t * hqos);
+#endif
 clib_error_t *dpdk_port_setup_hqos (dpdk_device_t * xd,
 				    dpdk_device_config_hqos_t * hqos);
 void dpdk_hqos_metadata_set (dpdk_device_hqos_per_worker_thread_t * hqos,
@@ -364,7 +364,7 @@ typedef struct
   u8 nchannels_set_manually;
   u32 coremask;
   u32 nchannels;
-  u32 num_mbufs;
+  u32 num_crypto_mbufs;
 
   /*
    * format interface names ala xxxEthernet%d/%d/%d instead of
@@ -399,13 +399,6 @@ typedef struct
 
 typedef struct
 {
-  int pcap_enable;
-  u32 pcap_sw_if_index;
-  pcap_main_t pcap_main;
-} dpdk_pcap_t;
-
-typedef struct
-{
 
   /* Devices */
   dpdk_device_t *devices;
@@ -414,15 +407,6 @@ typedef struct
 
   /* buffer flags template, configurable to enable/disable tcp / udp cksum */
   u32 buffer_flags_template;
-
-  /* pcap tracing */
-  dpdk_pcap_t pcap[VLIB_N_RX_TX];
-
-  int pcap_enable;
-  pcap_main_t pcap_main;
-  u8 *pcap_filename;
-  u32 pcap_sw_if_index;
-  u32 pcap_pkts_to_capture;
 
   /*
    * flag indicating that a posted admin up/down
@@ -442,9 +426,6 @@ typedef struct
   vlib_main_t *vlib_main;
   vnet_main_t *vnet_main;
   dpdk_config_main_t *conf;
-
-  /* mempool */
-  struct rte_mempool **pktmbuf_pools;
 
   /* API message ID base */
   u16 msg_id_base;
@@ -523,20 +504,11 @@ format_function_t format_dpdk_flow;
 format_function_t format_dpdk_rss_hf_name;
 format_function_t format_dpdk_rx_offload_caps;
 format_function_t format_dpdk_tx_offload_caps;
-unformat_function_t unformat_dpdk_log_level;
 vnet_flow_dev_ops_function_t dpdk_flow_ops_fn;
 
 clib_error_t *unformat_rss_fn (unformat_input_t * input, uword * rss_fn);
 clib_error_t *unformat_hqos (unformat_input_t * input,
 			     dpdk_device_config_hqos_t * hqos);
-
-clib_error_t *dpdk_pool_create (vlib_main_t * vm, u8 * pool_name,
-				u32 elt_size, u32 num_elts,
-				u32 pool_priv_size, u16 cache_size, u8 numa,
-				struct rte_mempool **_mp, u32 * map_index);
-
-clib_error_t *dpdk_buffer_pool_create (vlib_main_t * vm, unsigned num_mbufs,
-				       unsigned socket_id);
 
 struct rte_pci_device *dpdk_get_pci_device (const struct rte_eth_dev_info
 					    *info);

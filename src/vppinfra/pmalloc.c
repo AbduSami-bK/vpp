@@ -21,6 +21,7 @@
 #include <unistd.h>
 #include <linux/mempolicy.h>
 #include <linux/memfd.h>
+#include <sched.h>
 
 #include <vppinfra/format.h>
 #include <vppinfra/linux/syscall.h>
@@ -53,7 +54,7 @@ pmalloc_validate_numa_node (u32 * numa_node)
   if (*numa_node == CLIB_PMALLOC_NUMA_LOCAL)
     {
       u32 cpu;
-      if (getcpu (&cpu, numa_node, 0) != 0)
+      if (getcpu (&cpu, numa_node) != 0)
 	return 1;
     }
   return 0;
@@ -144,6 +145,9 @@ alloc_chunk_from_page (clib_pmalloc_main_t * pm, clib_pmalloc_page_t * pp,
       c->next = ~0;
       pp->n_free_chunks = a->subpages_per_page;
     }
+
+  if (pp->n_free_blocks < n_blocks)
+    return 0;
 
   alloc_chunk_index = pp->first_chunk_index;
 
@@ -261,7 +265,7 @@ pmalloc_map_pages (clib_pmalloc_main_t * pm, clib_pmalloc_arena_t * a,
   int old_mpol = -1;
   long unsigned int mask[16] = { 0 };
   long unsigned int old_mask[16] = { 0 };
-  uword page_size = 1 << a->log2_subpage_sz;
+  uword page_size = 1ULL << a->log2_subpage_sz;
   uword size = (uword) n_pages << pm->def_log2_page_sz;
 
   clib_error_free (pm->error);

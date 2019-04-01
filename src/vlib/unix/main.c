@@ -88,11 +88,17 @@ unsetup_signal_handlers (int sig)
     dangerous to vec_resize it when crashing, mheap itself might have been
     corruptted already */
 static u8 *syslog_msg = 0;
+static int last_signum = 0;
+static uword last_faulting_address = 0;
 
 static void
 unix_signal_handler (int signum, siginfo_t * si, ucontext_t * uc)
 {
   uword fatal = 0;
+
+  /* These come in handy when looking at core files from optimized images */
+  last_signum = signum;
+  last_faulting_address = (uword) si->si_addr;
 
   syslog_msg = format (syslog_msg, "received signal %U, PC %U",
 		       format_signal, signum, format_ucontext_pc, uc);
@@ -104,11 +110,16 @@ unix_signal_handler (int signum, siginfo_t * si, ucontext_t * uc)
     {
       /* these (caught) signals cause the application to exit */
     case SIGTERM:
-      if (unix_main.vlib_main->main_loop_exit_set)
+      /*
+       * Ignore SIGTERM if it's sent before we're ready.
+       */
+      if (unix_main.vlib_main && unix_main.vlib_main->main_loop_exit_set)
 	{
 	  syslog (LOG_ERR | LOG_DAEMON, "received SIGTERM, exiting...");
 	  unix_main.vlib_main->main_loop_exit_now = 1;
 	}
+      else
+	syslog (LOG_ERR | LOG_DAEMON, "IGNORE early SIGTERM...");
       break;
       /* fall through */
     case SIGQUIT:

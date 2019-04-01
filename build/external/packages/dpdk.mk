@@ -17,16 +17,16 @@ DPDK_DOWNLOAD_DIR            ?= $(DL_CACHE_DIR)
 DPDK_DEBUG                   ?= n
 DPDK_MLX4_PMD                ?= n
 DPDK_MLX5_PMD                ?= n
-DPDK_MLX5_PMD_DLOPEN_DEPS    ?= n
+DPDK_MLX_IBVERBS_DLOPEN      ?= n
 DPDK_TAP_PMD                 ?= n
 DPDK_FAILSAFE_PMD            ?= n
 
-DPDK_VERSION                 ?= 18.11
+DPDK_VERSION                 ?= 19.02
 DPDK_BASE_URL                ?= http://fast.dpdk.org/rel
 DPDK_TARBALL                 := dpdk-$(DPDK_VERSION).tar.xz
 DPDK_TAR_URL                 := $(DPDK_BASE_URL)/$(DPDK_TARBALL)
-DPDK_18.08_TARBALL_MD5_CKSUM := da5e7fb25ab063c47e53929fb8c58be5
 DPDK_18.11_TARBALL_MD5_CKSUM := 04b86f4a77f4f81a7fbd26467dd2ea9f
+DPDK_19.02_TARBALL_MD5_CKSUM := 23944a2cdee061aa4bd72ebe7d836db0
 MACHINE=$(shell uname -m)
 
 # replace dot with space, and if 3rd word exists we deal with stable dpdk rel
@@ -191,8 +191,7 @@ $(B)/custom-config: $(B)/.patch.ok Makefile
 	$(call set,RTE_LIBRTE_MLX4_PMD,$(DPDK_MLX4_PMD))
 	$(call set,RTE_LIBRTE_MLX5_PMD,$(DPDK_MLX5_PMD))
 	$(call set,RTE_LIBRTE_PMD_SOFTNIC,n)
-	$(call set,RTE_LIBRTE_MLX4_DLOPEN_DEPS,$(DPDK_MLX4_PMD))
-	$(call set,RTE_LIBRTE_MLX5_DLOPEN_DEPS,$(DPDK_MLX5_PMD_DLOPEN_DEPS))
+	$(call set,RTE_IBVERBS_LINK_DLOPEN,$(DPDK_MLX_IBVERBS_DLOPEN))
 	$(call set,RTE_LIBRTE_PMD_TAP,$(DPDK_TAP_PMD))
 	$(call set,RTE_LIBRTE_GSO,$(DPDK_TAP_PMD))
 	$(call set,RTE_LIBRTE_PMD_FAILSAFE,$(DPDK_FAILSAFE_PMD))

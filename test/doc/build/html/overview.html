@@ -1,0 +1,664 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>1. VPP Test Framework &mdash; VPP test framework 0.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="2. Module documentation" href="modules.html" />
+    <link rel="prev" title="Contents" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> VPP test framework
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">1. VPP Test Framework</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#overview">1.1. Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#anatomy-of-a-test-case">1.2. Anatomy of a test case</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id1">1.3. Logging</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#parallel-test-execution">1.4. Parallel test execution</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#test-temporary-directory-and-vpp-life-cycle">1.5. Test temporary directory and VPP life cycle</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#virtual-environment">1.6. Virtual environment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#naming-conventions">1.7. Naming conventions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#automatically-generated-addresses">1.8. Automatically generated addresses</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#packet-flow-in-the-vtf">1.9. Packet flow in the VPP Test Framework</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#test-framework-vpp">1.9.1. Test framework -&gt; VPP</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#vpp-test-framework">1.9.2. VPP -&gt; test framework</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#automatic-filtering-of-packets">1.9.3. Automatic filtering of packets:</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#common-api-flow-for-sending-receiving-packets">1.9.4. Common API flow for sending/receiving packets:</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#test-framework-objects">1.10. Test framework objects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#how-vpp-apis-clis-are-called">1.11. How VPP APIs/CLIs are called</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#utility-methods">1.12. Utility methods</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#example-how-to-add-a-new-test">1.13. Example: how to add a new test</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="modules.html">2. Module documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="indices.html">3. Indices and tables</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">VPP test framework</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>1. VPP Test Framework</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/overview.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="vtf">
+<h1>1. VPP Test Framework<a class="headerlink" href="#vtf" title="Permalink to this headline">¶</a></h1>
+<div class="contents local topic" id="contents">
+<ul class="simple">
+<li><a class="reference internal" href="#overview" id="id2">Overview</a></li>
+<li><a class="reference internal" href="#anatomy-of-a-test-case" id="id3">Anatomy of a test case</a></li>
+<li><a class="reference internal" href="#id1" id="id4">Logging</a></li>
+<li><a class="reference internal" href="#parallel-test-execution" id="id5">Parallel test execution</a></li>
+<li><a class="reference internal" href="#test-temporary-directory-and-vpp-life-cycle" id="id6">Test temporary directory and VPP life cycle</a></li>
+<li><a class="reference internal" href="#virtual-environment" id="id7">Virtual environment</a></li>
+<li><a class="reference internal" href="#naming-conventions" id="id8">Naming conventions</a></li>
+<li><a class="reference internal" href="#automatically-generated-addresses" id="id9">Automatically generated addresses</a></li>
+<li><a class="reference internal" href="#packet-flow-in-the-vtf" id="id10">Packet flow in the VPP Test Framework</a></li>
+<li><a class="reference internal" href="#test-framework-objects" id="id11">Test framework objects</a></li>
+<li><a class="reference internal" href="#how-vpp-apis-clis-are-called" id="id12">How VPP APIs/CLIs are called</a></li>
+<li><a class="reference internal" href="#utility-methods" id="id13">Utility methods</a></li>
+<li><a class="reference internal" href="#example-how-to-add-a-new-test" id="id14">Example: how to add a new test</a></li>
+</ul>
+</div>
+<div class="section" id="overview">
+<h2><a class="toc-backref" href="#id2">1.1. Overview</a><a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
+<p>The goal of the VPP Test Framework is to ease writing, running and debugging
+unit tests for the VPP. For this, python was chosen as a high level language
+allowing rapid development with <a class="reference external" href="http://www.secdev.org/projects/scapy/">scapy</a> providing the necessary tool for creating
+and dissecting packets.</p>
+</div>
+<div class="section" id="anatomy-of-a-test-case">
+<h2><a class="toc-backref" href="#id3">1.2. Anatomy of a test case</a><a class="headerlink" href="#anatomy-of-a-test-case" title="Permalink to this headline">¶</a></h2>
+<p>Python’s <a class="reference external" href="https://docs.python.org/2/library/unittest.html">unittest</a> is used as the base framework upon which the VPP test
+framework is built. A test suite in the VPP Test Framework consists of multiple classes
+derived from <a class="reference internal" href="framework.html#framework.VppTestCase" title="framework.VppTestCase"><code class="xref any py py-class docutils literal notranslate"><span class="pre">VppTestCase</span></code></a>, which is itself derived from <a class="reference external" href="https://docs.python.org/2/library/unittest.html#unittest.TestCase">TestCase</a>.
+The test class defines one or more test functions, which act as test cases.</p>
+<p>Function flow when running a test case is:</p>
+<ol class="arabic simple">
+<li><a class="reference internal" href="framework.html#framework.VppTestCase.setUpClass" title="framework.VppTestCase.setUpClass"><code class="xref any py py-meth docutils literal notranslate"><span class="pre">setUpClass</span></code></a>:
+This function is called once for each test class, allowing a one-time test
+setup to be executed. If this functions throws an exception,
+none of the test functions are executed.</li>
+<li><a class="reference internal" href="framework.html#framework.VppTestCase.setUp" title="framework.VppTestCase.setUp"><code class="xref any py py-meth docutils literal notranslate"><span class="pre">setUp</span></code></a>:
+The setUp function runs before each of the test functions. If this function
+throws an exception other than <a class="reference external" href="https://docs.python.org/2/library/exceptions.html#exceptions.AssertionError">AssertionError</a> or <a class="reference external" href="https://docs.python.org/2/library/unittest.html#unittest.SkipTest">SkipTest</a>, then this is
+considered an error, not a test failure.</li>
+<li><em>test_&lt;name&gt;</em>:
+This is the guts of the test case. It should execute the test scenario
+and use the various assert functions from the unittest framework to check
+necessary. Multiple test_&lt;name&gt; methods can exist in a test case.</li>
+<li><a class="reference internal" href="framework.html#framework.VppTestCase.tearDown" title="framework.VppTestCase.tearDown"><code class="xref any py py-meth docutils literal notranslate"><span class="pre">tearDown</span></code></a>:
+The tearDown function is called after each test function with the purpose
+of doing partial cleanup.</li>
+<li><a class="reference internal" href="framework.html#framework.VppTestCase.tearDownClass" title="framework.VppTestCase.tearDownClass"><code class="xref any py py-meth docutils literal notranslate"><span class="pre">tearDownClass</span></code></a>:
+Method called once after running all of the test functions to perform
+the final cleanup.</li>
+</ol>
+</div>
+<div class="section" id="id1">
+<h2><a class="toc-backref" href="#id4">1.3. Logging</a><a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
+<p>Each test case has a logger automatically created for it, stored in
+‘logger’ property, based on <a class="reference external" href="https://docs.python.org/2/library/logging.html">logging</a>. Use the logger’s standard methods
+debug(), info(), error(), … to emit log messages to the logger.</p>
+<p>All the log messages go always into a log file in temporary directory
+(see below).</p>
+<p>To control the messages printed to console, specify the V= parameter.</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>make <span class="nb">test</span>         <span class="c1"># minimum verbosity</span>
+make <span class="nb">test</span> <span class="nv">V</span><span class="o">=</span><span class="m">1</span>     <span class="c1"># moderate verbosity</span>
+make <span class="nb">test</span> <span class="nv">V</span><span class="o">=</span><span class="m">2</span>     <span class="c1"># maximum verbosity</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="parallel-test-execution">
+<h2><a class="toc-backref" href="#id5">1.4. Parallel test execution</a><a class="headerlink" href="#parallel-test-execution" title="Permalink to this headline">¶</a></h2>
+<p>VPP Test Framework test suites can be run in parallel. Each test suite is executed
+in a separate process spawned by Python multiprocessing <a class="reference external" href="https://docs.python.org/2/library/multiprocessing.html#the-process-class">process</a>.</p>
+<p>The results from child test suites are sent to parent through <a class="reference external" href="https://docs.python.org/2/library/multiprocessing.html#multiprocessing.Pipe">pipes</a>, which are
+aggregated and summarized at the end of the run.</p>
+<p>Stdout, stderr and logs logged in child processes are redirected to individual
+parent <a class="reference external" href="https://docs.python.org/2/library/multiprocessing.html#managers">managed</a> queues. The data from these queues are then emitted to stdout
+of the parent process in the order the test suites have finished. In case there
+are no finished test suites (such as at the beginning of the run), the data
+from last started test suite are emitted in real time.</p>
+<p>To enable parallel test run, specify the number of parallel processes:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>make <span class="nb">test</span> <span class="nv">TEST_JOBS</span><span class="o">=</span>n       <span class="c1"># at most n processes will be spawned</span>
+make <span class="nb">test</span> <span class="nv">TEST_JOBS</span><span class="o">=</span>auto    <span class="c1"># chosen based on the number of cores</span>
+                            <span class="c1"># and the size of shared memory</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="test-temporary-directory-and-vpp-life-cycle">
+<h2><a class="toc-backref" href="#id6">1.5. Test temporary directory and VPP life cycle</a><a class="headerlink" href="#test-temporary-directory-and-vpp-life-cycle" title="Permalink to this headline">¶</a></h2>
+<p>Test separation is achieved by separating the test files and vpp instances.
+Each test creates a temporary directory and it’s name is used to create
+a shared memory prefix which is used to run a VPP instance.
+The temporary directory name contains the testcase class name for easy
+reference, so for testcase named ‘TestVxlan’ the directory could be named
+e.g. vpp-unittest-TestVxlan-UNUP3j.
+This way, there is no conflict between any other VPP instances running
+on the box and the test VPP. Any temporary files created by the test case
+are stored in this temporary test directory.</p>
+<p>The test temporary directory holds the following interesting files:</p>
+<ul class="simple">
+<li>log.txt - this contains the logger output on max verbosity</li>
+<li>pg*_in.pcap - last injected packet stream into VPP, named after the interface,
+so for pg0, the file will be named pg0_in.pcap</li>
+<li>pg*_out.pcap - last capture file created by VPP for interface, similarly,
+named after the interface, so for e.g. pg1, the file will be named
+pg1_out.pcap</li>
+<li>history files - whenever the capture is restarted or a new stream is added,
+the existing files are rotated and renamed, soo all the pcap files
+are always saved for later debugging if needed</li>
+<li>core - if vpp dumps a core, it’ll be stored in the temporary directory</li>
+<li>vpp_stdout.txt - file containing output which vpp printed to stdout</li>
+<li>vpp_stderr.txt - file containing output which vpp printed to stderr</li>
+</ul>
+<p><em>NOTE</em>: existing temporary directories named vpp-unittest-* are automatically
+removed when invoking ‘make test*’ or ‘make retest*’ to keep the temporary
+directory clean.</p>
+</div>
+<div class="section" id="virtual-environment">
+<h2><a class="toc-backref" href="#id7">1.6. Virtual environment</a><a class="headerlink" href="#virtual-environment" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference external" href="http://docs.python-guide.org/en/latest/dev/virtualenvs/">Virtualenv</a> is a python module which provides a means to create an environment
+containing the dependencies required by the VPP Test Framework, allowing a separation
+from any existing system-wide packages. VPP Test Framework’s Makefile automatically
+creates a <a class="reference external" href="http://docs.python-guide.org/en/latest/dev/virtualenvs/">virtualenv</a> inside build-root and installs the required packages
+in that environment. The environment is entered whenever executing a test
+via one of the make test targets.</p>
+</div>
+<div class="section" id="naming-conventions">
+<h2><a class="toc-backref" href="#id8">1.7. Naming conventions</a><a class="headerlink" href="#naming-conventions" title="Permalink to this headline">¶</a></h2>
+<p>Most unit tests do some kind of packet manipulation - sending and receiving
+packets between VPP and virtual hosts connected to the VPP. Referring
+to the sides, addresses, etc. is always done as if looking from the VPP side,
+thus:</p>
+<ul class="simple">
+<li><em>local_</em> prefix is used for the VPP side.
+So e.g. <a class="reference internal" href="vpp_interface.html#vpp_interface.VppInterface.local_ip4" title="vpp_interface.VppInterface.local_ip4"><code class="xref any py py-attr docutils literal notranslate"><span class="pre">local_ip4</span></code></a> address is the IPv4 address
+assigned to the VPP interface.</li>
+<li><em>remote_</em> prefix is used for the virtual host side.
+So e.g. <a class="reference internal" href="vpp_interface.html#vpp_interface.VppInterface.remote_mac" title="vpp_interface.VppInterface.remote_mac"><code class="xref any py py-attr docutils literal notranslate"><span class="pre">remote_mac</span></code></a> address is the MAC address
+assigned to the virtual host connected to the VPP.</li>
+</ul>
+</div>
+<div class="section" id="automatically-generated-addresses">
+<h2><a class="toc-backref" href="#id9">1.8. Automatically generated addresses</a><a class="headerlink" href="#automatically-generated-addresses" title="Permalink to this headline">¶</a></h2>
+<p>To send packets, one needs to typically provide some addresses, otherwise
+the packets will be dropped. The interface objects in VPP Test Framework automatically
+provide addresses based on (typically) their indexes, which ensures
+there are no conflicts and eases debugging by making the addressing scheme
+consistent.</p>
+<p>The developer of a test case typically doesn’t need to work with the actual
+numbers, rather using the properties of the objects. The addresses typically
+come in two flavors: ‘&lt;address&gt;’ and ‘&lt;address&gt;n’ - note the ‘n’ suffix.
+The former address is a Python string, while the latter is translated using
+socket.inet_pton to raw format in network byte order - this format is suitable
+for passing as an argument to VPP APIs.</p>
+<p>e.g. for the IPv4 address assigned to the VPP interface:</p>
+<ul class="simple">
+<li>local_ip4 - Local IPv4 address on VPP interface (string)</li>
+<li>local_ip4n - Local IPv4 address - raw, suitable as API parameter.</li>
+</ul>
+<p>These addresses need to be configured in VPP to be usable using e.g.
+<a class="reference internal" href="vpp_interface.html#vpp_interface.VppInterface.config_ip4" title="vpp_interface.VppInterface.config_ip4"><code class="xref any py py-meth docutils literal notranslate"><span class="pre">config_ip4</span></code></a> API. Please see the documentation to <a class="reference internal" href="vpp_interface.html#vpp_interface.VppInterface" title="vpp_interface.VppInterface"><code class="xref any py py-class docutils literal notranslate"><span class="pre">VppInterface</span></code></a> for more
+details.</p>
+<p>By default, there is one remote address of each kind created for L3:
+remote_ip4 and remote_ip6. If the test needs more addresses, because it’s
+simulating more remote hosts, they can be generated using
+<a class="reference internal" href="vpp_interface.html#vpp_interface.VppInterface.generate_remote_hosts" title="vpp_interface.VppInterface.generate_remote_hosts"><code class="xref any py py-meth docutils literal notranslate"><span class="pre">generate_remote_hosts</span></code></a> API and the entries for them inserted into the ARP
+table using <a class="reference internal" href="vpp_interface.html#vpp_interface.VppInterface.configure_ipv4_neighbors" title="vpp_interface.VppInterface.configure_ipv4_neighbors"><code class="xref any py py-meth docutils literal notranslate"><span class="pre">configure_ipv4_neighbors</span></code></a> API.</p>
+</div>
+<div class="section" id="packet-flow-in-the-vtf">
+<h2><a class="toc-backref" href="#id10">1.9. Packet flow in the VPP Test Framework</a><a class="headerlink" href="#packet-flow-in-the-vtf" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="test-framework-vpp">
+<h3>1.9.1. Test framework -&gt; VPP<a class="headerlink" href="#test-framework-vpp" title="Permalink to this headline">¶</a></h3>
+<p>VPP Test Framework doesn’t send any packets to VPP directly. Traffic is instead injected
+using packet-generator interfaces, represented by the <a class="reference internal" href="vpp_pg_interface.html#vpp_pg_interface.VppPGInterface" title="vpp_pg_interface.VppPGInterface"><code class="xref any py py-class docutils literal notranslate"><span class="pre">VppPGInterface</span></code></a> class.
+Packets are written into a temporary .pcap file, which is then read by the VPP
+and the packets are injected into the VPP world.</p>
+<p>To add a list of packets to an interface, call the <a class="reference internal" href="vpp_tunnel_interface.html#vpp_tunnel_interface.VppTunnelInterface.add_stream" title="vpp_tunnel_interface.VppTunnelInterface.add_stream"><code class="xref any py py-meth docutils literal notranslate"><span class="pre">add_stream</span></code></a> method on that
+interface. Once everything is prepared, call <a class="reference internal" href="framework.html#framework.VppTestCase.pg_start" title="framework.VppTestCase.pg_start"><code class="xref any py py-meth docutils literal notranslate"><span class="pre">pg_start</span></code></a> method to start
+the packet generator on the VPP side.</p>
+</div>
+<div class="section" id="vpp-test-framework">
+<h3>1.9.2. VPP -&gt; test framework<a class="headerlink" href="#vpp-test-framework" title="Permalink to this headline">¶</a></h3>
+<p>Similarly, VPP doesn’t send any packets to VPP Test Framework directly. Instead, packet
+capture feature is used to capture and write traffic to a temporary .pcap file,
+which is then read and analyzed by the VPP Test Framework.</p>
+<p>The following APIs are available to the test case for reading pcap files.</p>
+<ul class="simple">
+<li><a class="reference internal" href="vpp_pg_interface.html#vpp_pg_interface.VppPGInterface.get_capture" title="vpp_pg_interface.VppPGInterface.get_capture"><code class="xref any py py-meth docutils literal notranslate"><span class="pre">get_capture</span></code></a>: this API is suitable for bulk &amp; batch style of test, where
+a list of packets is prepared &amp; sent, then the received packets are read
+and verified. The API needs the number of packets which are expected to
+be captured (ignoring filtered packets - see below) to know when the pcap
+file is completely written by the VPP. If using packet infos for verifying
+packets, then the counts of the packet infos can be automatically used
+by <a class="reference internal" href="vpp_pg_interface.html#vpp_pg_interface.VppPGInterface.get_capture" title="vpp_pg_interface.VppPGInterface.get_capture"><code class="xref any py py-meth docutils literal notranslate"><span class="pre">get_capture</span></code></a> to get the proper count (in this case the default value
+None can be supplied as expected_count or ommitted altogether).</li>
+<li><a class="reference internal" href="test_dhcp6.html#test_dhcp6.TestDHCPv6PDControlPlane.wait_for_packet" title="test_dhcp6.TestDHCPv6PDControlPlane.wait_for_packet"><code class="xref any py py-meth docutils literal notranslate"><span class="pre">wait_for_packet</span></code></a>: this API is suitable for interactive style of test,
+e.g. when doing session management, three-way handsakes, etc. This API waits
+for and returns a single packet, keeping the capture file in place
+and remembering context. Repeated invocations return following packets
+(or raise Exception if timeout is reached) from the same capture file
+(= packets arriving on the same interface).</li>
+</ul>
+<p><em>NOTE</em>: it is not recommended to mix these APIs unless you understand how they
+work internally. None of these APIs rotate the pcap capture file, so calling
+e.g. <a class="reference internal" href="vpp_pg_interface.html#vpp_pg_interface.VppPGInterface.get_capture" title="vpp_pg_interface.VppPGInterface.get_capture"><code class="xref any py py-meth docutils literal notranslate"><span class="pre">get_capture</span></code></a> after <a class="reference internal" href="test_dhcp6.html#test_dhcp6.TestDHCPv6PDControlPlane.wait_for_packet" title="test_dhcp6.TestDHCPv6PDControlPlane.wait_for_packet"><code class="xref any py py-meth docutils literal notranslate"><span class="pre">wait_for_packet</span></code></a> will return already read packets.
+It is safe to switch from one API to another after calling <a class="reference internal" href="vpp_tunnel_interface.html#vpp_tunnel_interface.VppTunnelInterface.enable_capture" title="vpp_tunnel_interface.VppTunnelInterface.enable_capture"><code class="xref any py py-meth docutils literal notranslate"><span class="pre">enable_capture</span></code></a>
+as that API rotates the capture file.</p>
+</div>
+<div class="section" id="automatic-filtering-of-packets">
+<h3>1.9.3. Automatic filtering of packets:<a class="headerlink" href="#automatic-filtering-of-packets" title="Permalink to this headline">¶</a></h3>
+<p>Both APIs (<a class="reference internal" href="vpp_pg_interface.html#vpp_pg_interface.VppPGInterface.get_capture" title="vpp_pg_interface.VppPGInterface.get_capture"><code class="xref any py py-meth docutils literal notranslate"><span class="pre">get_capture</span></code></a> and <a class="reference internal" href="test_dhcp6.html#test_dhcp6.TestDHCPv6PDControlPlane.wait_for_packet" title="test_dhcp6.TestDHCPv6PDControlPlane.wait_for_packet"><code class="xref any py py-meth docutils literal notranslate"><span class="pre">wait_for_packet</span></code></a>) by default filter the packet
+capture, removing known uninteresting packets from it - these are IPv6 Router
+Advertisments and IPv6 Router Alerts. These packets are unsolicitated
+and from the point of VPP Test Framework are random. If a test wants to receive these
+packets, it should specify either None or a custom filtering function
+as the value to the ‘filter_out_fn’ argument.</p>
+</div>
+<div class="section" id="common-api-flow-for-sending-receiving-packets">
+<h3>1.9.4. Common API flow for sending/receiving packets:<a class="headerlink" href="#common-api-flow-for-sending-receiving-packets" title="Permalink to this headline">¶</a></h3>
+<p>We will describe a simple scenario, where packets are sent from pg0 to pg1
+interface, assuming that the interfaces were created using
+<a class="reference internal" href="framework.html#framework.VppTestCase.create_pg_interfaces" title="framework.VppTestCase.create_pg_interfaces"><code class="xref any py py-meth docutils literal notranslate"><span class="pre">create_pg_interfaces</span></code></a> API.</p>
+<ol class="arabic">
+<li><p class="first">Create a list of packets for pg0:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">packet_count</span> <span class="o">=</span> <span class="mi">10</span>
+<span class="n">packets</span> <span class="o">=</span> <span class="n">create_packets</span><span class="p">(</span><span class="n">src</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">pg0</span><span class="p">,</span> <span class="n">dst</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">pg1</span><span class="p">,</span>
+                         <span class="n">count</span><span class="o">=</span><span class="n">packet_count</span><span class="p">)</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">Add that list of packets to the source interface:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="bp">self</span><span class="o">.</span><span class="n">pg0</span><span class="o">.</span><span class="n">add_stream</span><span class="p">(</span><span class="n">packets</span><span class="p">)</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">Enable capture on the destination interface:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="bp">self</span><span class="o">.</span><span class="n">pg1</span><span class="o">.</span><span class="n">enable_capture</span><span class="p">()</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">Start the packet generator:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="bp">self</span><span class="o">.</span><span class="n">pg_start</span><span class="p">()</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">Wait for capture file to appear and read it:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">capture</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pg1</span><span class="o">.</span><span class="n">get_capture</span><span class="p">(</span><span class="n">expected_count</span><span class="o">=</span><span class="n">packet_count</span><span class="p">)</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">Verify packets match sent packets:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="bp">self</span><span class="o">.</span><span class="n">verify_capture</span><span class="p">(</span><span class="n">send</span><span class="o">=</span><span class="n">packets</span><span class="p">,</span> <span class="n">captured</span><span class="o">=</span><span class="n">capture</span><span class="p">)</span>
+</pre></div>
+</div>
+</li>
+</ol>
+</div>
+</div>
+<div class="section" id="test-framework-objects">
+<h2><a class="toc-backref" href="#id11">1.10. Test framework objects</a><a class="headerlink" href="#test-framework-objects" title="Permalink to this headline">¶</a></h2>
+<p>The following objects provide VPP abstraction and provide a means to do
+common tasks easily in the test cases.</p>
+<ul class="simple">
+<li><a class="reference internal" href="vpp_interface.html#vpp_interface.VppInterface" title="vpp_interface.VppInterface"><code class="xref any py py-class docutils literal notranslate"><span class="pre">VppInterface</span></code></a>: abstract class representing generic VPP interface
+and contains some common functionality, which is then used by derived classes</li>
+<li><a class="reference internal" href="vpp_pg_interface.html#vpp_pg_interface.VppPGInterface" title="vpp_pg_interface.VppPGInterface"><code class="xref any py py-class docutils literal notranslate"><span class="pre">VppPGInterface</span></code></a>: class representing VPP packet-generator interface.
+The interface is created/destroyed when the object is created/destroyed.</li>
+<li><a class="reference internal" href="vpp_sub_interface.html#vpp_sub_interface.VppSubInterface" title="vpp_sub_interface.VppSubInterface"><code class="xref any py py-class docutils literal notranslate"><span class="pre">VppSubInterface</span></code></a>: VPP sub-interface abstract class, containing common
+functionality for e.g. <a class="reference internal" href="vpp_sub_interface.html#vpp_sub_interface.VppDot1QSubint" title="vpp_sub_interface.VppDot1QSubint"><code class="xref any py py-class docutils literal notranslate"><span class="pre">VppDot1QSubint</span></code></a> and <a class="reference internal" href="vpp_sub_interface.html#vpp_sub_interface.VppDot1ADSubint" title="vpp_sub_interface.VppDot1ADSubint"><code class="xref any py py-class docutils literal notranslate"><span class="pre">VppDot1ADSubint</span></code></a> classes</li>
+</ul>
+</div>
+<div class="section" id="how-vpp-apis-clis-are-called">
+<h2><a class="toc-backref" href="#id12">1.11. How VPP APIs/CLIs are called</a><a class="headerlink" href="#how-vpp-apis-clis-are-called" title="Permalink to this headline">¶</a></h2>
+<p>Vpp provides python bindings in a python module called vpp-papi, which the test
+framework installs in the virtual environment. A shim layer represented by
+the <a class="reference internal" href="vpp_papi_provider.html#vpp_papi_provider.VppPapiProvider" title="vpp_papi_provider.VppPapiProvider"><code class="xref any py py-class docutils literal notranslate"><span class="pre">VppPapiProvider</span></code></a> class is built on top of the vpp-papi, serving these
+purposes:</p>
+<ol class="arabic simple">
+<li>Automatic return value checks:
+After each API is called, the return value is checked against the expected
+return value (by default 0, but can be overridden) and an exception
+is raised if the check fails.</li>
+<li>Automatic call of hooks:<ol class="loweralpha">
+<li><a class="reference internal" href="hook.html#hook.Hook.before_cli" title="hook.Hook.before_cli"><code class="xref any py py-meth docutils literal notranslate"><span class="pre">before_cli</span></code></a> and <a class="reference internal" href="hook.html#hook.Hook.before_api" title="hook.Hook.before_api"><code class="xref any py py-meth docutils literal notranslate"><span class="pre">before_api</span></code></a> hooks
+are used for debug logging and stepping through the test</li>
+<li><a class="reference internal" href="hook.html#hook.Hook.after_cli" title="hook.Hook.after_cli"><code class="xref any py py-meth docutils literal notranslate"><span class="pre">after_cli</span></code></a> and <a class="reference internal" href="hook.html#hook.Hook.after_api" title="hook.Hook.after_api"><code class="xref any py py-meth docutils literal notranslate"><span class="pre">after_api</span></code></a> hooks
+are used for monitoring the vpp process for crashes</li>
+</ol>
+</li>
+<li>Simplification of API calls:
+Many of the VPP APIs take a lot of parameters and by providing sane defaults
+for these, the API is much easier to use in the common case and the code is
+more readable. E.g. ip_add_del_route API takes ~25 parameters, of which
+in the common case, only 3 are needed.</li>
+</ol>
+</div>
+<div class="section" id="utility-methods">
+<h2><a class="toc-backref" href="#id13">1.12. Utility methods</a><a class="headerlink" href="#utility-methods" title="Permalink to this headline">¶</a></h2>
+<p>Some interesting utility methods are:</p>
+<ul class="simple">
+<li><a class="reference internal" href="util.html#util.ppp" title="util.ppp"><code class="xref any py py-func docutils literal notranslate"><span class="pre">ppp</span></code></a>: ‘Pretty Print Packet’ - returns a string containing the same output
+as Scapy’s packet.show() would print</li>
+<li><a class="reference internal" href="util.html#util.ppc" title="util.ppc"><code class="xref any py py-func docutils literal notranslate"><span class="pre">ppc</span></code></a>: ‘Pretty Print Capture’ - returns a string containing printout of
+a capture (with configurable limit on the number of packets printed from it)
+using <a class="reference internal" href="util.html#util.ppp" title="util.ppp"><code class="xref any py py-func docutils literal notranslate"><span class="pre">ppp</span></code></a></li>
+</ul>
+<p><em>NOTE</em>: Do not use Scapy’s packet.show() in the tests, because it prints
+the output to stdout. All output should go to the logger associated with
+the test case.</p>
+</div>
+<div class="section" id="example-how-to-add-a-new-test">
+<h2><a class="toc-backref" href="#id14">1.13. Example: how to add a new test</a><a class="headerlink" href="#example-how-to-add-a-new-test" title="Permalink to this headline">¶</a></h2>
+<p>In this example, we will describe how to add a new test case which tests
+basic IPv4 forwarding.</p>
+<ol class="arabic">
+<li><p class="first">Add a new file called test_ip4_fwd.py in the test directory, starting
+with a few imports:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">framework</span> <span class="k">import</span> <span class="n">VppTestCase</span>
+<span class="kn">from</span> <span class="nn">scapy.layers.l2</span> <span class="k">import</span> <span class="n">Ether</span>
+<span class="kn">from</span> <span class="nn">scapy.packet</span> <span class="k">import</span> <span class="n">Raw</span>
+<span class="kn">from</span> <span class="nn">scapy.layers.inet</span> <span class="k">import</span> <span class="n">IP</span><span class="p">,</span> <span class="n">UDP</span>
+<span class="kn">from</span> <span class="nn">random</span> <span class="k">import</span> <span class="n">randint</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">Create a class inherited from the VppTestCase:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">IP4FwdTestCase</span><span class="p">(</span><span class="n">VppTestCase</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; IPv4 simple forwarding test case &quot;&quot;&quot;</span>
+</pre></div>
+</div>
+</li>
+</ol>
+<ol class="arabic" start="2">
+<li><p class="first">Add a setUpClass function containing the setup needed for our test to run:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@classmethod</span>
+<span class="k">def</span> <span class="nf">setUpClass</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="nb">super</span><span class="p">(</span><span class="n">IP4FwdTestCase</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">setUpClass</span><span class="p">()</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">create_pg_interfaces</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span>  <span class="c1">#  create pg0 and pg1</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">pg_interfaces</span><span class="p">:</span>
+        <span class="n">i</span><span class="o">.</span><span class="n">admin_up</span><span class="p">()</span>  <span class="c1"># put the interface up</span>
+        <span class="n">i</span><span class="o">.</span><span class="n">config_ip4</span><span class="p">()</span>  <span class="c1"># configure IPv4 address on the interface</span>
+        <span class="n">i</span><span class="o">.</span><span class="n">resolve_arp</span><span class="p">()</span>  <span class="c1"># resolve ARP, so that we know VPP MAC</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">Create a helper method to create the packets to send:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">create_stream</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">src_if</span><span class="p">,</span> <span class="n">dst_if</span><span class="p">,</span> <span class="n">count</span><span class="p">):</span>
+    <span class="n">packets</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">count</span><span class="p">):</span>
+        <span class="c1"># create packet info stored in the test case instance</span>
+        <span class="n">info</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_packet_info</span><span class="p">(</span><span class="n">src_if</span><span class="p">,</span> <span class="n">dst_if</span><span class="p">)</span>
+        <span class="c1"># convert the info into packet payload</span>
+        <span class="n">payload</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">info_to_payload</span><span class="p">(</span><span class="n">info</span><span class="p">)</span>
+        <span class="c1"># create the packet itself</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="p">(</span><span class="n">Ether</span><span class="p">(</span><span class="n">dst</span><span class="o">=</span><span class="n">src_if</span><span class="o">.</span><span class="n">local_mac</span><span class="p">,</span> <span class="n">src</span><span class="o">=</span><span class="n">src_if</span><span class="o">.</span><span class="n">remote_mac</span><span class="p">)</span> <span class="o">/</span>
+             <span class="n">IP</span><span class="p">(</span><span class="n">src</span><span class="o">=</span><span class="n">src_if</span><span class="o">.</span><span class="n">remote_ip4</span><span class="p">,</span> <span class="n">dst</span><span class="o">=</span><span class="n">dst_if</span><span class="o">.</span><span class="n">remote_ip4</span><span class="p">)</span> <span class="o">/</span>
+             <span class="n">UDP</span><span class="p">(</span><span class="n">sport</span><span class="o">=</span><span class="n">randint</span><span class="p">(</span><span class="mi">1000</span><span class="p">,</span> <span class="mi">2000</span><span class="p">),</span> <span class="n">dport</span><span class="o">=</span><span class="mi">5678</span><span class="p">)</span> <span class="o">/</span>
+             <span class="n">Raw</span><span class="p">(</span><span class="n">payload</span><span class="p">))</span>
+        <span class="c1"># store a copy of the packet in the packet info</span>
+        <span class="n">info</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="c1"># append the packet to the list</span>
+        <span class="n">packets</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+
+    <span class="c1"># return the created packet list</span>
+    <span class="k">return</span> <span class="n">packets</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">Create a helper method to verify the capture:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">verify_capture</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">src_if</span><span class="p">,</span> <span class="n">dst_if</span><span class="p">,</span> <span class="n">capture</span><span class="p">):</span>
+    <span class="n">packet_info</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">for</span> <span class="n">packet</span> <span class="ow">in</span> <span class="n">capture</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">ip</span> <span class="o">=</span> <span class="n">packet</span><span class="p">[</span><span class="n">IP</span><span class="p">]</span>
+            <span class="n">udp</span> <span class="o">=</span> <span class="n">packet</span><span class="p">[</span><span class="n">UDP</span><span class="p">]</span>
+            <span class="c1"># convert the payload to packet info object</span>
+            <span class="n">payload_info</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">payload_to_info</span><span class="p">(</span><span class="n">packet</span><span class="p">[</span><span class="n">Raw</span><span class="p">])</span>
+            <span class="c1"># make sure the indexes match</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">assert_equal</span><span class="p">(</span><span class="n">payload_info</span><span class="o">.</span><span class="n">src</span><span class="p">,</span> <span class="n">src_if</span><span class="o">.</span><span class="n">sw_if_index</span><span class="p">,</span>
+                              <span class="s2">&quot;source sw_if_index&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">assert_equal</span><span class="p">(</span><span class="n">payload_info</span><span class="o">.</span><span class="n">dst</span><span class="p">,</span> <span class="n">dst_if</span><span class="o">.</span><span class="n">sw_if_index</span><span class="p">,</span>
+                              <span class="s2">&quot;destination sw_if_index&quot;</span><span class="p">)</span>
+            <span class="n">packet_info</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_next_packet_info_for_interface2</span><span class="p">(</span>
+                              <span class="n">src_if</span><span class="o">.</span><span class="n">sw_if_index</span><span class="p">,</span>
+                              <span class="n">dst_if</span><span class="o">.</span><span class="n">sw_if_index</span><span class="p">,</span>
+                              <span class="n">packet_info</span><span class="p">)</span>
+            <span class="c1"># make sure we didn&#39;t run out of saved packets</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">assertIsNotNone</span><span class="p">(</span><span class="n">packet_info</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">assert_equal</span><span class="p">(</span><span class="n">payload_info</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">packet_info</span><span class="o">.</span><span class="n">index</span><span class="p">,</span>
+                              <span class="s2">&quot;packet info index&quot;</span><span class="p">)</span>
+            <span class="n">saved_packet</span> <span class="o">=</span> <span class="n">packet_info</span><span class="o">.</span><span class="n">data</span>  <span class="c1"># fetch the saved packet</span>
+            <span class="c1"># assert the values match</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">assert_equal</span><span class="p">(</span><span class="n">ip</span><span class="o">.</span><span class="n">src</span><span class="p">,</span> <span class="n">saved_packet</span><span class="p">[</span><span class="n">IP</span><span class="p">]</span><span class="o">.</span><span class="n">src</span><span class="p">,</span>
+                              <span class="s2">&quot;IP source address&quot;</span><span class="p">)</span>
+            <span class="c1"># ... more assertions here</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">assert_equal</span><span class="p">(</span><span class="n">udp</span><span class="o">.</span><span class="n">sport</span><span class="p">,</span> <span class="n">saved_packet</span><span class="p">[</span><span class="n">UDP</span><span class="p">]</span><span class="o">.</span><span class="n">sport</span><span class="p">,</span>
+                              <span class="s2">&quot;UDP source port&quot;</span><span class="p">)</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">ppp</span><span class="p">(</span><span class="s2">&quot;Unexpected or invalid packet:&quot;</span><span class="p">,</span>
+                              <span class="n">packet</span><span class="p">))</span>
+            <span class="k">raise</span>
+    <span class="n">remaining_packet</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_next_packet_info_for_interface2</span><span class="p">(</span>
+               <span class="n">src_if</span><span class="o">.</span><span class="n">sw_if_index</span><span class="p">,</span>
+               <span class="n">dst_if</span><span class="o">.</span><span class="n">sw_if_index</span><span class="p">,</span>
+               <span class="n">packet_info</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">assertIsNone</span><span class="p">(</span><span class="n">remaining_packet</span><span class="p">,</span>
+                      <span class="s2">&quot;Interface </span><span class="si">%s</span><span class="s2">: Packet expected from interface &quot;</span>
+                      <span class="s2">&quot;</span><span class="si">%s</span><span class="s2"> didn&#39;t arrive&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">dst_if</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">src_if</span><span class="o">.</span><span class="n">name</span><span class="p">))</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">Add the test code to test_basic function:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">test_basic</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="n">count</span> <span class="o">=</span> <span class="mi">10</span>
+    <span class="c1"># create the packet stream</span>
+    <span class="n">packets</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_stream</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pg0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pg1</span><span class="p">,</span> <span class="n">count</span><span class="p">)</span>
+    <span class="c1"># add the stream to the source interface</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">pg0</span><span class="o">.</span><span class="n">add_stream</span><span class="p">(</span><span class="n">packets</span><span class="p">)</span>
+    <span class="c1"># enable capture on both interfaces</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">pg0</span><span class="o">.</span><span class="n">enable_capture</span><span class="p">()</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">pg1</span><span class="o">.</span><span class="n">enable_capture</span><span class="p">()</span>
+    <span class="c1"># start the packet generator</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">pg_start</span><span class="p">()</span>
+    <span class="c1"># get capture - the proper count of packets was saved by</span>
+    <span class="c1"># create_packet_info() based on dst_if parameter</span>
+    <span class="n">capture</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pg1</span><span class="o">.</span><span class="n">get_capture</span><span class="p">()</span>
+    <span class="c1"># assert nothing captured on pg0 (always do this last, so that</span>
+    <span class="c1"># some time has already passed since pg_start())</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">pg0</span><span class="o">.</span><span class="n">assert_nothing_captured</span><span class="p">()</span>
+    <span class="c1"># verify capture</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">verify_capture</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pg0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pg1</span><span class="p">,</span> <span class="n">capture</span><span class="p">)</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">Run the test by issuing ‘make test’.</p>
+</li>
+</ol>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="modules.html" class="btn btn-neutral float-right" title="2. Module documentation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="index.html" class="btn btn-neutral float-left" title="Contents" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2016, VPP team
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

@@ -32,7 +32,15 @@ class VCLAppWorker(Worker):
 class VCLTestCase(VppTestCase):
     """ VCL Test Class """
 
-    def __init__(self, methodName):
+    @classmethod
+    def setUpClass(cls):
+        super(VCLTestCase, cls).setUpClass()
+
+    @classmethod
+    def tearDownClass(cls):
+        super(VCLTestCase, cls).tearDownClass()
+
+    def setUp(self):
         var = "VPP_BUILD_DIR"
         self.build_dir = os.getenv(var, None)
         if self.build_dir is None:
@@ -51,7 +59,7 @@ class VCLTestCase(VppTestCase):
         if os.path.isfile("/tmp/ldp_server_af_unix_socket"):
             os.remove("/tmp/ldp_server_af_unix_socket")
 
-        super(VCLTestCase, self).__init__(methodName)
+        super(VCLTestCase, self).setUp()
 
     def cut_thru_setup(self):
         self.vapi.session_enable_disable(is_enabled=1)
@@ -95,10 +103,10 @@ class VCLTestCase(VppTestCase):
             table_id += 1
 
         # Configure namespaces
-        self.vapi.app_namespace_add(namespace_id="1", secret=1234,
-                                    sw_if_index=self.loop0.sw_if_index)
-        self.vapi.app_namespace_add(namespace_id="2", secret=5678,
-                                    sw_if_index=self.loop1.sw_if_index)
+        self.vapi.app_namespace_add_del(namespace_id=b"1", secret=1234,
+                                        sw_if_index=self.loop0.sw_if_index)
+        self.vapi.app_namespace_add_del(namespace_id=b"2", secret=5678,
+                                        sw_if_index=self.loop1.sw_if_index)
 
         # Add inter-table routes
         ip_t01 = VppIpRoute(self, self.loop1.local_ip4, 32,
@@ -138,10 +146,10 @@ class VCLTestCase(VppTestCase):
             table_id += 1
 
         # Configure namespaces
-        self.vapi.app_namespace_add(namespace_id="1", secret=1234,
-                                    sw_if_index=self.loop0.sw_if_index)
-        self.vapi.app_namespace_add(namespace_id="2", secret=5678,
-                                    sw_if_index=self.loop1.sw_if_index)
+        self.vapi.app_namespace_add_del(namespace_id=b"1", secret=1234,
+                                        sw_if_index=self.loop0.sw_if_index)
+        self.vapi.app_namespace_add_del(namespace_id=b"2", secret=5678,
+                                        sw_if_index=self.loop1.sw_if_index)
 
         # Add inter-table routes
         ip_t01 = VppIpRoute(self, self.loop1.local_ip6, 128,
@@ -222,6 +230,14 @@ class VCLTestCase(VppTestCase):
 class LDPCutThruTestCase(VCLTestCase):
     """ LDP Cut Thru Tests """
 
+    @classmethod
+    def setUpClass(cls):
+        super(LDPCutThruTestCase, cls).setUpClass()
+
+    @classmethod
+    def tearDownClass(cls):
+        super(LDPCutThruTestCase, cls).tearDownClass()
+
     def setUp(self):
         super(LDPCutThruTestCase, self).setUp()
 
@@ -243,8 +259,8 @@ class LDPCutThruTestCase(VCLTestCase):
                                               self.server_port]
 
     def tearDown(self):
+        self.logger.debug(self.vapi.cli("show session verbose 2"))
         self.cut_thru_tear_down()
-
         super(LDPCutThruTestCase, self).tearDown()
 
     @unittest.skipUnless(running_extended_tests, "part of extended tests")
@@ -260,9 +276,20 @@ class LDPCutThruTestCase(VCLTestCase):
         try:
             subprocess.check_output(['iperf3', '-v'])
         except subprocess.CalledProcessError:
-            self.logger.error("WARNING: 'iperf3' is not installed,")
+            self.logger.error(
+                "WARNING: Subprocess returned non-0 running 'iperf3 -v")
             self.logger.error("         'test_ldp_cut_thru_iperf3' not run!")
             return
+        except OSError as e:
+            self.logger.error(
+                "WARNING: Subprocess returned with OS error (%s) %s\n"
+                "         'iperf3' is likely not installed,",
+                e.errno, e.strerror)
+            self.logger.error("         'test_ldp_cut_thru_iperf3' not run!")
+            return
+        except Exception:
+            self.logger.exception(
+                "Subprocess returned non-0 running 'iperf3 -v")
 
         self.timeout = self.client_iperf3_timeout
         self.cut_thru_test("iperf3", self.server_iperf3_args,
@@ -289,6 +316,14 @@ class LDPCutThruTestCase(VCLTestCase):
 
 class VCLCutThruTestCase(VCLTestCase):
     """ VCL Cut Thru Tests """
+
+    @classmethod
+    def setUpClass(cls):
+        super(VCLCutThruTestCase, cls).setUpClass()
+
+    @classmethod
+    def tearDownClass(cls):
+        super(VCLCutThruTestCase, cls).tearDownClass()
 
     def setUp(self):
         super(VCLCutThruTestCase, self).setUp()
@@ -336,31 +371,16 @@ class VCLCutThruTestCase(VCLTestCase):
                            self.client_bi_dir_nsock_test_args)
 
 
-class LDPThruHostStackEcho(VCLTestCase):
-    """ LDP Thru Host Stack Echo """
-
-    def setUp(self):
-        super(LDPThruHostStackEcho, self).setUp()
-
-        self.thru_host_stack_setup()
-        self.client_echo_test_args = ["-E", self.echo_phrase, "-X",
-                                      self.loop0.local_ip4,
-                                      self.server_port]
-
-    def tearDown(self):
-        self.thru_host_stack_tear_down()
-        super(LDPThruHostStackEcho, self).tearDown()
-
-    def test_ldp_thru_host_stack_echo(self):
-        """ run LDP thru host stack echo test """
-
-        self.thru_host_stack_test("sock_test_server", self.server_args,
-                                  "sock_test_client",
-                                  self.client_echo_test_args)
-
-
 class VCLThruHostStackEcho(VCLTestCase):
     """ VCL Thru Host Stack Echo """
+
+    @classmethod
+    def setUpClass(cls):
+        super(VCLThruHostStackEcho, cls).setUpClass()
+
+    @classmethod
+    def tearDownClass(cls):
+        super(VCLThruHostStackEcho, cls).tearDownClass()
 
     def setUp(self):
         super(VCLThruHostStackEcho, self).setUp()
@@ -382,8 +402,52 @@ class VCLThruHostStackEcho(VCLTestCase):
         super(VCLThruHostStackEcho, self).tearDown()
 
 
+class VCLThruHostStackTLS(VCLTestCase):
+    """ VCL Thru Host Stack TLS """
+
+    @classmethod
+    def setUpClass(cls):
+        super(VCLThruHostStackTLS, cls).setUpClass()
+
+    @classmethod
+    def tearDownClass(cls):
+        super(VCLThruHostStackTLS, cls).tearDownClass()
+
+    def setUp(self):
+        super(VCLThruHostStackTLS, self).setUp()
+
+        self.thru_host_stack_setup()
+        self.client_uni_dir_tls_timeout = 20
+        self.server_tls_args = ["-S", self.server_port]
+        self.client_uni_dir_tls_test_args = ["-N", "1000", "-U", "-X", "-S",
+                                             self.loop0.local_ip4,
+                                             self.server_port]
+
+    def test_vcl_thru_host_stack_tls_uni_dir(self):
+        """ run VCL thru host stack uni-directional TLS test """
+
+        self.timeout = self.client_uni_dir_tls_timeout
+        self.thru_host_stack_test("vcl_test_server", self.server_tls_args,
+                                  "vcl_test_client",
+                                  self.client_uni_dir_tls_test_args)
+
+    def tearDown(self):
+        self.logger.debug(self.vapi.cli("show app server"))
+        self.logger.debug(self.vapi.cli("show session verbose 2"))
+        self.thru_host_stack_tear_down()
+        super(VCLThruHostStackTLS, self).tearDown()
+
+
 class VCLThruHostStackBidirNsock(VCLTestCase):
     """ VCL Thru Host Stack Bidir Nsock """
+
+    @classmethod
+    def setUpClass(cls):
+        super(VCLThruHostStackBidirNsock, cls).setUpClass()
+
+    @classmethod
+    def tearDownClass(cls):
+        super(VCLThruHostStackBidirNsock, cls).tearDownClass()
 
     def setUp(self):
         super(VCLThruHostStackBidirNsock, self).setUp()
@@ -399,6 +463,7 @@ class VCLThruHostStackBidirNsock(VCLTestCase):
                                       self.server_port]
 
     def tearDown(self):
+        self.logger.debug(self.vapi.cli("show session verbose 2"))
         self.thru_host_stack_tear_down()
         super(VCLThruHostStackBidirNsock, self).tearDown()
 
@@ -413,6 +478,14 @@ class VCLThruHostStackBidirNsock(VCLTestCase):
 
 class LDPThruHostStackBidirNsock(VCLTestCase):
     """ LDP Thru Host Stack Bidir Nsock """
+
+    @classmethod
+    def setUpClass(cls):
+        super(LDPThruHostStackBidirNsock, cls).setUpClass()
+
+    @classmethod
+    def tearDownClass(cls):
+        super(LDPThruHostStackBidirNsock, cls).tearDownClass()
 
     def setUp(self):
         super(LDPThruHostStackBidirNsock, self).setUp()
@@ -434,6 +507,7 @@ class LDPThruHostStackBidirNsock(VCLTestCase):
                                                   self.server_port]
 
     def tearDown(self):
+        self.logger.debug(self.vapi.cli("show session verbose 2"))
         self.thru_host_stack_tear_down()
         super(LDPThruHostStackBidirNsock, self).tearDown()
 
@@ -448,6 +522,14 @@ class LDPThruHostStackBidirNsock(VCLTestCase):
 
 class LDPThruHostStackNsock(VCLTestCase):
     """ LDP Thru Host Stack Nsock """
+
+    @classmethod
+    def setUpClass(cls):
+        super(LDPThruHostStackNsock, cls).setUpClass()
+
+    @classmethod
+    def tearDownClass(cls):
+        super(LDPThruHostStackNsock, cls).tearDownClass()
 
     def setUp(self):
         super(LDPThruHostStackNsock, self).setUp()
@@ -481,6 +563,14 @@ class LDPThruHostStackNsock(VCLTestCase):
 class VCLThruHostStackNsock(VCLTestCase):
     """ VCL Thru Host Stack Nsock """
 
+    @classmethod
+    def setUpClass(cls):
+        super(VCLThruHostStackNsock, cls).setUpClass()
+
+    @classmethod
+    def tearDownClass(cls):
+        super(VCLThruHostStackNsock, cls).tearDownClass()
+
     def setUp(self):
         super(VCLThruHostStackNsock, self).setUp()
 
@@ -513,6 +603,14 @@ class VCLThruHostStackNsock(VCLTestCase):
 class LDPThruHostStackIperf(VCLTestCase):
     """ LDP Thru Host Stack Iperf  """
 
+    @classmethod
+    def setUpClass(cls):
+        super(LDPThruHostStackIperf, cls).setUpClass()
+
+    @classmethod
+    def tearDownClass(cls):
+        super(LDPThruHostStackIperf, cls).tearDownClass()
+
     def setUp(self):
         super(LDPThruHostStackIperf, self).setUp()
 
@@ -522,6 +620,7 @@ class LDPThruHostStackIperf(VCLTestCase):
         self.server_iperf3_args = ["-V4d", "-s"]
 
     def tearDown(self):
+        self.logger.debug(self.vapi.cli("show session verbose 2"))
         self.thru_host_stack_tear_down()
         super(LDPThruHostStackIperf, self).tearDown()
 
@@ -535,6 +634,14 @@ class LDPThruHostStackIperf(VCLTestCase):
             self.logger.error(
                 "         'test_ldp_thru_host_stack_iperf3' not run!")
             return
+        except OSError as e:
+            self.logger.error("WARNING: 'iperf3' is not installed,")
+            self.logger.error("         'test' not run!")
+            return
+        except Exception as e:
+            self.logger.error("WARNING: 'iperf3' unexpected error,")
+            self.logger.error("         'test' not run!")
+            return
 
         self.timeout = self.client_iperf3_timeout
         self.thru_host_stack_test("iperf3", self.server_iperf3_args,
@@ -543,6 +650,14 @@ class LDPThruHostStackIperf(VCLTestCase):
 
 class LDPIpv6CutThruTestCase(VCLTestCase):
     """ LDP IPv6 Cut Thru Tests """
+
+    @classmethod
+    def setUpClass(cls):
+        super(LDPIpv6CutThruTestCase, cls).setUpClass()
+
+    @classmethod
+    def tearDownClass(cls):
+        super(LDPIpv6CutThruTestCase, cls).tearDownClass()
 
     def setUp(self):
         super(LDPIpv6CutThruTestCase, self).setUp()
@@ -619,6 +734,14 @@ class LDPIpv6CutThruTestCase(VCLTestCase):
 class VCLIpv6CutThruTestCase(VCLTestCase):
     """ VCL IPv6 Cut Thru Tests """
 
+    @classmethod
+    def setUpClass(cls):
+        super(VCLIpv6CutThruTestCase, cls).setUpClass()
+
+    @classmethod
+    def tearDownClass(cls):
+        super(VCLIpv6CutThruTestCase, cls).tearDownClass()
+
     def setUp(self):
         super(VCLIpv6CutThruTestCase, self).setUp()
 
@@ -673,6 +796,14 @@ class VCLIpv6CutThruTestCase(VCLTestCase):
 
 class VCLIpv6ThruHostStackEcho(VCLTestCase):
     """ VCL IPv6 Thru Host Stack Echo """
+
+    @classmethod
+    def setUpClass(cls):
+        super(VCLIpv6ThruHostStackEcho, cls).setUpClass()
+
+    @classmethod
+    def tearDownClass(cls):
+        super(VCLIpv6ThruHostStackEcho, cls).tearDownClass()
 
     def setUp(self):
         super(VCLIpv6ThruHostStackEcho, self).setUp()

@@ -4,6 +4,7 @@ import socket
 import unittest
 
 from parameterized import parameterized
+import scapy.compat
 import scapy.layers.inet6 as inet6
 from scapy.contrib.mpls import MPLS
 from scapy.layers.inet6 import IPv6, ICMPv6ND_NS, ICMPv6ND_RS, \
@@ -18,7 +19,7 @@ from scapy.utils6 import in6_getnsma, in6_getnsmac, in6_ptop, in6_islladdr, \
 from six import moves
 
 from framework import VppTestCase, VppTestRunner
-from util import ppp, ip6_normalize
+from util import ppp, ip6_normalize, mk_ll_addr
 from vpp_ip import DpoProto
 from vpp_ip_route import VppIpRoute, VppRoutePath, find_route, VppIpMRoute, \
     VppMRoutePath, MRouteItfFlags, MRouteEntryFlags, VppMplsIpBind, \
@@ -26,14 +27,14 @@ from vpp_ip_route import VppIpRoute, VppRoutePath, find_route, VppIpMRoute, \
 from vpp_neighbor import find_nbr, VppNeighbor
 from vpp_pg_interface import is_ipv6_misc
 from vpp_sub_interface import VppSubInterface, VppDot1QSubint
+from ipaddress import IPv6Network, IPv4Network
 
 AF_INET6 = socket.AF_INET6
 
-
-def mk_ll_addr(mac):
-    euid = in6_mactoifaceid(mac)
-    addr = "fe80::" + euid
-    return addr
+try:
+    text_type = unicode
+except NameError:
+    text_type = str
 
 
 class TestIPv6ND(VppTestCase):
@@ -245,8 +246,10 @@ class TestIPv6(TestIPv6ND):
         for i in self.interfaces:
             next_hop_address = i.local_ip6n
             for j in range(count / n_int):
-                self.vapi.ip_add_del_route(
-                    dest_addr, dest_addr_len, next_hop_address, is_ipv6=1)
+                self.vapi.ip_add_del_route(dst_address=dest_addr,
+                                           dst_address_length=dest_addr_len,
+                                           next_hop_address=next_hop_address,
+                                           is_ipv6=1)
                 counter += 1
                 if counter / count * 100 > percent:
                     self.logger.info("Configure %d FIB entries .. %d%% done" %
@@ -318,7 +321,7 @@ class TestIPv6(TestIPv6ND):
             try:
                 ip = packet[IPv6]
                 udp = packet[inet6.UDP]
-                payload_info = self.payload_to_info(str(packet[Raw]))
+                payload_info = self.payload_to_info(packet[Raw])
                 packet_index = payload_info.index
                 self.assertEqual(payload_info.dst, dst_sw_if_index)
                 self.logger.debug(
@@ -445,7 +448,6 @@ class TestIPv6(TestIPv6ND):
                                self.pg0.sw_if_index,
                                self.pg0.remote_hosts[2].mac,
                                self.pg0.remote_hosts[2].ip6,
-                               af=AF_INET6,
                                is_no_fib_entry=1)
         nd_entry.add_vpp_config()
 
@@ -454,8 +456,7 @@ class TestIPv6(TestIPv6ND):
         #
         self.assertTrue(find_nbr(self,
                                  self.pg0.sw_if_index,
-                                 self.pg0._remote_hosts[2].ip6,
-                                 inet=AF_INET6))
+                                 self.pg0._remote_hosts[2].ip6))
         self.assertFalse(find_route(self,
                                     self.pg0._remote_hosts[2].ip6,
                                     128,
@@ -483,8 +484,7 @@ class TestIPv6(TestIPv6ND):
         #
         self.assertTrue(find_nbr(self,
                                  self.pg0.sw_if_index,
-                                 self.pg0._remote_hosts[2].ip6_ll,
-                                 inet=AF_INET6))
+                                 self.pg0._remote_hosts[2].ip6_ll))
         self.assertFalse(find_route(self,
                                     self.pg0._remote_hosts[2].ip6_ll,
                                     128,
@@ -511,8 +511,7 @@ class TestIPv6(TestIPv6ND):
         #
         self.assertTrue(find_nbr(self,
                                  self.pg0.sw_if_index,
-                                 self.pg0._remote_hosts[3].ip6_ll,
-                                 inet=AF_INET6))
+                                 self.pg0._remote_hosts[3].ip6_ll))
         self.assertFalse(find_route(self,
                                     self.pg0._remote_hosts[3].ip6_ll,
                                     128,
@@ -532,14 +531,12 @@ class TestIPv6(TestIPv6ND):
         ns_pg1 = VppNeighbor(self,
                              self.pg1.sw_if_index,
                              self.pg1.remote_hosts[1].mac,
-                             self.pg1.remote_hosts[1].ip6,
-                             af=AF_INET6)
+                             self.pg1.remote_hosts[1].ip6)
         ns_pg1.add_vpp_config()
         ns_pg2 = VppNeighbor(self,
                              self.pg2.sw_if_index,
                              self.pg2.remote_mac,
-                             self.pg1.remote_hosts[1].ip6,
-                             af=AF_INET6)
+                             self.pg1.remote_hosts[1].ip6)
         ns_pg2.add_vpp_config()
 
         #
@@ -755,7 +752,7 @@ class TestIPv6(TestIPv6ND):
         #
         # Configure The RA to announce the links prefix
         #
-        self.pg0.ip6_ra_prefix(self.pg0.local_ip6n,
+        self.pg0.ip6_ra_prefix(self.pg0.local_ip6,
                                self.pg0.local_ip6_prefix_len)
 
         #
@@ -781,7 +778,7 @@ class TestIPv6(TestIPv6ND):
         # Change the prefix info to not off-link
         #  L-flag is clear
         #
-        self.pg0.ip6_ra_prefix(self.pg0.local_ip6n,
+        self.pg0.ip6_ra_prefix(self.pg0.local_ip6,
                                self.pg0.local_ip6_prefix_len,
                                off_link=1)
 
@@ -801,7 +798,7 @@ class TestIPv6(TestIPv6ND):
         # Change the prefix info to not off-link, no-autoconfig
         #  L and A flag are clear in the advert
         #
-        self.pg0.ip6_ra_prefix(self.pg0.local_ip6n,
+        self.pg0.ip6_ra_prefix(self.pg0.local_ip6,
                                self.pg0.local_ip6_prefix_len,
                                off_link=1,
                                no_autoconfig=1)
@@ -822,7 +819,7 @@ class TestIPv6(TestIPv6ND):
         # Change the flag settings back to the defaults
         #  L and A flag are set in the advert
         #
-        self.pg0.ip6_ra_prefix(self.pg0.local_ip6n,
+        self.pg0.ip6_ra_prefix(self.pg0.local_ip6,
                                self.pg0.local_ip6_prefix_len)
 
         opt = ICMPv6NDOptPrefixInfo(
@@ -841,7 +838,7 @@ class TestIPv6(TestIPv6ND):
         # Change the prefix info to not off-link, no-autoconfig
         #  L and A flag are clear in the advert
         #
-        self.pg0.ip6_ra_prefix(self.pg0.local_ip6n,
+        self.pg0.ip6_ra_prefix(self.pg0.local_ip6,
                                self.pg0.local_ip6_prefix_len,
                                off_link=1,
                                no_autoconfig=1)
@@ -862,7 +859,7 @@ class TestIPv6(TestIPv6ND):
         # Use the reset to defults option to revert to defaults
         #  L and A flag are clear in the advert
         #
-        self.pg0.ip6_ra_prefix(self.pg0.local_ip6n,
+        self.pg0.ip6_ra_prefix(self.pg0.local_ip6,
                                self.pg0.local_ip6_prefix_len,
                                use_default=1)
 
@@ -881,7 +878,7 @@ class TestIPv6(TestIPv6ND):
         #
         # Advertise Another prefix. With no L-flag/A-flag
         #
-        self.pg0.ip6_ra_prefix(self.pg1.local_ip6n,
+        self.pg0.ip6_ra_prefix(self.pg1.local_ip6,
                                self.pg1.local_ip6_prefix_len,
                                off_link=1,
                                no_autoconfig=1)
@@ -911,7 +908,7 @@ class TestIPv6(TestIPv6ND):
         # Remove the first refix-info - expect the second is still in the
         # advert
         #
-        self.pg0.ip6_ra_prefix(self.pg0.local_ip6n,
+        self.pg0.ip6_ra_prefix(self.pg0.local_ip6,
                                self.pg0.local_ip6_prefix_len,
                                is_no=1)
 
@@ -930,7 +927,7 @@ class TestIPv6(TestIPv6ND):
         #
         # Remove the second prefix-info - expect no prefix-info i nthe adverts
         #
-        self.pg0.ip6_ra_prefix(self.pg1.local_ip6n,
+        self.pg0.ip6_ra_prefix(self.pg1.local_ip6,
                                self.pg1.local_ip6_prefix_len,
                                is_no=1)
 
@@ -977,7 +974,7 @@ class TestICMPv6Echo(VppTestCase):
 
         icmpv6_id = 0xb
         icmpv6_seq = 5
-        icmpv6_data = '\x0a' * 18
+        icmpv6_data = b'\x0a' * 18
         p_echo_request = (Ether(src=self.pg0.remote_mac,
                                 dst=self.pg0.local_mac) /
                           IPv6(src=self.pg0.remote_ip6,
@@ -1064,11 +1061,13 @@ class TestIPv6RD(TestIPv6ND):
                 self.pg1.local_mac)
 
     def verify_prefix_info(self, reported_prefix, prefix_option):
-        prefix = socket.inet_pton(socket.AF_INET6,
-                                  prefix_option.getfieldval("prefix"))
-        self.assert_equal(reported_prefix.dst_address, prefix)
-        self.assert_equal(reported_prefix.dst_address_length,
-                          prefix_option.getfieldval("prefixlen"))
+        prefix = IPv6Network(
+            text_type(prefix_option.getfieldval("prefix") +
+                      "/" +
+                      text_type(prefix_option.getfieldval("prefixlen"))),
+            strict=False)
+        self.assert_equal(reported_prefix.prefix.network_address,
+                          prefix.network_address)
         L = prefix_option.getfieldval("L")
         A = prefix_option.getfieldval("A")
         option_flags = (L << 7) | (A << 6)
@@ -1349,9 +1348,9 @@ class IPv6NDProxyTest(TestIPv6ND):
         #
         # Add proxy support for the host
         #
-        self.vapi.ip6_nd_proxy(
-            inet_pton(AF_INET6, self.pg0._remote_hosts[2].ip6),
-            self.pg1.sw_if_index)
+        self.vapi.ip6nd_proxy_add_del(
+            ip=inet_pton(AF_INET6, self.pg0._remote_hosts[2].ip6),
+            sw_if_index=self.pg1.sw_if_index)
 
         #
         # try that NS again. this time we expect an NA back
@@ -1366,8 +1365,7 @@ class IPv6NDProxyTest(TestIPv6ND):
         #
         self.assertTrue(find_nbr(self,
                                  self.pg1.sw_if_index,
-                                 self.pg0._remote_hosts[2].ip6,
-                                 inet=AF_INET6))
+                                 self.pg0._remote_hosts[2].ip6))
 
         #
         # ... and we can route traffic to it
@@ -1417,9 +1415,9 @@ class IPv6NDProxyTest(TestIPv6ND):
                   ICMPv6NDOptSrcLLAddr(
                       lladdr=self.pg0._remote_hosts[2].mac))
 
-        self.vapi.ip6_nd_proxy(
-            inet_pton(AF_INET6, self.pg0._remote_hosts[3].ip6),
-            self.pg2.sw_if_index)
+        self.vapi.ip6nd_proxy_add_del(
+            ip=inet_pton(AF_INET6, self.pg0._remote_hosts[3].ip6),
+            sw_if_index=self.pg2.sw_if_index)
 
         self.send_and_expect_na(self.pg2, ns_pg2,
                                 "NS to proxy entry other interface",
@@ -1428,8 +1426,7 @@ class IPv6NDProxyTest(TestIPv6ND):
 
         self.assertTrue(find_nbr(self,
                                  self.pg2.sw_if_index,
-                                 self.pg0._remote_hosts[3].ip6,
-                                 inet=AF_INET6))
+                                 self.pg0._remote_hosts[3].ip6))
 
         #
         # hosts can communicate. pg2->pg1
@@ -1458,23 +1455,19 @@ class IPv6NDProxyTest(TestIPv6ND):
         #
         # remove the proxy configs
         #
-        self.vapi.ip6_nd_proxy(
-            inet_pton(AF_INET6, self.pg0._remote_hosts[2].ip6),
-            self.pg1.sw_if_index,
-            is_del=1)
-        self.vapi.ip6_nd_proxy(
-            inet_pton(AF_INET6, self.pg0._remote_hosts[3].ip6),
-            self.pg2.sw_if_index,
-            is_del=1)
+        self.vapi.ip6nd_proxy_add_del(
+            ip=inet_pton(AF_INET6, self.pg0._remote_hosts[2].ip6),
+            sw_if_index=self.pg1.sw_if_index, is_del=1)
+        self.vapi.ip6nd_proxy_add_del(
+            ip=inet_pton(AF_INET6, self.pg0._remote_hosts[3].ip6),
+            sw_if_index=self.pg2.sw_if_index, is_del=1)
 
         self.assertFalse(find_nbr(self,
                                   self.pg2.sw_if_index,
-                                  self.pg0._remote_hosts[3].ip6,
-                                  inet=AF_INET6))
+                                  self.pg0._remote_hosts[3].ip6))
         self.assertFalse(find_nbr(self,
                                   self.pg1.sw_if_index,
-                                  self.pg0._remote_hosts[2].ip6,
-                                  inet=AF_INET6))
+                                  self.pg0._remote_hosts[2].ip6))
 
         #
         # no longer proxy-ing...
@@ -1677,20 +1670,20 @@ class TestIP6LoadBalance(VppTestCase):
             i.disable_mpls()
         super(TestIP6LoadBalance, self).tearDown()
 
-    def send_and_expect_load_balancing(self, input, pkts, outputs):
+    def pg_send(self, input, pkts):
         self.vapi.cli("clear trace")
         input.add_stream(pkts)
         self.pg_enable_capture(self.pg_interfaces)
         self.pg_start()
+
+    def send_and_expect_load_balancing(self, input, pkts, outputs):
+        self.pg_send(input, pkts)
         for oo in outputs:
             rx = oo._get_capture(1)
             self.assertNotEqual(0, len(rx))
 
     def send_and_expect_one_itf(self, input, pkts, itf):
-        self.vapi.cli("clear trace")
-        input.add_stream(pkts)
-        self.pg_enable_capture(self.pg_interfaces)
-        self.pg_start()
+        self.pg_send(input, pkts)
         rx = itf.get_capture(len(pkts))
 
     def test_ip6_load_balance(self):
@@ -1813,7 +1806,8 @@ class TestIP6LoadBalance(VppTestCase):
         #  - now only the stream with differing source address will
         #    load-balance
         #
-        self.vapi.set_ip_flow_hash(0, is_ip6=1, src=1, dst=1, sport=0, dport=0)
+        self.vapi.set_ip_flow_hash(vrf_id=0, src=1, dst=1, sport=0, dport=0,
+                                   is_ipv6=1)
 
         self.send_and_expect_load_balancing(self.pg0, src_ip_pkts,
                                             [self.pg1, self.pg2])
@@ -1824,7 +1818,8 @@ class TestIP6LoadBalance(VppTestCase):
         #
         # change the flow hash config back to defaults
         #
-        self.vapi.set_ip_flow_hash(0, is_ip6=1, src=1, dst=1, sport=1, dport=1)
+        self.vapi.set_ip_flow_hash(vrf_id=0, src=1, dst=1, sport=1, dport=1,
+                                   is_ipv6=1)
 
         #
         # Recursive prefixes
@@ -1960,7 +1955,7 @@ class TestIP6Punt(VppTestCase):
         #
         # add a policer
         #
-        policer = self.vapi.policer_add_del("ip6-punt", 400, 0, 10, 0,
+        policer = self.vapi.policer_add_del(b"ip6-punt", 400, 0, 10, 0,
                                             rate_type=1)
         self.vapi.ip_punt_police(policer.policer_index, is_ip6=1)
 
@@ -1978,10 +1973,10 @@ class TestIP6Punt(VppTestCase):
         self.assertLess(len(rx), len(pkts))
 
         #
-        # remove the poilcer. back to full rx
+        # remove the policer. back to full rx
         #
         self.vapi.ip_punt_police(policer.policer_index, is_add=0, is_ip6=1)
-        self.vapi.policer_add_del("ip6-punt", 400, 0, 10, 0,
+        self.vapi.policer_add_del(b"ip6-punt", 400, 0, 10, 0,
                                   rate_type=1, is_add=0)
         self.send_and_expect(self.pg0, pkts, self.pg1)
 

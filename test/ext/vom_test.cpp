@@ -25,6 +25,7 @@
 #include "vom/bond_group_binding_cmds.hpp"
 #include "vom/l2_binding.hpp"
 #include "vom/l2_binding_cmds.hpp"
+#include "vom/l2_vtr_cmds.hpp"
 #include "vom/l2_xconnect.hpp"
 #include "vom/l2_xconnect_cmds.hpp"
 #include "vom/l3_binding.hpp"
@@ -47,7 +48,8 @@
 #include "vom/sub_interface_cmds.hpp"
 #include "vom/acl_ethertype.hpp"
 #include "vom/acl_ethertype_cmds.hpp"
-#include "vom/acl_list.hpp"
+#include "vom/acl_l2_list.hpp"
+#include "vom/acl_l3_list.hpp"
 #include "vom/acl_binding.hpp"
 #include "vom/acl_list_cmds.hpp"
 #include "vom/acl_binding_cmds.hpp"
@@ -308,9 +310,9 @@ public:
                     {
                         rc = handle_derived<l2_binding_cmds::unbind_cmd>(f_exp, f_act);
                     }
-                    else if (typeid(*f_exp) == typeid(l2_binding_cmds::set_vtr_op_cmd))
+                    else if (typeid(*f_exp) == typeid(l2_vtr_cmds::set_cmd))
                     {
-                        rc = handle_derived<l2_binding_cmds::set_vtr_op_cmd>(f_exp, f_act);
+                        rc = handle_derived<l2_vtr_cmds::set_cmd>(f_exp, f_act);
                     }
                     else if (typeid(*f_exp) == typeid(l2_xconnect_cmds::bind_cmd))
                     {
@@ -988,14 +990,14 @@ BOOST_AUTO_TEST_CASE(test_bridge) {
     TRY_CHECK_RC(OM::write(dante, bd1));
 
     l2_binding *l2itf2 = new l2_binding(itf2, bd1);
-    HW::item<l2_binding::l2_vtr_op_t> hw_set_vtr(l2_binding::l2_vtr_op_t::L2_VTR_POP_1, rc_t::OK);
-    l2itf2->set(l2_binding::l2_vtr_op_t::L2_VTR_POP_1, 68);
+    HW::item<l2_vtr::option_t> hw_set_vtr(l2_vtr::option_t::POP_1, rc_t::OK);
+    l2itf2->set(l2_vtr::option_t::POP_1, 68);
 
     ADD_EXPECT(l2_binding_cmds::bind_cmd(hw_l2_bind,
                                          hw_ifh2.data(),
                                          hw_bd.data(),
                                          l2_binding::l2_port_type_t::L2_PORT_TYPE_NORMAL));
-    ADD_EXPECT(l2_binding_cmds::set_vtr_op_cmd(hw_set_vtr, hw_ifh2.data(), 68));
+    ADD_EXPECT(l2_vtr_cmds::set_cmd(hw_set_vtr, hw_ifh2.data(), 68));
     TRY_CHECK_RC(OM::write(dante, *l2itf2));
 
     // Add some static entries to the bridge-domain
@@ -1773,7 +1775,9 @@ BOOST_AUTO_TEST_CASE(test_routing) {
     HW::item<bool> hw_neighbour(true, rc_t::OK);
     mac_address_t mac_n({0,1,2,4,5,6});
     neighbour *ne = new neighbour(itf1, nh_10, mac_n);
-    ADD_EXPECT(neighbour_cmds::create_cmd(hw_neighbour, hw_ifh.data(), mac_n, nh_10));
+    ADD_EXPECT(neighbour_cmds::create_cmd(hw_neighbour, hw_ifh.data(),
+                                          mac_n, nh_10,
+                                          neighbour::flags_t::STATIC));
     TRY_CHECK_RC(OM::write(ian, *ne));
 
     /*
@@ -1829,7 +1833,9 @@ BOOST_AUTO_TEST_CASE(test_routing) {
     delete mp1;
     delete mp2;
 
-    ADD_EXPECT(neighbour_cmds::delete_cmd(hw_neighbour, hw_ifh.data(), mac_n, nh_10));
+    ADD_EXPECT(neighbour_cmds::delete_cmd(hw_neighbour, hw_ifh.data(),
+                                          mac_n, nh_10,
+                                          neighbour::flags_t::STATIC));
     ADD_EXPECT(route::ip_route_cmds::delete_cmd(hw_route_dvr, 0, pfx_6, *path_l2));
     ADD_EXPECT(route::ip_route_cmds::delete_cmd(hw_route_5_2, 1, pfx_5, *path_11));
     ADD_EXPECT(route::ip_route_cmds::delete_cmd(hw_route_5_2, 1, pfx_5, *path_12));

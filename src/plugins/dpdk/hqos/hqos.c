@@ -225,9 +225,11 @@ dpdk_device_config_hqos_default (dpdk_device_config_hqos_t * hqos)
   /* pipe */
   vec_add2 (hqos->pipe, pipe_params, hqos->port.n_pipe_profiles);
 
-  //for (i = 0; i < vec_len (hqos->pipe); i++)
-    memcpy (&pipe_params[0], &hqos_pipe_params_default, sizeof (hqos_pipe_params_default));
-    memcpy (&pipe_params[1], &hqos_pipe_params_5MB, sizeof(hqos_pipe_params_5MB));
+  /* for (i = 0; i < vec_len (hqos->pipe); i++) {
+    memcpy (&pipe_params[i],
+	    &hqos_pipe_params_default, sizeof (hqos_pipe_params_default));	*/
+  memcpy (&pipe_params[0], &hqos_pipe_params_default, sizeof (hqos_pipe_params_default));
+  memcpy (&pipe_params[1], &hqos_pipe_params_5MB, sizeof(hqos_pipe_params_5MB));
 
   hqos->port.pipe_profiles = hqos->pipe;
 

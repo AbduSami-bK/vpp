@@ -17,6 +17,7 @@
 #include <vlibmemory/api.h>
 #include <vnet/session/application.h>
 #include <vnet/session/application_interface.h>
+#include <vnet/session/session.h>
 
 typedef struct
 {
@@ -55,12 +56,12 @@ typedef struct
 echo_server_main_t echo_server_main;
 
 int
-echo_server_session_accept_callback (stream_session_t * s)
+echo_server_session_accept_callback (session_t * s)
 {
   echo_server_main_t *esm = &echo_server_main;
 
   esm->vpp_queue[s->thread_index] =
-    session_manager_get_vpp_event_queue (s->thread_index);
+    session_main_get_vpp_event_queue (s->thread_index);
   s->session_state = SESSION_STATE_READY;
   esm->byte_index = 0;
   ASSERT (vec_len (esm->rx_retries) > s->thread_index);
@@ -70,7 +71,7 @@ echo_server_session_accept_callback (stream_session_t * s)
 }
 
 void
-echo_server_session_disconnect_callback (stream_session_t * s)
+echo_server_session_disconnect_callback (session_t * s)
 {
   echo_server_main_t *esm = &echo_server_main;
   vnet_disconnect_args_t _a = { 0 }, *a = &_a;
@@ -81,11 +82,11 @@ echo_server_session_disconnect_callback (stream_session_t * s)
 }
 
 void
-echo_server_session_reset_callback (stream_session_t * s)
+echo_server_session_reset_callback (session_t * s)
 {
   echo_server_main_t *esm = &echo_server_main;
   vnet_disconnect_args_t _a = { 0 }, *a = &_a;
-  clib_warning ("Reset session %U", format_stream_session, s, 2);
+  clib_warning ("Reset session %U", format_session, s, 2);
   a->handle = session_handle (s);
   a->app_index = esm->app_index;
   vnet_disconnect_session (a);
@@ -93,7 +94,7 @@ echo_server_session_reset_callback (stream_session_t * s)
 
 int
 echo_server_session_connected_callback (u32 app_index, u32 api_context,
-					stream_session_t * s, u8 is_fail)
+					session_t * s, u8 is_fail)
 {
   clib_warning ("called...");
   return -1;
@@ -135,15 +136,15 @@ test_bytes (echo_server_main_t * esm, int actual_transfer)
  * If no-echo, just drop the data and be done with it.
  */
 int
-echo_server_builtin_server_rx_callback_no_echo (stream_session_t * s)
+echo_server_builtin_server_rx_callback_no_echo (session_t * s)
 {
-  svm_fifo_t *rx_fifo = s->server_rx_fifo;
+  svm_fifo_t *rx_fifo = s->rx_fifo;
   svm_fifo_dequeue_drop (rx_fifo, svm_fifo_max_dequeue (rx_fifo));
   return 0;
 }
 
 int
-echo_server_rx_callback (stream_session_t * s)
+echo_server_rx_callback (session_t * s)
 {
   u32 n_written, max_dequeue, max_enqueue, max_transfer;
   int actual_transfer;
@@ -154,8 +155,8 @@ echo_server_rx_callback (stream_session_t * s)
 
   ASSERT (s->thread_index == thread_index);
 
-  rx_fifo = s->server_rx_fifo;
-  tx_fifo = s->server_tx_fifo;
+  rx_fifo = s->rx_fifo;
+  tx_fifo = s->tx_fifo;
 
   ASSERT (rx_fifo->master_thread_index == thread_index);
   ASSERT (tx_fifo->master_thread_index == thread_index);
@@ -173,7 +174,7 @@ echo_server_rx_callback (stream_session_t * s)
       if (!esm->vpp_queue[s->thread_index])
 	{
 	  svm_msg_q_t *mq;
-	  mq = session_manager_get_vpp_event_queue (s->thread_index);
+	  mq = session_main_get_vpp_event_queue (s->thread_index);
 	  esm->vpp_queue[s->thread_index] = mq;
 	}
       max_enqueue -= sizeof (session_dgram_hdr_t);
@@ -194,13 +195,14 @@ echo_server_rx_callback (stream_session_t * s)
       /* Program self-tap to retry */
       if (svm_fifo_set_event (rx_fifo))
 	{
-	  if (session_send_io_evt_to_thread (rx_fifo, FIFO_EVENT_BUILTIN_RX))
+	  if (session_send_io_evt_to_thread (rx_fifo,
+					     SESSION_IO_EVT_BUILTIN_RX))
 	    clib_warning ("failed to enqueue self-tap");
 
 	  vec_validate (esm->rx_retries[s->thread_index], s->session_index);
 	  if (esm->rx_retries[thread_index][s->session_index] == 500000)
 	    {
-	      clib_warning ("session stuck: %U", format_stream_session, s, 2);
+	      clib_warning ("session stuck: %U", format_session, s, 2);
 	    }
 	  if (esm->rx_retries[thread_index][s->session_index] < 500001)
 	    esm->rx_retries[thread_index][s->session_index]++;
@@ -238,14 +240,16 @@ echo_server_rx_callback (stream_session_t * s)
       n_written = app_send_stream_raw (tx_fifo,
 				       esm->vpp_queue[thread_index],
 				       esm->rx_buf[thread_index],
-				       actual_transfer, FIFO_EVENT_APP_TX, 0);
+				       actual_transfer, SESSION_IO_EVT_TX,
+				       1 /* do_evt */ , 0);
     }
   else
     {
       n_written = app_send_dgram_raw (tx_fifo, &at,
 				      esm->vpp_queue[s->thread_index],
 				      esm->rx_buf[thread_index],
-				      actual_transfer, FIFO_EVENT_APP_TX, 0);
+				      actual_transfer, SESSION_IO_EVT_TX,
+				      1 /* do_evt */ , 0);
     }
 
   if (n_written != max_transfer)
@@ -362,7 +366,7 @@ static int
 echo_server_listen ()
 {
   echo_server_main_t *esm = &echo_server_main;
-  vnet_bind_args_t _a, *a = &_a;
+  vnet_listen_args_t _a, *a = &_a;
   clib_memset (a, 0, sizeof (*a));
   a->app_index = esm->app_index;
   a->uri = esm->server_uri;
@@ -393,7 +397,7 @@ echo_server_create (vlib_main_t * vm, u8 * appns_id, u64 appns_flags,
   vec_validate (esm->rx_retries, num_threads - 1);
   for (i = 0; i < vec_len (esm->rx_retries); i++)
     vec_validate (esm->rx_retries[i],
-		  pool_elts (session_manager_main.wrk[i].sessions));
+		  pool_elts (session_main.wrk[i].sessions));
   esm->rcv_buffer_size = clib_max (esm->rcv_buffer_size, esm->fifo_size);
   for (i = 0; i < num_threads; i++)
     vec_validate (esm->rx_buf[i], esm->rcv_buffer_size);

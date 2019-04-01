@@ -22,6 +22,8 @@
 #include <vnet/dpo/load_balance.h>
 #include <vnet/fib/ip4_fib.h>
 
+udp_main_t udp_main;
+
 udp_connection_t *
 udp_connection_alloc (u32 thread_index)
 {
@@ -318,9 +320,9 @@ udp_session_get_half_open (u32 conn_index)
 
 /* *INDENT-OFF* */
 const static transport_proto_vft_t udp_proto = {
-  .bind = udp_session_bind,
-  .open = udp_open_connection,
-  .unbind = udp_session_unbind,
+  .start_listen = udp_session_bind,
+  .connect = udp_open_connection,
+  .stop_listen = udp_session_unbind,
   .push_header = udp_push_header,
   .get_connection = udp_session_get,
   .get_listener = udp_session_get_listener,
@@ -362,9 +364,9 @@ udpc_connection_listen (u32 session_index, transport_endpoint_t * lcl)
 
 /* *INDENT-OFF* */
 const static transport_proto_vft_t udpc_proto = {
-  .bind = udpc_connection_listen,
-  .open = udpc_connection_open,
-  .unbind = udp_session_unbind,
+  .start_listen = udpc_connection_listen,
+  .stop_listen = udp_session_unbind,
+  .connect = udpc_connection_open,
   .push_header = udp_push_header,
   .get_connection = udp_session_get,
   .get_listener = udp_session_get_listener,

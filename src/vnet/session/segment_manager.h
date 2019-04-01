@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 Cisco and/or its affiliates.
+ * Copyright (c) 2017-2019 Cisco and/or its affiliates.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at:
@@ -157,7 +157,7 @@ int segment_manager_try_alloc_fifos (svm_fifo_segment_private_t * fs,
 				     u32 rx_fifo_size, u32 tx_fifo_size,
 				     svm_fifo_t ** rx_fifo,
 				     svm_fifo_t ** tx_fifo);
-void segment_manager_dealloc_fifos (u32 segment_index, svm_fifo_t * rx_fifo,
+void segment_manager_dealloc_fifos (svm_fifo_t * rx_fifo,
 				    svm_fifo_t * tx_fifo);
 u32 segment_manager_evt_q_expected_size (u32 q_size);
 svm_msg_q_t *segment_manager_alloc_queue (svm_fifo_segment_private_t * fs,

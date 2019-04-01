@@ -105,8 +105,8 @@ class TestClassifyAcl(VppTestCase):
             cls.vapi.bridge_domain_add_del(bd_id=cls.bd_id, uu_flood=1,
                                            learn=1)
             for pg_if in cls.pg_interfaces:
-                cls.vapi.sw_interface_set_l2_bridge(pg_if.sw_if_index,
-                                                    bd_id=cls.bd_id)
+                cls.vapi.sw_interface_set_l2_bridge(
+                    rx_sw_if_index=pg_if.sw_if_index, bd_id=cls.bd_id)
 
             # Set up all interfaces
             for i in cls.pg_interfaces:
@@ -174,8 +174,8 @@ class TestClassifyAcl(VppTestCase):
         :param str ether_type: ethernet type <0-ffff>
         """
 
-        return ('{:0>12}{:0>12}{:0>4}'.format(dst_mac, src_mac,
-                                              ether_type)).rstrip('0')
+        return ('{!s:0>12}{!s:0>12}{!s:0>4}'.format(
+            dst_mac, src_mac, ether_type)).rstrip('0')
 
     @staticmethod
     def build_mac_match(dst_mac='', src_mac='', ether_type=''):
@@ -190,8 +190,8 @@ class TestClassifyAcl(VppTestCase):
         if src_mac:
             src_mac = src_mac.replace(':', '')
 
-        return ('{:0>12}{:0>12}{:0>4}'.format(dst_mac, src_mac,
-                                              ether_type)).rstrip('0')
+        return ('{!s:0>12}{!s:0>12}{!s:0>4}'.format(
+            dst_mac, src_mac, ether_type)).rstrip('0')
 
     def create_classify_table(self, key, mask, data_offset=0, is_add=1):
         """Create Classify Table
@@ -209,7 +209,7 @@ class TestClassifyAcl(VppTestCase):
             miss_next_index=0,
             current_data_flag=1,
             current_data_offset=data_offset)
-        self.assertIsNotNone(r, msg='No response msg for add_del_table')
+        self.assertIsNotNone(r, 'No response msg for add_del_table')
         self.acl_tbl_idx[key] = r.new_table_index
 
     def create_classify_session(self, intf, table_index, match,
@@ -229,7 +229,7 @@ class TestClassifyAcl(VppTestCase):
             table_index,
             binascii.unhexlify(match),
             hit_next_index=hit_next_index)
-        self.assertIsNotNone(r, msg='No response msg for add_del_session')
+        self.assertIsNotNone(r, 'No response msg for add_del_session')
 
     def input_acl_set_interface(self, intf, table_index, is_add=1):
         """Configure Input ACL interface
@@ -243,7 +243,7 @@ class TestClassifyAcl(VppTestCase):
             is_add,
             intf.sw_if_index,
             l2_table_index=table_index)
-        self.assertIsNotNone(r, msg='No response msg for acl_set_interface')
+        self.assertIsNotNone(r, 'No response msg for acl_set_interface')
 
     def output_acl_set_interface(self, intf, table_index, is_add=1):
         """Configure Output ACL interface
@@ -257,7 +257,7 @@ class TestClassifyAcl(VppTestCase):
             is_add,
             intf.sw_if_index,
             l2_table_index=table_index)
-        self.assertIsNotNone(r, msg='No response msg for acl_set_interface')
+        self.assertIsNotNone(r, 'No response msg for acl_set_interface')
 
     def create_hosts(self, count, start=0):
         """
@@ -396,7 +396,7 @@ class TestClassifyAcl(VppTestCase):
                         packet[ICMPv6EchoRequest].data)
                     payload = packet[ICMPv6EchoRequest]
                 else:
-                    payload_info = self.payload_to_info(str(packet[Raw]))
+                    payload_info = self.payload_to_info(packet[Raw])
                     payload = packet[self.proto_map[payload_info.proto]]
             except:
                 self.logger.error(ppp("Unexpected or invalid packet "

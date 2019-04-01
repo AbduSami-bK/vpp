@@ -239,7 +239,7 @@ tcp_test_sack_rx (vlib_main_t * vm, unformat_input_t * input)
    */
   vec_reset_length (tc->rcv_opts.sacks);
   tc->snd_una += sb->snd_una_adv;
-  tc->snd_una_max = 1900;
+  tc->snd_nxt = tc->snd_una_max = 1900;
   for (i = 0; i < 5; i++)
     {
       block.start = i * 100 + 1200;
@@ -416,7 +416,7 @@ tcp_test_sack_rx (vlib_main_t * vm, unformat_input_t * input)
    * snd_una = 1000 and snd_una_max = 1600
    */
   tc->snd_una = 1000;
-  tc->snd_una_max = 1600;
+  tc->snd_nxt = tc->snd_una_max = 1600;
   vec_reset_length (tc->rcv_opts.sacks);
   block.start = 1200;
   block.end = 1500;
@@ -1635,11 +1635,11 @@ tcp_test_fifo (vlib_main_t * vm, unformat_input_t * input)
 static int
 tcp_test_lookup (vlib_main_t * vm, unformat_input_t * input)
 {
-  session_manager_main_t *smm = &session_manager_main;
+  session_main_t *smm = &session_main;
   tcp_main_t *tm = &tcp_main;
   transport_connection_t _tc1, *tc1 = &_tc1, _tc2, *tc2 = &_tc2, *tconn;
   tcp_connection_t *tc;
-  stream_session_t *s, *s1;
+  session_t *s, *s1;
   u8 cmp = 0, is_filtered = 0;
   u32 sidx;
 
@@ -1785,11 +1785,11 @@ tcp_test_session (vlib_main_t * vm, unformat_input_t * input)
 
       TCP_EVT_DBG (TCP_EVT_OPEN, tc0);
 
-      if (stream_session_accept (&tc0->connection, 0 /* listener index */ ,
+      if (session_stream_accept (&tc0->connection, 0 /* listener index */ ,
 				 0 /* notify */ ))
 	clib_warning ("stream_session_accept failed");
 
-      stream_session_accept_notify (&tc0->connection);
+      session_stream_accept_notify (&tc0->connection);
     }
   else
     {

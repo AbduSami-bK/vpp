@@ -1,0 +1,2354 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>2.118. vpp_papi_provider module &mdash; VPP test framework 0.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="2.119. vpp_pg_interface module" href="vpp_pg_interface.html" />
+    <link rel="prev" title="2.117. vpp_object module" href="vpp_object.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> VPP test framework
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="overview.html">1. VPP Test Framework</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">2. Module documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="bfd.html">2.1. bfd module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="debug.html">2.2. debug module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="debug_internal.html">2.3. debug_internal module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="discover_tests.html">2.4. discover_tests module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="framework.html">2.5. framework module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hook.html">2.6. hook module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ipfix.html">2.7. ipfix module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lisp.html">2.8. lisp module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="log.html">2.9. log module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="remote_test.html">2.10. remote_test module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run_tests.html">2.11. run_tests module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sanity_import_vpp_papi.html">2.12. sanity_import_vpp_papi module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sanity_run_vpp.html">2.13. sanity_run_vpp module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="scapy_handlers.html">2.14. scapy_handlers package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="template_bd.html">2.15. template_bd module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="template_ipsec.html">2.16. template_ipsec module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_abf.html">2.17. test_abf module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_acl_plugin.html">2.18. test_acl_plugin module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_acl_plugin_conns.html">2.19. test_acl_plugin_conns module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_acl_plugin_l2l3.html">2.20. test_acl_plugin_l2l3 module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_acl_plugin_macip.html">2.21. test_acl_plugin_macip module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_bfd.html">2.22. test_bfd module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_bier.html">2.23. test_bier module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_bihash.html">2.24. test_bihash module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_bond.html">2.25. test_bond module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_cdp.html">2.26. test_cdp module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_classifier.html">2.27. test_classifier module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_classifier_ip6.html">2.28. test_classifier_ip6 module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_classify_l2_acl.html">2.29. test_classify_l2_acl module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_container.html">2.30. test_container module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_dhcp.html">2.31. test_dhcp module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_dhcp6.html">2.32. test_dhcp6 module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_dvr.html">2.33. test_dvr module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_fib.html">2.34. test_fib module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_flowprobe.html">2.35. test_flowprobe module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_gbp.html">2.36. test_gbp module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_geneve.html">2.37. test_geneve module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_gre.html">2.38. test_gre module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_gtpu.html">2.39. test_gtpu module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_igmp.html">2.40. test_igmp module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_interface_crud.html">2.41. test_interface_crud module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_ip4.html">2.42. test_ip4 module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_ip4_irb.html">2.43. test_ip4_irb module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_ip4_vrf_multi_instance.html">2.44. test_ip4_vrf_multi_instance module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_ip6.html">2.45. test_ip6 module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_ip6_vrf_multi_instance.html">2.46. test_ip6_vrf_multi_instance module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_ip_ecmp.html">2.47. test_ip_ecmp module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_ip_mcast.html">2.48. test_ip_mcast module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_ipip.html">2.49. test_ipip module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_ipsec_ah.html">2.50. test_ipsec_ah module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_ipsec_api.html">2.51. test_ipsec_api module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_ipsec_esp.html">2.52. test_ipsec_esp module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_ipsec_nat.html">2.53. test_ipsec_nat module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_ipsec_tun_if_esp.html">2.54. test_ipsec_tun_if_esp module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_l2_fib.html">2.55. test_l2_fib module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_l2_flood.html">2.56. test_l2_flood module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_l2bd.html">2.57. test_l2bd module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_l2bd_arp_term.html">2.58. test_l2bd_arp_term module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_l2bd_multi_instance.html">2.59. test_l2bd_multi_instance module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_l2xc.html">2.60. test_l2xc module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_l2xc_multi_instance.html">2.61. test_l2xc_multi_instance module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_lb.html">2.62. test_lb module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_lisp.html">2.63. test_lisp module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_map.html">2.64. test_map module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_memif.html">2.65. test_memif module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_mpls.html">2.66. test_mpls module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_mtu.html">2.67. test_mtu module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_nat.html">2.68. test_nat module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_neighbor.html">2.69. test_neighbor module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_p2p_ethernet.html">2.70. test_p2p_ethernet module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_ping.html">2.71. test_ping module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_pipe.html">2.72. test_pipe module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_pppoe.html">2.73. test_pppoe module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_punt.html">2.74. test_punt module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_qos.html">2.75. test_qos module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_reassembly.html">2.76. test_reassembly module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_sctp.html">2.77. test_sctp module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_session.html">2.78. test_session module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_sixrd.html">2.79. test_sixrd module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_span.html">2.80. test_span module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_srmpls.html">2.81. test_srmpls module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_srv6.html">2.82. test_srv6 module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_srv6_ad.html">2.83. test_srv6_ad module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_srv6_as.html">2.84. test_srv6_as module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_stats_client.html">2.85. test_stats_client module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_string.html">2.86. test_string module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_svs.html">2.87. test_svs module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_syslog.html">2.88. test_syslog module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_tcp.html">2.89. test_tcp module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_udp.html">2.90. test_udp module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_util.html">2.91. test_util module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_vapi.html">2.92. test_vapi module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_vcl.html">2.93. test_vcl module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_vhost.html">2.94. test_vhost module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_vom.html">2.95. test_vom module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_vtr.html">2.96. test_vtr module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_vxlan.html">2.97. test_vxlan module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_vxlan6.html">2.98. test_vxlan6 module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_vxlan_gbp.html">2.99. test_vxlan_gbp module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_vxlan_gpe.html">2.100. test_vxlan_gpe module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="util.html">2.101. util module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpp_bier.html">2.102. vpp_bier module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpp_bond_interface.html">2.103. vpp_bond_interface module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpp_bvi_interface.html">2.104. vpp_bvi_interface module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpp_gre_interface.html">2.105. vpp_gre_interface module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpp_igmp.html">2.106. vpp_igmp module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpp_interface.html">2.107. vpp_interface module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpp_ip.html">2.108. vpp_ip module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpp_ip_route.html">2.109. vpp_ip_route module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpp_ipsec.html">2.110. vpp_ipsec module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpp_ipsec_tun_interface.html">2.111. vpp_ipsec_tun_interface module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpp_l2.html">2.112. vpp_l2 module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpp_lo_interface.html">2.113. vpp_lo_interface module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpp_memif.html">2.114. vpp_memif module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpp_mpls_tunnel_interface.html">2.115. vpp_mpls_tunnel_interface module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpp_neighbor.html">2.116. vpp_neighbor module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpp_object.html">2.117. vpp_object module</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">2.118. vpp_papi_provider module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpp_pg_interface.html">2.119. vpp_pg_interface module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpp_pppoe_interface.html">2.120. vpp_pppoe_interface module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpp_srv6.html">2.121. vpp_srv6 module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpp_sub_interface.html">2.122. vpp_sub_interface module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpp_tunnel_interface.html">2.123. vpp_tunnel_interface module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpp_udp_encap.html">2.124. vpp_udp_encap module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpp_vhost_interface.html">2.125. vpp_vhost_interface module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpp_vxlan_gbp_tunnel.html">2.126. vpp_vxlan_gbp_tunnel module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vrf.html">2.127. vrf module</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="indices.html">3. Indices and tables</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">VPP test framework</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="modules.html">2. Module documentation</a> &raquo;</li>
+        
+      <li>2.118. vpp_papi_provider module</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/vpp_papi_provider.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-vpp_papi_provider">
+<span id="vpp-papi-provider-module"></span><h1>2.118. vpp_papi_provider module<a class="headerlink" href="#module-vpp_papi_provider" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="vpp_papi_provider.L2_VTR_OP">
+<em class="property">class </em><code class="descclassname">vpp_papi_provider.</code><code class="descname">L2_VTR_OP</code><a class="headerlink" href="#vpp_papi_provider.L2_VTR_OP" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="attribute">
+<dt id="vpp_papi_provider.L2_VTR_OP.L2_DISABLED">
+<code class="descname">L2_DISABLED</code><em class="property"> = 0</em><a class="headerlink" href="#vpp_papi_provider.L2_VTR_OP.L2_DISABLED" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="vpp_papi_provider.L2_VTR_OP.L2_POP_1">
+<code class="descname">L2_POP_1</code><em class="property"> = 3</em><a class="headerlink" href="#vpp_papi_provider.L2_VTR_OP.L2_POP_1" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="vpp_papi_provider.L2_VTR_OP.L2_POP_2">
+<code class="descname">L2_POP_2</code><em class="property"> = 4</em><a class="headerlink" href="#vpp_papi_provider.L2_VTR_OP.L2_POP_2" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="vpp_papi_provider.L2_VTR_OP.L2_PUSH_1">
+<code class="descname">L2_PUSH_1</code><em class="property"> = 1</em><a class="headerlink" href="#vpp_papi_provider.L2_VTR_OP.L2_PUSH_1" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="vpp_papi_provider.L2_VTR_OP.L2_PUSH_2">
+<code class="descname">L2_PUSH_2</code><em class="property"> = 2</em><a class="headerlink" href="#vpp_papi_provider.L2_VTR_OP.L2_PUSH_2" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="vpp_papi_provider.L2_VTR_OP.L2_TRANSLATE_1_1">
+<code class="descname">L2_TRANSLATE_1_1</code><em class="property"> = 5</em><a class="headerlink" href="#vpp_papi_provider.L2_VTR_OP.L2_TRANSLATE_1_1" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="vpp_papi_provider.L2_VTR_OP.L2_TRANSLATE_1_2">
+<code class="descname">L2_TRANSLATE_1_2</code><em class="property"> = 6</em><a class="headerlink" href="#vpp_papi_provider.L2_VTR_OP.L2_TRANSLATE_1_2" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="vpp_papi_provider.L2_VTR_OP.L2_TRANSLATE_2_1">
+<code class="descname">L2_TRANSLATE_2_1</code><em class="property"> = 7</em><a class="headerlink" href="#vpp_papi_provider.L2_VTR_OP.L2_TRANSLATE_2_1" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="vpp_papi_provider.L2_VTR_OP.L2_TRANSLATE_2_2">
+<code class="descname">L2_TRANSLATE_2_2</code><em class="property"> = 8</em><a class="headerlink" href="#vpp_papi_provider.L2_VTR_OP.L2_TRANSLATE_2_2" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="vpp_papi_provider.QOS_SOURCE">
+<em class="property">class </em><code class="descclassname">vpp_papi_provider.</code><code class="descname">QOS_SOURCE</code><a class="headerlink" href="#vpp_papi_provider.QOS_SOURCE" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="attribute">
+<dt id="vpp_papi_provider.QOS_SOURCE.EXT">
+<code class="descname">EXT</code><em class="property"> = 0</em><a class="headerlink" href="#vpp_papi_provider.QOS_SOURCE.EXT" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="vpp_papi_provider.QOS_SOURCE.IP">
+<code class="descname">IP</code><em class="property"> = 3</em><a class="headerlink" href="#vpp_papi_provider.QOS_SOURCE.IP" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="vpp_papi_provider.QOS_SOURCE.MPLS">
+<code class="descname">MPLS</code><em class="property"> = 2</em><a class="headerlink" href="#vpp_papi_provider.QOS_SOURCE.MPLS" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="vpp_papi_provider.QOS_SOURCE.VLAN">
+<code class="descname">VLAN</code><em class="property"> = 1</em><a class="headerlink" href="#vpp_papi_provider.QOS_SOURCE.VLAN" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="vpp_papi_provider.SYSLOG_SEVERITY">
+<em class="property">class </em><code class="descclassname">vpp_papi_provider.</code><code class="descname">SYSLOG_SEVERITY</code><a class="headerlink" href="#vpp_papi_provider.SYSLOG_SEVERITY" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="attribute">
+<dt id="vpp_papi_provider.SYSLOG_SEVERITY.ALERT">
+<code class="descname">ALERT</code><em class="property"> = 1</em><a class="headerlink" href="#vpp_papi_provider.SYSLOG_SEVERITY.ALERT" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="vpp_papi_provider.SYSLOG_SEVERITY.CRIT">
+<code class="descname">CRIT</code><em class="property"> = 2</em><a class="headerlink" href="#vpp_papi_provider.SYSLOG_SEVERITY.CRIT" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="vpp_papi_provider.SYSLOG_SEVERITY.DBG">
+<code class="descname">DBG</code><em class="property"> = 7</em><a class="headerlink" href="#vpp_papi_provider.SYSLOG_SEVERITY.DBG" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="vpp_papi_provider.SYSLOG_SEVERITY.EMERG">
+<code class="descname">EMERG</code><em class="property"> = 0</em><a class="headerlink" href="#vpp_papi_provider.SYSLOG_SEVERITY.EMERG" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="vpp_papi_provider.SYSLOG_SEVERITY.ERR">
+<code class="descname">ERR</code><em class="property"> = 3</em><a class="headerlink" href="#vpp_papi_provider.SYSLOG_SEVERITY.ERR" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="vpp_papi_provider.SYSLOG_SEVERITY.INFO">
+<code class="descname">INFO</code><em class="property"> = 6</em><a class="headerlink" href="#vpp_papi_provider.SYSLOG_SEVERITY.INFO" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="vpp_papi_provider.SYSLOG_SEVERITY.NOTICE">
+<code class="descname">NOTICE</code><em class="property"> = 5</em><a class="headerlink" href="#vpp_papi_provider.SYSLOG_SEVERITY.NOTICE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="vpp_papi_provider.SYSLOG_SEVERITY.WARN">
+<code class="descname">WARN</code><em class="property"> = 4</em><a class="headerlink" href="#vpp_papi_provider.SYSLOG_SEVERITY.WARN" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="exception">
+<dt id="vpp_papi_provider.UnexpectedApiReturnValueError">
+<em class="property">exception </em><code class="descclassname">vpp_papi_provider.</code><code class="descname">UnexpectedApiReturnValueError</code><a class="headerlink" href="#vpp_papi_provider.UnexpectedApiReturnValueError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
+<p>exception raised when the API return value is unexpected</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="vpp_papi_provider.VppPapiProvider">
+<em class="property">class </em><code class="descclassname">vpp_papi_provider.</code><code class="descname">VppPapiProvider</code><span class="sig-paren">(</span><em>name</em>, <em>shm_prefix</em>, <em>test_class</em>, <em>read_timeout</em><span class="sig-paren">)</span><a class="headerlink" href="#vpp_papi_provider.VppPapiProvider" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>VPP-api provider using vpp-papi</p>
+<p>&#64;property hook: hook object providing before and after api/cli hooks</p>
+<dl class="method">
+<dt id="vpp_papi_provider.VppPapiProvider.acl_add_replace">
+<code class="descname">acl_add_replace</code><span class="sig-paren">(</span><em>acl_index</em>, <em>r</em>, <em>tag=''</em>, <em>expected_retval=0</em><span class="sig-paren">)</span><a class="headerlink" href="#vpp_papi_provider.VppPapiProvider.acl_add_replace" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add/replace an ACL
+:param int acl_index: ACL index to replace, 2^32-1 to create new ACL.
+:param acl_rule r: ACL rules array.
+:param str tag: symbolic tag (description) for this ACL.
+:param int count: number of rules.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="vpp_papi_provider.VppPapiProvider.acl_del">
+<code class="descname">acl_del</code><span class="sig-paren">(</span><em>acl_index</em>, <em>expected_retval=0</em><span class="sig-paren">)</span><a class="headerlink" href="#vpp_papi_provider.VppPapiProvider.acl_del" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>acl_index</strong> – </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="vpp_papi_provider.VppPapiProvider.acl_dump">
+<code class="descname">acl_dump</code><span class="sig-paren">(</span><em>acl_index</em>, <em>expected_retval=0</em><span class="sig-paren">)</span><a class="headerlink" href="#vpp_papi_provider.VppPapiProvider.acl_dump" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="vpp_papi_provider.VppPapiProvider.acl_interface_add_del">
+<code class="descname">acl_interface_add_del</code><span class="sig-paren">(</span><em>sw_if_index</em>, <em>acl_index</em>, <em>is_add=1</em><span class="sig-paren">)</span><a class="headerlink" href="#vpp_papi_provider.VppPapiProvider.acl_interface_add_del" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add/Delete ACL to/from interface</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>sw_if_index</strong> – </li>
+<li><strong>acl_index</strong> – </li>
+<li><strong>is_add</strong> – (Default value = 1)</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="vpp_papi_provider.VppPapiProvider.acl_interface_list_dump">
+<code class="descname">acl_interface_list_dump</code><span class="sig-paren">(</span><em>sw_if_index=4294967295</em>, <em>expected_retval=0</em><span class="sig-paren">)</span><a class="headerlink" href="#vpp_papi_provider.VppPapiProvider.acl_interface_list_dump" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="vpp_papi_provider.VppPapiProvider.acl_interface_set_acl_list">
+<code class="descname">acl_interface_set_acl_list</code><span class="sig-paren">(</span><em>sw_if_index</em>, <em>n_input</em>, <em>acls</em>, <em>expected_retval=0</em><span class="sig-paren">)</span><a class="headerlink" href="#vpp_papi_provider.VppPapiProvider.acl_interface_set_acl_list" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="vpp_papi_provider.VppPapiProvider.acl_interface_set_etype_whitelist">
+<code class="descname">acl_interface_set_etype_whitelist</code><span class="sig-paren">(</span><em>sw_if_index</em>, <em>n_input</em>, <em>whitelist</em>, <em>expected_retval=0</em><span class="sig-paren">)</span><a class="headerlink" href="#vpp_papi_provider.VppPapiProvider.acl_interface_set_etype_whitelist" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="vpp_papi_provider.VppPapiProvider.api">
+<code class="descname">api</code><span class="sig-paren">(</span><em>api_fn</em>, <em>api_args</em>, <em>expected_retval=0</em><span class="sig-paren">)</span><a class="headerlink" href="#vpp_papi_provider.VppPapiProvider.api" title="Permalink to this definition">¶</a></dt>
+<dd><p>Call API function and check it’s return value.
+Call the appropriate hooks before and after the API call</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>api_fn</strong> – API function to call</li>
+<li><strong>api_args</strong> – tuple of API function arguments</li>
+<li><strong>expected_retval</strong> – Expected return value (Default value = 0)</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">reply from the API</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="vpp_papi_provider.VppPapiProvider.app_namespace_add_del">
+<code class="descname">app_namespace_add_del</code><span class="sig-paren">(</span><em>namespace_id</em>, <em>ip4_fib_id=0</em>, <em>ip6_fib_id=0</em>, <em>sw_if_index=4294967295</em>, <em>secret=0</em><span class="sig-paren">)</span><a class="headerlink" href="#vpp_papi_provider.VppPapiProvider.app_namespace_add_del" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="vpp_papi_provider.VppPapiProvider.assert_negative_api_retval">
+<code class="descname">assert_negative_api_retval</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vpp_papi_provider.VppPapiProvider.assert_negative_api_retval" title="Permalink to this definition">¶</a></dt>
+<dd><p>Expect API failure - used with with, e.g.:
+with self.vapi.assert_negative_api_retval():</p>
+<blockquote>
+<div>self.vapi.&lt;api call expected to fail&gt;</div></blockquote>
+</dd></dl>
+
+<dl class="method">
+<dt id="vpp_papi_provider.VppPapiProvider.assert_zero_api_retval">
+<code class="descname">assert_zero_api_retval</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vpp_papi_provider.VppPapiProvider.assert_zero_api_retval" title="Permalink to this definition">¶</a></dt>
+<dd><p>Expect API success - used with with, e.g.:
+with self.vapi.assert_negative_api_retval():</p>
+<blockquote>
+<div>self.vapi.&lt;api call expected to succeed&gt;</div></blockquote>
+<dl class="docutils">
+<dt>note: this is useful only inside another with block</dt>
+<dd>as success is the default expected value</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="vpp_papi_provider.VppPapiProvider.bfd_auth_set_key">
+<code class="descname">bfd_auth_set_key</code><span class="sig-paren">(</span><em>conf_key_id</em>, <em>auth_type</em>, <em>key</em><span class="sig-paren">)</span><a class="headerlink" href="#vpp_papi_provider.VppPapiProvider.bfd_auth_set_key" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="vpp_papi_provider.VppPapiProvider.bfd_udp_add">
+<code class="descname">bfd_udp_add</code><span class="sig-paren">(</span><em>sw_if_index</em>, <em>desired_min_tx</em>, <em>required_min_rx</em>, <em>detect_mult</em>, <em>local_addr</em>, <em>peer_addr</em>, <em>is_ipv6=0</em>, <em>bfd_key_id=None</em>, <em>conf_key_id=None</em><span class="sig-paren">)</span><a class="headerlink" href="#vpp_papi_provider.VppPapiProvider.bfd_udp_add" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="vpp_papi_provider.VppPapiProvider.bfd_udp_auth_activate">
+<code class="descname">bfd_udp_auth_activate</code><span class="sig-paren">(</span><em>sw_if_index</em>, <em>local_addr</em>, <em>peer_addr</em>, <em>is_ipv6=0</em>, <em>bfd_key_id=None</em>, <em>conf_key_id=None</em>, <em>is_delayed=False</em><span class="sig-paren">)</span><a class="headerlink" href="#vpp_papi_provider.VppPapiProvider.bfd_udp_auth_activate" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="vpp_papi_provider.VppPapiProvider.bfd_udp_mod">
+<code class="descname">bfd_udp_mod</code><span class="sig-paren">(</span><em>sw_if_index</em>, <em>desired_min_tx</em>, <em>required_min_rx</em>, <em>detect_mult</em>, <em>local_addr</em>, <em>peer_addr</em>, <em>is_ipv6=0</em><span class="sig-paren">)</span><a class="headerlink" href="#vpp_papi_provider.VppPapiProvider.bfd_udp_mod" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="vpp_papi_provider.VppPapiProvider.bfd_udp_session_set_flags">
+<code class="descname">bfd_udp_session_set_flags</code><span class="sig-paren">(</span><em>admin_up_down</em>, <em>sw_if_index</em>, <em>local_addr</em>, <em>peer_addr</em>, <em>is_ipv6=0</em><span class="sig-paren">)</span><a class="headerlink" href="#vpp_papi_provider.VppPapiProvider.bfd_udp_session_set_flags" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="vpp_papi_provider.VppPapiProvider.bier_disp_entry_add_del">
+<code class="descname">bier_disp_entry_add_del</code><span class="sig-paren">(</span><em>bdti</em>, <em>bp</em>, <em>payload_proto</em>, <em>next_hop_afi</em>, <em>next_hop</em>, <em>next_hop_tbl_id=0</em>, <em>next_hop_rpf_id=-1</em>, <em>next_hop_is_ip4=1</em>, <em>is_add=1</em><span class="sig-paren">)</span><a class="headerlink" href="#vpp_papi_provider.VppPapiProvider.bier_disp_entry_add_del" title="Permalink to this definition">¶</a></dt>
+<dd><p>BIER Route add/del</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="vpp_papi_provider.VppPapiProvider.bier_disp_entry_dump">
+<code class="descname">bier_disp_entry_dump</code><span class="sig-paren">(</span><em>bdti</em><span class="sig-paren">)</span><a class="headerlink" href="#vpp_papi_provider.VppPapiProvider.bier_disp_entry_dump" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="vpp_papi_provider.VppPapiProvider.bier_disp_table_add_del">
+<code class="descname">bier_disp_table_add_del</code><span class="sig-paren">(</span><em>bdti</em>, <em>is_add=1</em><span class="sig-paren">)</span><a class="headerlink" href="#vpp_papi_provider.VppPapiProvider.bier_disp_table_add_del" title="Permalink to this definition">¶</a></dt>
+<dd><p>BIER Disposition Table add/del</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="vpp_papi_provider.VppPapiProvider.bier_disp_table_dump">
+<code class="descname">bier_disp_table_dump</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vpp_papi_provider.VppPapiProvider.bier_disp_table_dump" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="vpp_papi_provider.VppPapiProvider.bier_imp_add">
+<code class="descname">bier_imp_add</code><span class="sig-paren">(</span><em>bti</em>, <em>src</em>, <em>ibytes</em>, <em>is_add=1</em><span class="sig-paren">)</span><a class="headerlink" href="#vpp_papi_provider.VppPapiProvider.bier_imp_add" title="Permalink to this definition">¶</a></dt>
+<dd><p>BIER Imposition Add</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="vpp_papi_provider.VppPapiProvider.bier_imp_del">
+<code class="descname">bier_imp_del</code><span class="sig-paren">(</span><em>bi_index</em><span class="sig-paren">)</span><a class="headerlink" href="#vpp_papi_provider.VppPapiProvider.bier_imp_del" title="Permalink to this definition">¶</a></dt>
+<dd><p>BIER Imposition del</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="vpp_papi_provider.VppPapiProvider.bier_imp_dump">
+<code class="descname">bier_imp_dump</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vpp_papi_provider.VppPapiProvider.bier_imp_dump" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="vpp_papi_provider.VppPapiProvider.bier_route_add_del">
+<code class="descname">bier_route_add_del</code><span class="sig-paren">(</span><em>bti</em>, <em>bp</em>, <em>paths</em>, <em>is_add=1</em>, <em>is_replace=0</em><span class="sig-paren">)</span><a class="headerlink" href="#vpp_papi_provider.VppPapiProvider.bier_route_add_del" title="Permalink to this definition">¶</a></dt>
+<dd><p>BIER Route add/del</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="vpp_papi_provider.VppPapiProvider.bier_route_dump">
+<code class="descname">bier_route_dump</code><span class="sig-paren">(</span><em>bti</em><span class="sig-paren">)</span><a class="headerlink" href="#vpp_papi_provider.VppPapiProvider.bier_route_dump" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="vpp_papi_provider.VppPapiProvider.bier_table_add_del">
+<code class="descname">bier_table_add_del</code><span class="sig-paren">(</span><em>bti</em>, <em>mpls_label</em>, <em>is_add=1</em><span class="sig-paren">)</span><a class="headerlink" href="#vpp_papi_provider.VppPapiProvider.bier_table_add_del" title="Permalink to this definition">¶</a></dt>
+<dd><p>BIER Table add/del</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="vpp_papi_provider.VppPapiProvider.bier_table_dump">
+<code class="descname">bier_table_dump</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vpp_papi_provider.VppPapiProvider.bier_table_dump" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="vpp_papi_provider.VppPapiProvider.bond_create">
+<code class="descname">bond_create</code><span class="sig-paren">(</span><em>mode</em>, <em>lb</em>, <em>use_custom_mac</em>, <em>mac_address=''</em>, <em>interface_id=4294967295</em><span class="sig-paren">)</span><a class="headerlink" href="#vpp_papi_provider.VppPapiProvider.bond_create" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>mode</strong> – mode</li>
+<li><strong>lb</strong> – load balance</li>
+<li><strong>use_custom_mac</strong> – use custom mac</li>
+<li><strong>mac_address</strong> – mac address</li>
+<li><strong>interface_id</strong> – custom interface ID</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="vpp_papi_provider.VppPapiProvider.classify_add_del_session">
+<code class="descname">classify_add_del_session</code><span class="sig-paren">(</span><em>is_add</em>, <em>table_index</em>, <em>match</em>, <em>opaque_index=4294967295</em>, <em>hit_next_index=4294967295</em>, <em>advance=0</em>, <em>action=0</em>, <em>metadata=0</em><span class="sig-paren">)</span><a class="headerlink" href="#vpp_papi_provider.VppPapiProvider.classify_add_del_session" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>is_add</strong> – </li>
+<li><strong>table_index</strong> – </li>
+<li><strong>match</strong> – </li>
+<li><strong>opaque_index</strong> – (Default value = 0xFFFFFFFF)</li>
+<li><strong>hit_next_index</strong> – (Default value = 0xFFFFFFFF)</li>
+<li><strong>advance</strong> – (Default value = 0)</li>
+<li><strong>action</strong> – (Default value = 0)</li>
+<li><strong>metadata</strong> – (Default value = 0)</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="vpp_papi_provider.VppPapiProvider.classify_add_del_table">
+<code class="descname">classify_add_del_table</code><span class="sig-paren">(</span><em>is_add</em>, <em>mask</em>, <em>match_n_vectors=1</em>, <em>table_index=4294967295</em>, <em>nbuckets=2</em>, <em>memory_size=2097152</em>, <em>skip_n_vectors=0</em>, <em>next_table_index=4294967295</em>, <em>miss_next_index=4294967295</em>, <em>current_data_flag=0</em>, <em>current_data_offset=0</em><span class="sig-paren">)</span><a class="headerlink" href="#vpp_papi_provider.VppPapiProvider.classify_add_del_table" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>is_add</strong> – </li>
+<li><strong>mask</strong> – </li>
+<li><strong>match_n_vectors</strong> – (Default value = 1)</li>
+<li><strong>table_index</strong> – (Default value = 0xFFFFFFFF)</li>
+<li><strong>nbuckets</strong> – (Default value = 2)</li>
+<li><strong>memory_size</strong> – (Default value = 2097152)</li>
+<li><strong>skip_n_vectors</strong> – (Default value = 0)</li>
+<li><strong>next_table_index</strong> – (Default value = 0xFFFFFFFF)</li>
+<li><strong>miss_next_index</strong> – (Default value = 0xFFFFFFFF)</li>
+<li><strong>current_data_flag</strong> – (Default value = 0)</li>
+<li><strong>current_data_offset</strong> – (Default value = 0)</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="vpp_papi_provider.VppPapiProvider.cli">
+<code class="descname">cli</code><span class="sig-paren">(</span><em>cli</em><span class="sig-paren">)</span><a class="headerlink" href="#vpp_papi_provider.VppPapiProvider.cli" title="Permalink to this definition">¶</a></dt>
+<dd><p>Execute a CLI, calling the before/after hooks appropriately.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>cli</strong> – CLI to execute</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">CLI output</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="vpp_papi_provider.VppPapiProvider.collect_events">
+<code class="descname">collect_events</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vpp_papi_provider.VppPapiProvider.collect_events" title="Permalink to this definition">¶</a></dt>
+<dd><p>Collect all events from the internal queue and clear the queue.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="vpp_papi_provider.VppPapiProvider.connect">
+<code class="descname">connect</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vpp_papi_provider.VppPapiProvider.connect" title="Permalink to this definition">¶</a></dt>
+<dd><p>Connect the API to VPP</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="vpp_papi_provider.VppPapiProvider.create_loopback">
+<code class="descname">create_loopback</code><span class="sig-paren">(</span><em>mac=''</em><span class="sig-paren">)</span><a class="headerlink" href="#vpp_papi_provider.VppPapiProvider.create_loopback" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>mac</strong> – (Optional)</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="vpp_papi_provider.VppPapiProvider.create_vlan_subif">
+<code class="descname">create_vlan_subif</code><span class="sig-paren">(</span><em>sw_if_index</em>, <em>vlan</em><span class="sig-paren">)</span><a class="headerlink" href="#vpp_papi_provider.VppPapiProvider.create_vlan_subif" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>vlan</strong> – </li>
+<li><strong>sw_if_index</strong> – </li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="vpp_papi_provider.VppPapiProvider.dhcp6_client_enable_disable">
+<code class="descname">dhcp6_client_enable_disable</code><span class="sig-paren">(</span><em>sw_if_index</em>, <em>prefix_group=''</em>, <em>enable=1</em><span class="sig-paren">)</span><a class="headerlink" href="#vpp_papi_provider.VppPapiProvider.dhcp6_client_enable_disable" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="vpp_papi_provider.VppPapiProvider.dhcp6_pd_client_enable_disable">
+<code class="descname">dhcp6_pd_client_enable_disable</code><span class="sig-paren">(</span><em>sw_if_index</em>, <em>prefix_group=''</em>, <em>enable=1</em><span class="sig-paren">)</span><a class="headerlink" href="#vpp_papi_provider.VppPapiProvider.dhcp6_pd_client_enable_disable" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="vpp_papi_provider.VppPapiProvider.dhcp6_pd_send_client_message">
+<code class="descname">dhcp6_pd_send_client_message</code><span class="sig-paren">(</span><em>msg_type</em>, <em>sw_if_index</em>, <em>T1</em>, <em>T2</em>, <em>prefixes</em>, <em>server_index=4294967295</em>, <em>irt=0</em>, <em>mrt=0</em>, <em>mrc=1</em>, <em>mrd=0</em>, <em>stop=0</em><span class="sig-paren">)</span><a class="headerlink" href="#vpp_papi_provider.VppPapiProvider.dhcp6_pd_send_client_message" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="vpp_papi_provider.VppPapiProvider.dhcp_client_config">
+<code class="descname">dhcp_client_config</code><span class="sig-paren">(</span><em>sw_if_index</em>, <em>hostname</em>, <em>client_id=''</em>, <em>is_add=1</em>, <em>set_broadcast_flag=1</em>, <em>want_dhcp_events=0</em><span class="sig-paren">)</span><a class="headerlink" href="#vpp_papi_provider.VppPapiProvider.dhcp_client_config" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="vpp_papi_provider.VppPapiProvider.dhcp_proxy_config">
+<code class="descname">dhcp_proxy_config</code><span class="sig-paren">(</span><em>dhcp_server</em>, <em>dhcp_src_address</em>, <em>rx_table_id=0</em>, <em>server_table_id=0</em>, <em>is_add=1</em>, <em>is_ipv6=0</em><span class="sig-paren">)</span><a class="headerlink" href="#vpp_papi_provider.VppPapiProvider.dhcp_proxy_config" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="vpp_papi_provider.VppPapiProvider.dhcp_proxy_set_vss">
+<code class="descname">dhcp_proxy_set_vss</code><span class="sig-paren">(</span><em>table_id</em>, <em>vss_type=255</em>, <em>vpn_ascii_id=''</em>, <em>oui=0</em>, <em>vpn_index=0</em>, <em>is_add=1</em>, <em>is_ip6=0</em><span class="sig-paren">)</span><a class="headerlink" href="#vpp_papi_provider.VppPapiProvider.dhcp_proxy_set_vss" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="vpp_papi_provider.VppPapiProvider.disconnect">
+<code class="descname">disconnect</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vpp_papi_provider.VppPapiProvider.disconnect" title="Permalink to this definition">¶</a></dt>
+<dd><p>Disconnect the API from VPP</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="vpp_papi_provider.VppPapiProvider.dslite_set_aftr_addr">
+<code class="descname">dslite_set_aftr_addr</code><span class="sig-paren">(</span><em>ip6</em>, <em>ip4</em><span class="sig-paren">)</span><a class="headerlink" href="#vpp_papi_provider.VppPapiProvider.dslite_set_aftr_addr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set DS-Lite AFTR addresses</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>ip4</strong> – IPv4 address</li>
+<li><strong>ip6</strong> – IPv6 address</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="vpp_papi_provider.VppPapiProvider.dslite_set_b4_addr">
+<code class="descname">dslite_set_b4_addr</code><span class="sig-paren">(</span><em>ip6</em>, <em>ip4</em><span class="sig-paren">)</span><a class="headerlink" href="#vpp_papi_provider.VppPapiProvider.dslite_set_b4_addr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set DS-Lite B4 IPv6 address</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>ip4</strong> – IPv4 address</li>
+<li><strong>ip6</strong> – IPv6 address</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="vpp_papi_provider.VppPapiProvider.factory">
+<code class="descname">factory</code><span class="sig-paren">(</span><em>name</em>, <em>apifn</em><span class="sig-paren">)</span><a class="headerlink" href="#vpp_papi_provider.VppPapiProvider.factory" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="vpp_papi_provider.VppPapiProvider.gbp_bridge_domain_add">
+<code class="descname">gbp_bridge_domain_add</code><span class="sig-paren">(</span><em>bd_id</em>, <em>flags</em>, <em>bvi_sw_if_index</em>, <em>uu_fwd_sw_if_index</em>, <em>bm_flood_sw_if_index</em><span class="sig-paren">)</span><a class="headerlink" href="#vpp_papi_provider.VppPapiProvider.gbp_bridge_domain_add" title="Permalink to this definition">¶</a></dt>
+<dd><p>GBP bridge-domain Add</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="vpp_papi_provider.VppPapiProvider.gbp_bridge_domain_del">
+<code class="descname">gbp_bridge_domain_del</code><span class="sig-paren">(</span><em>bd_id</em><span class="sig-paren">)</span><a class="headerlink" href="#vpp_papi_provider.VppPapiProvider.gbp_bridge_domain_del" title="Permalink to this definition">¶</a></dt>
+<dd><p>GBP bridge-domain Del</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="vpp_papi_provider.VppPapiProvider.gbp_contract_add_del">
+<code class="descname">gbp_contract_add_del</code><span class="sig-paren">(</span><em>is_add</em>, <em>sclass</em>, <em>dclass</em>, <em>acl_index</em>, <em>rules</em>, <em>allowed_ethertypes</em><span class="sig-paren">)</span><a class="headerlink" href="#vpp_papi_provider.VppPapiProvider.gbp_contract_add_del" title="Permalink to this definition">¶</a></dt>
+<dd><p>GBP contract Add/Del</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="vpp_papi_provider.VppPapiProvider.gbp_contract_dump">
+<code class="descname">gbp_contract_dump</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vpp_papi_provider.VppPapiProvider.gbp_contract_dump" title="Permalink to this definition">¶</a></dt>
+<dd><p>GBP contract Dump</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="vpp_papi_provider.VppPapiProvider.gbp_endpoint_add">
+<code class="descname">gbp_endpoint_add</code><span class="sig-paren">(</span><em>sw_if_index</em>, <em>ips</em>, <em>mac</em>, <em>sclass</em>, <em>flags</em>, <em>tun_src</em>, <em>tun_dst</em><span class="sig-paren">)</span><a class="headerlink" href="#vpp_papi_provider.VppPapiProvider.gbp_endpoint_add" title="Permalink to this definition">¶</a></dt>
+<dd><p>GBP endpoint Add</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="vpp_papi_provider.VppPapiProvider.gbp_endpoint_del">
+<code class="descname">gbp_endpoint_del</code><span class="sig-paren">(</span><em>handle</em><span class="sig-paren">)</span><a class="headerlink" href="#vpp_papi_provider.VppPapiProvider.gbp_endpoint_del" title="Permalink to this definition">¶</a></dt>
+<dd><p>GBP endpoint Del</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="vpp_papi_provider.VppPapiProvider.gbp_endpoint_dump">
+<code class="descname">gbp_endpoint_dump</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vpp_papi_provider.VppPapiProvider.gbp_endpoint_dump" title="Permalink to this definition">¶</a></dt>
+<dd><p>GBP endpoint Dump</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="vpp_papi_provider.VppPapiProvider.gbp_endpoint_group_add">
+<code class="descname">gbp_endpoint_group_add</code><span class="sig-paren">(</span><em>vnid</em>, <em>sclass</em>, <em>bd</em>, <em>rd</em>, <em>uplink_sw_if_index</em>, <em>retention</em><span class="sig-paren">)</span><a class="headerlink" href="#vpp_papi_provider.VppPapiProvider.gbp_endpoint_group_add" title="Permalink to this definition">¶</a></dt>
+<dd><p>GBP endpoint group Add</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="vpp_papi_provider.VppPapiProvider.gbp_endpoint_group_del">
+<code class="descname">gbp_endpoint_group_del</code><span class="sig-paren">(</span><em>sclass</em><span class="sig-paren">)</span><a class="headerlink" href="#vpp_papi_provider.VppPapiProvider.gbp_endpoint_group_del" title="Permalink to this definition">¶</a></dt>
+<dd><p>GBP endpoint group Del</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="vpp_papi_provider.VppPapiProvider.gbp_ext_itf_add_del">
+<code class="descname">gbp_ext_itf_add_del</code><span class="sig-paren">(</span><em>is_add</em>, <em>sw_if_index</em>, <em>bd_id</em>, <em>rd_id</em><span class="sig-paren">)</span><a class="headerlink" href="#vpp_papi_provider.VppPapiProvider.gbp_ext_itf_add_del" title="Permalink to this definition">¶</a></dt>
+<dd><p>GBP recirc Add/Del</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="vpp_papi_provider.VppPapiProvider.gbp_ext_itf_dump">
+<code class="descname">gbp_ext_itf_dump</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vpp_papi_provider.VppPapiProvider.gbp_ext_itf_dump" title="Permalink to this definition">¶</a></dt>
+<dd><p>GBP recirc Dump</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="vpp_papi_provider.VppPapiProvider.gbp_recirc_add_del">
+<code class="descname">gbp_recirc_add_del</code><span class="sig-paren">(</span><em>is_add</em>, <em>sw_if_index</em>, <em>sclass</em>, <em>is_ext</em><span class="sig-paren">)</span><a class="headerlink" href="#vpp_papi_provider.VppPapiProvider.gbp_recirc_add_del" title="Permalink to this definition">¶</a></dt>
+<dd><p>GBP recirc Add/Del</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="vpp_papi_provider.VppPapiProvider.gbp_recirc_dump">
+<code class="descname">gbp_recirc_dump</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vpp_papi_provider.VppPapiProvider.gbp_recirc_dump" title="Permalink to this definition">¶</a></dt>
+<dd><p>GBP recirc Dump</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="vpp_papi_provider.VppPapiProvider.gbp_route_domain_add">
+<code class="descname">gbp_route_domain_add</code><span class="sig-paren">(</span><em>rd_id</em>, <em>ip4_table_id</em>, <em>ip6_table_id</em>, <em>ip4_uu_sw_if_index</em>, <em>ip6_uu_sw_if_index</em><span class="sig-paren">)</span><a class="headerlink" href="#vpp_papi_provider.VppPapiProvider.gbp_route_domain_add" title="Permalink to this definition">¶</a></dt>
+<dd><p>GBP route-domain Add</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="vpp_papi_provider.VppPapiProvider.gbp_route_domain_del">
+<code class="descname">gbp_route_domain_del</code><span class="sig-paren">(</span><em>rd_id</em><span class="sig-paren">)</span><a class="headerlink" href="#vpp_papi_provider.VppPapiProvider.gbp_route_domain_del" title="Permalink to this definition">¶</a></dt>
+<dd><p>GBP route-domain Del</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="vpp_papi_provider.VppPapiProvider.gbp_subnet_add_del">
+<code class="descname">gbp_subnet_add_del</code><span class="sig-paren">(</span><em>is_add</em>, <em>rd_id</em>, <em>prefix</em>, <em>type</em>, <em>sw_if_index=4294967295</em>, <em>sclass=65535</em><span class="sig-paren">)</span><a class="headerlink" href="#vpp_papi_provider.VppPapiProvider.gbp_subnet_add_del" title="Permalink to this definition">¶</a></dt>
+<dd><p>GBP Subnet Add/Del</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="vpp_papi_provider.VppPapiProvider.gbp_subnet_dump">
+<code class="descname">gbp_subnet_dump</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vpp_papi_provider.VppPapiProvider.gbp_subnet_dump" title="Permalink to this definition">¶</a></dt>
+<dd><p>GBP Subnet Dump</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="vpp_papi_provider.VppPapiProvider.gbp_vxlan_tunnel_add">
+<code class="descname">gbp_vxlan_tunnel_add</code><span class="sig-paren">(</span><em>vni</em>, <em>bd_rd_id</em>, <em>mode</em>, <em>src</em><span class="sig-paren">)</span><a class="headerlink" href="#vpp_papi_provider.VppPapiProvider.gbp_vxlan_tunnel_add" title="Permalink to this definition">¶</a></dt>
+<dd><p>GBP VXLAN tunnel add</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="vpp_papi_provider.VppPapiProvider.gbp_vxlan_tunnel_del">
+<code class="descname">gbp_vxlan_tunnel_del</code><span class="sig-paren">(</span><em>vni</em><span class="sig-paren">)</span><a class="headerlink" href="#vpp_papi_provider.VppPapiProvider.gbp_vxlan_tunnel_del" title="Permalink to this definition">¶</a></dt>
+<dd><p>GBP VXLAN tunnel del</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="vpp_papi_provider.VppPapiProvider.gbp_vxlan_tunnel_dump">
+<code class="descname">gbp_vxlan_tunnel_dump</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vpp_papi_provider.VppPapiProvider.gbp_vxlan_tunnel_dump" title="Permalink to this definition">¶</a></dt>
+<dd><p>GBP VXLAN tunnel add/del</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="vpp_papi_provider.VppPapiProvider.gre_add_del_tunnel">
+<code class="descname">gre_add_del_tunnel</code><span class="sig-paren">(</span><em>src_address</em>, <em>dst_address</em>, <em>outer_fib_id=0</em>, <em>tunnel_type=0</em>, <em>instance=4294967295</em>, <em>session_id=0</em>, <em>is_add=1</em>, <em>is_ip6=0</em><span class="sig-paren">)</span><a class="headerlink" href="#vpp_papi_provider.VppPapiProvider.gre_add_del_tunnel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a GRE tunnel</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>src_address</strong> – </li>
+<li><strong>dst_address</strong> – </li>
+<li><strong>outer_fib_id</strong> – (Default value = 0)</li>
+<li><strong>tunnel_type</strong> – (Default value = 0)</li>
+<li><strong>instance</strong> – (Default value = 0xFFFFFFFF)</li>
+<li><strong>session_id</strong> – (Defalt value = 0)</li>
+<li><strong>is_add</strong> – (Default value = 1)</li>
+<li><strong>is_ipv6</strong> – (Default value = 0)</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="vpp_papi_provider.VppPapiProvider.gtpu_add_del_tunnel">
+<code class="descname">gtpu_add_del_tunnel</code><span class="sig-paren">(</span><em>src_addr</em>, <em>dst_addr</em>, <em>is_add=1</em>, <em>is_ipv6=0</em>, <em>mcast_sw_if_index=4294967295</em>, <em>encap_vrf_id=0</em>, <em>decap_next_index=4294967295</em>, <em>teid=0</em><span class="sig-paren">)</span><a class="headerlink" href="#vpp_papi_provider.VppPapiProvider.gtpu_add_del_tunnel" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>is_add</strong> – (Default value = 1)</li>
+<li><strong>is_ipv6</strong> – (Default value = 0)</li>
+<li><strong>src_addr</strong> – </li>
+<li><strong>dst_addr</strong> – </li>
+<li><strong>mcast_sw_if_index</strong> – (Default value = 0xFFFFFFFF)</li>
+<li><strong>encap_vrf_id</strong> – (Default value = 0)</li>
+<li><strong>decap_next_index</strong> – (Default value = 0xFFFFFFFF)</li>
+<li><strong>teid</strong> – (Default value = 0)</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="vpp_papi_provider.VppPapiProvider.igmp_clear_interface">
+<code class="descname">igmp_clear_interface</code><span class="sig-paren">(</span><em>sw_if_index</em><span class="sig-paren">)</span><a class="headerlink" href="#vpp_papi_provider.VppPapiProvider.igmp_clear_interface" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove all (S,G)s from specified interface
+doesn’t send IGMP report!</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="vpp_papi_provider.VppPapiProvider.igmp_enable_disable">
+<code class="descname">igmp_enable_disable</code><span class="sig-paren">(</span><em>sw_if_index</em>, <em>enable</em>, <em>host</em><span class="sig-paren">)</span><a class="headerlink" href="#vpp_papi_provider.VppPapiProvider.igmp_enable_disable" title="Permalink to this definition">¶</a></dt>
+<dd><p>Enable/disable IGMP on a given interface</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="vpp_papi_provider.VppPapiProvider.igmp_listen">
+<code class="descname">igmp_listen</code><span class="sig-paren">(</span><em>filter</em>, <em>sw_if_index</em>, <em>saddrs</em>, <em>gaddr</em><span class="sig-paren">)</span><a class="headerlink" href="#vpp_papi_provider.VppPapiProvider.igmp_listen" title="Permalink to this definition">¶</a></dt>
+<dd><p>Listen for new (S,G) on specified interface</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>enable</strong> – add/del</li>
+<li><strong>sw_if_index</strong> – interface sw index</li>
+<li><strong>saddr</strong> – source ip4 addr</li>
+<li><strong>gaddr</strong> – group ip4 addr</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="vpp_papi_provider.VppPapiProvider.igmp_proxy_device_add_del">
+<code class="descname">igmp_proxy_device_add_del</code><span class="sig-paren">(</span><em>vrf_id</em>, <em>sw_if_index</em>, <em>add</em><span class="sig-paren">)</span><a class="headerlink" href="#vpp_papi_provider.VppPapiProvider.igmp_proxy_device_add_del" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add/del IGMP proxy device</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="vpp_papi_provider.VppPapiProvider.igmp_proxy_device_add_del_interface">
+<code class="descname">igmp_proxy_device_add_del_interface</code><span class="sig-paren">(</span><em>vrf_id</em>, <em>sw_if_index</em>, <em>add</em><span class="sig-paren">)</span><a class="headerlink" href="#vpp_papi_provider.VppPapiProvider.igmp_proxy_device_add_del_interface" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add/del interface to/from IGMP proxy device</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="vpp_papi_provider.VppPapiProvider.input_acl_set_interface">
+<code class="descname">input_acl_set_interface</code><span class="sig-paren">(</span><em>is_add</em>, <em>sw_if_index</em>, <em>ip4_table_index=4294967295</em>, <em>ip6_table_index=4294967295</em>, <em>l2_table_index=4294967295</em><span class="sig-paren">)</span><a class="headerlink" href="#vpp_papi_provider.VppPapiProvider.input_acl_set_interface" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>is_add</strong> – </li>
+<li><strong>sw_if_index</strong> – </li>
+<li><strong>ip4_table_index</strong> – (Default value = 0xFFFFFFFF)</li>
+<li><strong>ip6_table_index</strong> – (Default value = 0xFFFFFFFF)</li>
+<li><strong>l2_table_index</strong> – (Default value = 0xFFFFFFFF)</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="vpp_papi_provider.VppPapiProvider.ip6_add_del_address_using_prefix">
+<code class="descname">ip6_add_del_address_using_prefix</code><span class="sig-paren">(</span><em>sw_if_index</em>, <em>address</em>, <em>prefix_length</em>, <em>prefix_group</em>, <em>is_add=1</em><span class="sig-paren">)</span><a class="headerlink" href="#vpp_papi_provider.VppPapiProvider.ip6_add_del_address_using_prefix" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="vpp_papi_provider.VppPapiProvider.ip6nd_send_router_solicitation">
+<code class="descname">ip6nd_send_router_solicitation</code><span class="sig-paren">(</span><em>sw_if_index</em>, <em>irt=1</em>, <em>mrt=120</em>, <em>mrc=0</em>, <em>mrd=0</em><span class="sig-paren">)</span><a class="headerlink" href="#vpp_papi_provider.VppPapiProvider.ip6nd_send_router_solicitation" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="vpp_papi_provider.VppPapiProvider.ip_mroute_add_del">
+<code class="descname">ip_mroute_add_del</code><span class="sig-paren">(</span><em>src_address</em>, <em>grp_address</em>, <em>grp_address_length</em>, <em>e_flags</em>, <em>next_hop_afi</em>, <em>next_hop_sw_if_index</em>, <em>next_hop_address</em>, <em>i_flags</em>, <em>bier_imp=0</em>, <em>rpf_id=0</em>, <em>table_id=0</em>, <em>is_add=1</em>, <em>is_ipv6=0</em>, <em>is_local=0</em><span class="sig-paren">)</span><a class="headerlink" href="#vpp_papi_provider.VppPapiProvider.ip_mroute_add_del" title="Permalink to this definition">¶</a></dt>
+<dd><p>IP Multicast Route add/del</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="vpp_papi_provider.VppPapiProvider.ip_neighbor_add_del">
+<code class="descname">ip_neighbor_add_del</code><span class="sig-paren">(</span><em>sw_if_index</em>, <em>mac_address</em>, <em>ip_address</em>, <em>is_add=1</em>, <em>flags=0</em><span class="sig-paren">)</span><a class="headerlink" href="#vpp_papi_provider.VppPapiProvider.ip_neighbor_add_del" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add neighbor MAC to IPv4 or IPv6 address.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>sw_if_index</strong> – </li>
+<li><strong>mac_address</strong> – </li>
+<li><strong>dst_address</strong> – </li>
+<li><strong>is_add</strong> – (Default value = 1)</li>
+<li><strong>flags</strong> – (Default value = 0/NONE)</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="vpp_papi_provider.VppPapiProvider.ip_punt_police">
+<code class="descname">ip_punt_police</code><span class="sig-paren">(</span><em>policer_index</em>, <em>is_ip6=0</em>, <em>is_add=1</em><span class="sig-paren">)</span><a class="headerlink" href="#vpp_papi_provider.VppPapiProvider.ip_punt_police" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="vpp_papi_provider.VppPapiProvider.ip_punt_redirect">
+<code class="descname">ip_punt_redirect</code><span class="sig-paren">(</span><em>rx_sw_if_index</em>, <em>tx_sw_if_index</em>, <em>address</em>, <em>is_add=1</em><span class="sig-paren">)</span><a class="headerlink" href="#vpp_papi_provider.VppPapiProvider.ip_punt_redirect" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="vpp_papi_provider.VppPapiProvider.ip_punt_redirect_dump">
+<code class="descname">ip_punt_redirect_dump</code><span class="sig-paren">(</span><em>sw_if_index</em>, <em>is_ipv6=0</em><span class="sig-paren">)</span><a class="headerlink" href="#vpp_papi_provider.VppPapiProvider.ip_punt_redirect_dump" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="vpp_papi_provider.VppPapiProvider.ipsec_backend_dump">
+<code class="descname">ipsec_backend_dump</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vpp_papi_provider.VppPapiProvider.ipsec_backend_dump" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="vpp_papi_provider.VppPapiProvider.ipsec_interface_add_del_spd">
+<code class="descname">ipsec_interface_add_del_spd</code><span class="sig-paren">(</span><em>spd_id</em>, <em>sw_if_index</em>, <em>is_add=1</em><span class="sig-paren">)</span><a class="headerlink" href="#vpp_papi_provider.VppPapiProvider.ipsec_interface_add_del_spd" title="Permalink to this definition">¶</a></dt>
+<dd><p>IPSEC interface SPD add/del -              Wrapper to associate/disassociate SPD to interface in VPP
+Sample CLI : ‘set interface ipsec spd GigabitEthernet0/6/0 1’</p>
+<p>:param spd_id - SPD ID to associate with the interface . mandatory
+:param sw_if_index - Interface Index which needs to ipsec             association mandatory
+:param is_add - add(1) or del(0) association with interface                 (Default 1 - add) . optional
+:returns: reply from the API</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="vpp_papi_provider.VppPapiProvider.ipsec_sa_dump">
+<code class="descname">ipsec_sa_dump</code><span class="sig-paren">(</span><em>sa_id=None</em><span class="sig-paren">)</span><a class="headerlink" href="#vpp_papi_provider.VppPapiProvider.ipsec_sa_dump" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="vpp_papi_provider.VppPapiProvider.ipsec_sad_entry_add_del">
+<code class="descname">ipsec_sad_entry_add_del</code><span class="sig-paren">(</span><em>sad_id</em>, <em>spi</em>, <em>integrity_algorithm</em>, <em>integrity_key</em>, <em>crypto_algorithm</em>, <em>crypto_key</em>, <em>protocol</em>, <em>tunnel_src_address=''</em>, <em>tunnel_dst_address=''</em>, <em>flags=0</em>, <em>is_add=1</em><span class="sig-paren">)</span><a class="headerlink" href="#vpp_papi_provider.VppPapiProvider.ipsec_sad_entry_add_del" title="Permalink to this definition">¶</a></dt>
+<dd><p>IPSEC SA add/del
+:param sad_id: security association ID
+:param spi: security param index of the SA in decimal
+:param integrity_algorithm:
+:param integrity_key:
+:param crypto_algorithm:
+:param crypto_key:
+:param protocol: AH(0) or ESP(1) protocol
+:param tunnel_src_address: tunnel mode outer src address
+:param tunnel_dst_address: tunnel mode outer dst address
+:param is_add:
+:param is_tunnel:
+:** reference /vpp/src/vnet/ipsec/ipsec.h file for enum values of</p>
+<blockquote>
+<div>crypto and ipsec algorithms</div></blockquote>
+</dd></dl>
+
+<dl class="method">
+<dt id="vpp_papi_provider.VppPapiProvider.ipsec_select_backend">
+<code class="descname">ipsec_select_backend</code><span class="sig-paren">(</span><em>protocol</em>, <em>index</em><span class="sig-paren">)</span><a class="headerlink" href="#vpp_papi_provider.VppPapiProvider.ipsec_select_backend" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="vpp_papi_provider.VppPapiProvider.ipsec_spd_add_del">
+<code class="descname">ipsec_spd_add_del</code><span class="sig-paren">(</span><em>spd_id</em>, <em>is_add=1</em><span class="sig-paren">)</span><a class="headerlink" href="#vpp_papi_provider.VppPapiProvider.ipsec_spd_add_del" title="Permalink to this definition">¶</a></dt>
+<dd><p>SPD add/del - Wrapper to add or del ipsec SPD
+Sample CLI : ‘ipsec spd add 1’</p>
+<p>:param spd_id - SPD ID to be created in the vpp . mandatory
+:param is_add - create (1) or delete(0) SPD (Default 1 - add) .</p>
+<blockquote>
+<div>optional</div></blockquote>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">reply from the API</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="vpp_papi_provider.VppPapiProvider.ipsec_spd_dump">
+<code class="descname">ipsec_spd_dump</code><span class="sig-paren">(</span><em>spd_id</em>, <em>sa_id=4294967295</em><span class="sig-paren">)</span><a class="headerlink" href="#vpp_papi_provider.VppPapiProvider.ipsec_spd_dump" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="vpp_papi_provider.VppPapiProvider.ipsec_spd_entry_add_del">
+<code class="descname">ipsec_spd_entry_add_del</code><span class="sig-paren">(</span><em>spd_id</em>, <em>sa_id</em>, <em>local_address_start</em>, <em>local_address_stop</em>, <em>remote_address_start</em>, <em>remote_address_stop</em>, <em>local_port_start=0</em>, <em>local_port_stop=65535</em>, <em>remote_port_start=0</em>, <em>remote_port_stop=65535</em>, <em>protocol=0</em>, <em>policy=0</em>, <em>priority=100</em>, <em>is_outbound=1</em>, <em>is_add=1</em>, <em>is_ipv6=0</em>, <em>is_ip_any=0</em><span class="sig-paren">)</span><a class="headerlink" href="#vpp_papi_provider.VppPapiProvider.ipsec_spd_entry_add_del" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>IPSEC policy SPD add/del   -</dt>
+<dd>Wrapper to configure ipsec SPD policy entries in VPP</dd>
+</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>spd_id</strong> – SPD ID for the policy</li>
+<li><strong>local_address_start</strong> – local-ip-range start address</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>:param local_address_stop : local-ip-range stop address
+:param remote_address_start: remote-ip-range start address
+:param remote_address_stop : remote-ip-range stop address
+:param local_port_start: (Default value = 0)
+:param local_port_stop: (Default value = 65535)
+:param remote_port_start: (Default value = 0)
+:param remote_port_stop: (Default value = 65535)
+:param protocol: Any(0), AH(51) &amp; ESP(50) protocol (Default value = 0)
+:param sa_id: Security Association ID for mapping it to SPD
+:param policy: bypass(0), discard(1), resolve(2) or protect(3) action</p>
+<blockquote>
+<div>(Default value = 0)</div></blockquote>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>priority</strong> – value for the spd action (Default value = 100)</li>
+<li><strong>is_outbound</strong> – flag for inbound(0) or outbound(1)
+(Default value = 1)</li>
+<li><strong>is_add</strong> – (Default value = 1)</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="vpp_papi_provider.VppPapiProvider.ipsec_spd_interface_dump">
+<code class="descname">ipsec_spd_interface_dump</code><span class="sig-paren">(</span><em>spd_index=None</em><span class="sig-paren">)</span><a class="headerlink" href="#vpp_papi_provider.VppPapiProvider.ipsec_spd_interface_dump" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="vpp_papi_provider.VppPapiProvider.ipsec_spds_dump">
+<code class="descname">ipsec_spds_dump</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vpp_papi_provider.VppPapiProvider.ipsec_spds_dump" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="vpp_papi_provider.VppPapiProvider.ipsec_tunnel_if_add_del">
+<code class="descname">ipsec_tunnel_if_add_del</code><span class="sig-paren">(</span><em>local_ip</em>, <em>remote_ip</em>, <em>local_spi</em>, <em>remote_spi</em>, <em>crypto_alg</em>, <em>local_crypto_key</em>, <em>remote_crypto_key</em>, <em>integ_alg</em>, <em>local_integ_key</em>, <em>remote_integ_key</em>, <em>is_add=1</em>, <em>esn=0</em>, <em>anti_replay=1</em>, <em>renumber=0</em>, <em>show_instance=0</em><span class="sig-paren">)</span><a class="headerlink" href="#vpp_papi_provider.VppPapiProvider.ipsec_tunnel_if_add_del" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="vpp_papi_provider.VppPapiProvider.lisp_add_del_adjacency">
+<code class="descname">lisp_add_del_adjacency</code><span class="sig-paren">(</span><em>leid</em>, <em>reid</em>, <em>leid_len</em>, <em>reid_len</em>, <em>eid_type</em>, <em>is_add=1</em>, <em>vni=0</em><span class="sig-paren">)</span><a class="headerlink" href="#vpp_papi_provider.VppPapiProvider.lisp_add_del_adjacency" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="vpp_papi_provider.VppPapiProvider.lisp_add_del_local_eid">
+<code class="descname">lisp_add_del_local_eid</code><span class="sig-paren">(</span><em>ls_name</em>, <em>eid_type</em>, <em>eid</em>, <em>prefix_len</em>, <em>vni=0</em>, <em>key_id=0</em>, <em>key=''</em>, <em>is_add=1</em><span class="sig-paren">)</span><a class="headerlink" href="#vpp_papi_provider.VppPapiProvider.lisp_add_del_local_eid" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="vpp_papi_provider.VppPapiProvider.lisp_add_del_locator">
+<code class="descname">lisp_add_del_locator</code><span class="sig-paren">(</span><em>ls_name</em>, <em>sw_if_index</em>, <em>priority=1</em>, <em>weight=1</em>, <em>is_add=1</em><span class="sig-paren">)</span><a class="headerlink" href="#vpp_papi_provider.VppPapiProvider.lisp_add_del_locator" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="vpp_papi_provider.VppPapiProvider.lisp_add_del_locator_set">
+<code class="descname">lisp_add_del_locator_set</code><span class="sig-paren">(</span><em>ls_name</em>, <em>is_add=1</em><span class="sig-paren">)</span><a class="headerlink" href="#vpp_papi_provider.VppPapiProvider.lisp_add_del_locator_set" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="vpp_papi_provider.VppPapiProvider.lisp_add_del_remote_mapping">
+<code class="descname">lisp_add_del_remote_mapping</code><span class="sig-paren">(</span><em>eid_type</em>, <em>eid</em>, <em>eid_prefix_len=0</em>, <em>vni=0</em>, <em>rlocs=[]</em>, <em>rlocs_num=0</em>, <em>is_src_dst=0</em>, <em>is_add=1</em><span class="sig-paren">)</span><a class="headerlink" href="#vpp_papi_provider.VppPapiProvider.lisp_add_del_remote_mapping" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="vpp_papi_provider.VppPapiProvider.lisp_eid_table_dump">
+<code class="descname">lisp_eid_table_dump</code><span class="sig-paren">(</span><em>eid_set=0</em>, <em>prefix_length=0</em>, <em>vni=0</em>, <em>eid_type=0</em>, <em>eid=None</em>, <em>filter_opt=0</em><span class="sig-paren">)</span><a class="headerlink" href="#vpp_papi_provider.VppPapiProvider.lisp_eid_table_dump" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="vpp_papi_provider.VppPapiProvider.lisp_enable_disable">
+<code class="descname">lisp_enable_disable</code><span class="sig-paren">(</span><em>is_enabled</em><span class="sig-paren">)</span><a class="headerlink" href="#vpp_papi_provider.VppPapiProvider.lisp_enable_disable" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="vpp_papi_provider.VppPapiProvider.lisp_locator_dump">
+<code class="descname">lisp_locator_dump</code><span class="sig-paren">(</span><em>is_index_set</em>, <em>ls_name=None</em>, <em>ls_index=0</em><span class="sig-paren">)</span><a class="headerlink" href="#vpp_papi_provider.VppPapiProvider.lisp_locator_dump" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="vpp_papi_provider.VppPapiProvider.macip_acl_add">
+<code class="descname">macip_acl_add</code><span class="sig-paren">(</span><em>rules</em>, <em>tag=''</em><span class="sig-paren">)</span><a class="headerlink" href="#vpp_papi_provider.VppPapiProvider.macip_acl_add" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add MACIP acl</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>rules</strong> – list of rules for given acl</li>
+<li><strong>tag</strong> – acl tag</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="vpp_papi_provider.VppPapiProvider.macip_acl_add_replace">
+<code class="descname">macip_acl_add_replace</code><span class="sig-paren">(</span><em>rules</em>, <em>acl_index=4294967295</em>, <em>tag=''</em><span class="sig-paren">)</span><a class="headerlink" href="#vpp_papi_provider.VppPapiProvider.macip_acl_add_replace" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add MACIP acl</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>rules</strong> – list of rules for given acl</li>
+<li><strong>tag</strong> – acl tag</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="vpp_papi_provider.VppPapiProvider.macip_acl_dump">
+<code class="descname">macip_acl_dump</code><span class="sig-paren">(</span><em>acl_index=4294967295</em><span class="sig-paren">)</span><a class="headerlink" href="#vpp_papi_provider.VppPapiProvider.macip_acl_dump" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return MACIP acl dump</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="vpp_papi_provider.VppPapiProvider.macip_acl_interface_add_del">
+<code class="descname">macip_acl_interface_add_del</code><span class="sig-paren">(</span><em>sw_if_index</em>, <em>acl_index</em>, <em>is_add=1</em><span class="sig-paren">)</span><a class="headerlink" href="#vpp_papi_provider.VppPapiProvider.macip_acl_interface_add_del" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add MACIP acl to interface</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>sw_if_index</strong> – </li>
+<li><strong>acl_index</strong> – </li>
+<li><strong>is_add</strong> – (Default value = 1)</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="vpp_papi_provider.VppPapiProvider.memif_create">
+<code class="descname">memif_create</code><span class="sig-paren">(</span><em>role</em>, <em>mode</em>, <em>rx_queues=None</em>, <em>tx_queues=None</em>, <em>_id=None</em>, <em>socket_id=None</em>, <em>secret=None</em>, <em>ring_size=None</em>, <em>buffer_size=None</em>, <em>hw_addr=None</em><span class="sig-paren">)</span><a class="headerlink" href="#vpp_papi_provider.VppPapiProvider.memif_create" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="vpp_papi_provider.VppPapiProvider.mpls_ip_bind_unbind">
+<code class="descname">mpls_ip_bind_unbind</code><span class="sig-paren">(</span><em>label</em>, <em>dst_address</em>, <em>dst_address_length</em>, <em>table_id=0</em>, <em>ip_table_id=0</em>, <em>is_ip4=1</em>, <em>is_bind=1</em><span class="sig-paren">)</span><a class="headerlink" href="#vpp_papi_provider.VppPapiProvider.mpls_ip_bind_unbind" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="vpp_papi_provider.VppPapiProvider.mpls_table_add_del">
+<code class="descname">mpls_table_add_del</code><span class="sig-paren">(</span><em>table_id</em>, <em>is_add=1</em><span class="sig-paren">)</span><a class="headerlink" href="#vpp_papi_provider.VppPapiProvider.mpls_table_add_del" title="Permalink to this definition">¶</a></dt>
+<dd><p>:param table_id
+:param is_add:  (Default value = 1)</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="vpp_papi_provider.VppPapiProvider.mpls_tunnel_add_del">
+<code class="descname">mpls_tunnel_add_del</code><span class="sig-paren">(</span><em>tun_sw_if_index</em>, <em>next_hop_proto_is_ip4</em>, <em>next_hop_address</em>, <em>next_hop_sw_if_index=4294967295</em>, <em>next_hop_table_id=0</em>, <em>next_hop_weight=1</em>, <em>next_hop_n_out_labels=0</em>, <em>next_hop_out_label_stack=[]</em>, <em>next_hop_via_label=1048576</em>, <em>is_add=1</em>, <em>l2_only=0</em>, <em>is_multicast=0</em><span class="sig-paren">)</span><a class="headerlink" href="#vpp_papi_provider.VppPapiProvider.mpls_tunnel_add_del" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>dst_address_length</strong> – </li>
+<li><strong>next_hop_sw_if_index</strong> – (Default value = 0xFFFFFFFF)</li>
+<li><strong>dst_address</strong> – </li>
+<li><strong>next_hop_address</strong> – </li>
+<li><strong>next_hop_sw_if_index</strong> – (Default value = 0xFFFFFFFF)</li>
+<li><strong>vrf_id</strong> – (Default value = 0)</li>
+<li><strong>lookup_in_vrf</strong> – (Default value = 0)</li>
+<li><strong>classify_table_index</strong> – (Default value = 0xFFFFFFFF)</li>
+<li><strong>is_add</strong> – (Default value = 1)</li>
+<li><strong>is_drop</strong> – (Default value = 0)</li>
+<li><strong>is_ipv6</strong> – (Default value = 0)</li>
+<li><strong>is_local</strong> – (Default value = 0)</li>
+<li><strong>is_classify</strong> – (Default value = 0)</li>
+<li><strong>is_multipath</strong> – (Default value = 0)</li>
+<li><strong>is_resolve_host</strong> – (Default value = 0)</li>
+<li><strong>is_resolve_attached</strong> – (Default value = 0)</li>
+<li><strong>next_hop_weight</strong> – (Default value = 1)</li>
+<li><strong>is_multicast</strong> – (Default value = 0)</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="vpp_papi_provider.VppPapiProvider.nat44_add_del_address_range">
+<code class="descname">nat44_add_del_address_range</code><span class="sig-paren">(</span><em>first_ip_address</em>, <em>last_ip_address</em>, <em>is_add=1</em>, <em>vrf_id=4294967295</em>, <em>twice_nat=0</em><span class="sig-paren">)</span><a class="headerlink" href="#vpp_papi_provider.VppPapiProvider.nat44_add_del_address_range" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add/del NAT44 address range</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>first_ip_address</strong> – First IP address</li>
+<li><strong>last_ip_address</strong> – Last IP address</li>
+<li><strong>vrf_id</strong> – VRF id for the address range</li>
+<li><strong>twice_nat</strong> – twice NAT address for extenal hosts</li>
+<li><strong>is_add</strong> – 1 if add, 0 if delete (Default value = 1)</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="vpp_papi_provider.VppPapiProvider.nat44_add_del_identity_mapping">
+<code class="descname">nat44_add_del_identity_mapping</code><span class="sig-paren">(</span><em>ip=b'0'</em>, <em>sw_if_index=4294967295</em>, <em>port=0</em>, <em>addr_only=1</em>, <em>vrf_id=0</em>, <em>protocol=0</em>, <em>tag=''</em>, <em>is_add=1</em><span class="sig-paren">)</span><a class="headerlink" href="#vpp_papi_provider.VppPapiProvider.nat44_add_del_identity_mapping" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add/delete NAT44 identity mapping</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>ip</strong> – IP address (Default value = 0)</li>
+<li><strong>sw_if_index</strong> – Interface instead of IP address</li>
+<li><strong>port</strong> – Port number (Default value = 0)</li>
+<li><strong>addr_only</strong> – 1 if address only mapping, 0 if address and port</li>
+<li><strong>vrf_id</strong> – VRF ID</li>
+<li><strong>protocol</strong> – IP protocol (Default value = 0)</li>
+<li><strong>tag</strong> – Opaque string tag</li>
+<li><strong>is_add</strong> – 1 if add, 0 if delete (Default value = 1)</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="vpp_papi_provider.VppPapiProvider.nat44_add_del_interface_addr">
+<code class="descname">nat44_add_del_interface_addr</code><span class="sig-paren">(</span><em>sw_if_index</em>, <em>twice_nat=0</em>, <em>is_add=1</em><span class="sig-paren">)</span><a class="headerlink" href="#vpp_papi_provider.VppPapiProvider.nat44_add_del_interface_addr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add/del NAT44 address from interface</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>sw_if_index</strong> – Software index of the interface</li>
+<li><strong>twice_nat</strong> – twice NAT address for extenal hosts</li>
+<li><strong>is_add</strong> – 1 if add, 0 if delete (Default value = 1)</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="vpp_papi_provider.VppPapiProvider.nat44_add_del_lb_static_mapping">
+<code class="descname">nat44_add_del_lb_static_mapping</code><span class="sig-paren">(</span><em>external_addr</em>, <em>external_port</em>, <em>protocol</em>, <em>twice_nat=0</em>, <em>self_twice_nat=0</em>, <em>out2in_only=0</em>, <em>tag=''</em>, <em>affinity=0</em>, <em>local_num=0</em>, <em>locals=[]</em>, <em>is_add=1</em><span class="sig-paren">)</span><a class="headerlink" href="#vpp_papi_provider.VppPapiProvider.nat44_add_del_lb_static_mapping" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add/delete NAT44 load balancing static mapping</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>twice_nat</strong> – 1 if translate external host address and port</li>
+<li><strong>tag</strong> – Opaque string tag</li>
+<li><strong>affinity</strong> – if 0 disabled, otherwise client IP affinity timeout</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>:param is_add - 1 if add, 0 if delete</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="vpp_papi_provider.VppPapiProvider.nat44_add_del_static_mapping">
+<code class="descname">nat44_add_del_static_mapping</code><span class="sig-paren">(</span><em>local_ip</em>, <em>external_ip=0</em>, <em>external_sw_if_index=4294967295</em>, <em>local_port=0</em>, <em>external_port=0</em>, <em>addr_only=1</em>, <em>vrf_id=0</em>, <em>protocol=0</em>, <em>twice_nat=0</em>, <em>self_twice_nat=0</em>, <em>out2in_only=0</em>, <em>tag=''</em>, <em>is_add=1</em><span class="sig-paren">)</span><a class="headerlink" href="#vpp_papi_provider.VppPapiProvider.nat44_add_del_static_mapping" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add/delete NAT44 static mapping</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>local_ip</strong> – Local IP address</li>
+<li><strong>external_ip</strong> – External IP address</li>
+<li><strong>external_sw_if_index</strong> – External interface instead of IP address</li>
+<li><strong>local_port</strong> – Local port number (Default value = 0)</li>
+<li><strong>external_port</strong> – External port number (Default value = 0)</li>
+<li><strong>addr_only</strong> – 1 if address only mapping, 0 if address and port</li>
+<li><strong>vrf_id</strong> – VRF ID</li>
+<li><strong>protocol</strong> – IP protocol (Default value = 0)</li>
+<li><strong>twice_nat</strong> – 1 if translate external host address and port</li>
+<li><strong>self_twice_nat</strong> – 1 if translate external host address and port
+whenever external host address equals
+local address of internal host</li>
+<li><strong>out2in_only</strong> – if 1 rule is matching only out2in direction</li>
+<li><strong>tag</strong> – Opaque string tag</li>
+<li><strong>is_add</strong> – 1 if add, 0 if delete (Default value = 1)</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="vpp_papi_provider.VppPapiProvider.nat44_del_session">
+<code class="descname">nat44_del_session</code><span class="sig-paren">(</span><em>addr</em>, <em>port</em>, <em>protocol</em>, <em>vrf_id=0</em>, <em>is_in=1</em>, <em>ext_host_address=None</em>, <em>ext_host_port=0</em><span class="sig-paren">)</span><a class="headerlink" href="#vpp_papi_provider.VppPapiProvider.nat44_del_session" title="Permalink to this definition">¶</a></dt>
+<dd><p>Delete NAT44 session</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>addr</strong> – IPv4 address</li>
+<li><strong>por</strong> – port number</li>
+<li><strong>protocol</strong> – IP protocol number</li>
+<li><strong>vrf_id</strong> – VRF ID</li>
+<li><strong>is_in</strong> – 1 if inside network addres and port pari, 0 if outside</li>
+<li><strong>ext_host_address</strong> – external host IPv4 address</li>
+<li><strong>ext_host_port</strong> – external host port</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="vpp_papi_provider.VppPapiProvider.nat44_forwarding_enable_disable">
+<code class="descname">nat44_forwarding_enable_disable</code><span class="sig-paren">(</span><em>enable</em><span class="sig-paren">)</span><a class="headerlink" href="#vpp_papi_provider.VppPapiProvider.nat44_forwarding_enable_disable" title="Permalink to this definition">¶</a></dt>
+<dd><p>Enable/disable forwarding for NAT44</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>enable</strong> – 1 for enable, 0 for disable</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="vpp_papi_provider.VppPapiProvider.nat44_interface_add_del_feature">
+<code class="descname">nat44_interface_add_del_feature</code><span class="sig-paren">(</span><em>sw_if_index</em>, <em>is_inside=1</em>, <em>is_add=1</em><span class="sig-paren">)</span><a class="headerlink" href="#vpp_papi_provider.VppPapiProvider.nat44_interface_add_del_feature" title="Permalink to this definition">¶</a></dt>
+<dd><p>Enable/disable NAT44 feature on the interface</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>sw_if_index</strong> – Software index of the interface</li>
+<li><strong>is_inside</strong> – 1 if inside, 0 if outside (Default value = 1)</li>
+<li><strong>is_add</strong> – 1 if add, 0 if delete (Default value = 1)</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="vpp_papi_provider.VppPapiProvider.nat44_interface_add_del_output_feature">
+<code class="descname">nat44_interface_add_del_output_feature</code><span class="sig-paren">(</span><em>sw_if_index</em>, <em>is_inside=1</em>, <em>is_add=1</em><span class="sig-paren">)</span><a class="headerlink" href="#vpp_papi_provider.VppPapiProvider.nat44_interface_add_del_output_feature" title="Permalink to this definition">¶</a></dt>
+<dd><p>Enable/disable NAT44 output feature on the interface</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>sw_if_index</strong> – Software index of the interface</li>
+<li><strong>is_inside</strong> – 1 if inside, 0 if outside (Default value = 1)</li>
+<li><strong>is_add</strong> – 1 if add, 0 if delete (Default value = 1)</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="vpp_papi_provider.VppPapiProvider.nat44_lb_static_mapping_add_del_local">
+<code class="descname">nat44_lb_static_mapping_add_del_local</code><span class="sig-paren">(</span><em>external_addr</em>, <em>external_port</em>, <em>local_addr</em>, <em>local_port</em>, <em>protocol</em>, <em>probability</em>, <em>vrf_id=0</em>, <em>is_add=1</em><span class="sig-paren">)</span><a class="headerlink" href="#vpp_papi_provider.VppPapiProvider.nat44_lb_static_mapping_add_del_local" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add/delete NAT44 load-balancing static mapping rule backend</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>external_addr</strong> – external IPv4 address of the servic</li>
+<li><strong>external_port</strong> – external L4 port number of the service</li>
+<li><strong>local_addr</strong> – IPv4 address of the internal node</li>
+<li><strong>local_port</strong> – L4 port number of the internal node</li>
+<li><strong>protocol</strong> – IP protocol number</li>
+<li><strong>probability</strong> – probability of the internal node</li>
+<li><strong>vrf_id</strong> – VRF id of the internal node</li>
+<li><strong>is_add</strong> – 1 if add, 0 if delete</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="vpp_papi_provider.VppPapiProvider.nat64_add_del_interface">
+<code class="descname">nat64_add_del_interface</code><span class="sig-paren">(</span><em>sw_if_index</em>, <em>is_inside=1</em>, <em>is_add=1</em><span class="sig-paren">)</span><a class="headerlink" href="#vpp_papi_provider.VppPapiProvider.nat64_add_del_interface" title="Permalink to this definition">¶</a></dt>
+<dd><p>Enable/disable NAT64 feature on the interface
+:param sw_if_index: Index of the interface
+:param is_inside: 1 if inside, 0 if outside (Default value = 1)
+:param is_add: 1 if add, 0 if delete (Default value = 1)</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="vpp_papi_provider.VppPapiProvider.nat64_add_del_interface_addr">
+<code class="descname">nat64_add_del_interface_addr</code><span class="sig-paren">(</span><em>sw_if_index</em>, <em>is_add=1</em><span class="sig-paren">)</span><a class="headerlink" href="#vpp_papi_provider.VppPapiProvider.nat64_add_del_interface_addr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add/del NAT64 address from interface</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>sw_if_index</strong> – Software index of the interface</li>
+<li><strong>is_add</strong> – 1 if add, 0 if delete (Default value = 1)</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="vpp_papi_provider.VppPapiProvider.nat64_add_del_prefix">
+<code class="descname">nat64_add_del_prefix</code><span class="sig-paren">(</span><em>prefix</em>, <em>plen</em>, <em>vrf_id=0</em>, <em>is_add=1</em><span class="sig-paren">)</span><a class="headerlink" href="#vpp_papi_provider.VppPapiProvider.nat64_add_del_prefix" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add/del NAT64 prefix</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>prefix</strong> – NAT64 prefix</li>
+<li><strong>plen</strong> – NAT64 prefix length</li>
+<li><strong>vrf_id</strong> – VRF id of tenant (Default 0)</li>
+<li><strong>is_add</strong> – 1 if add, 0 if delete (Default value = 1)</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="vpp_papi_provider.VppPapiProvider.nat64_add_del_static_bib">
+<code class="descname">nat64_add_del_static_bib</code><span class="sig-paren">(</span><em>in_ip</em>, <em>out_ip</em>, <em>in_port</em>, <em>out_port</em>, <em>protocol</em>, <em>vrf_id=0</em>, <em>is_add=1</em><span class="sig-paren">)</span><a class="headerlink" href="#vpp_papi_provider.VppPapiProvider.nat64_add_del_static_bib" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add/delete S-NAT static BIB entry</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>in_ip</strong> – Inside IPv6 address</li>
+<li><strong>out_ip</strong> – Outside IPv4 address</li>
+<li><strong>in_port</strong> – Inside port number</li>
+<li><strong>out_port</strong> – Outside port number</li>
+<li><strong>protocol</strong> – IP protocol</li>
+<li><strong>vrf_id</strong> – VRF ID (Default value = 0)</li>
+<li><strong>is_add</strong> – 1 if add, 0 if delete (Default value = 1)</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="vpp_papi_provider.VppPapiProvider.nat64_bib_dump">
+<code class="descname">nat64_bib_dump</code><span class="sig-paren">(</span><em>protocol=255</em><span class="sig-paren">)</span><a class="headerlink" href="#vpp_papi_provider.VppPapiProvider.nat64_bib_dump" title="Permalink to this definition">¶</a></dt>
+<dd><p>Dump NAT64 BIB</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>protocol</strong> – IP protocol (Default value = 255, all BIBs)</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Dictionary of NAT64 BIB entries</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="vpp_papi_provider.VppPapiProvider.nat64_st_dump">
+<code class="descname">nat64_st_dump</code><span class="sig-paren">(</span><em>protocol=255</em><span class="sig-paren">)</span><a class="headerlink" href="#vpp_papi_provider.VppPapiProvider.nat64_st_dump" title="Permalink to this definition">¶</a></dt>
+<dd><p>Dump NAT64 session table</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>protocol</strong> – IP protocol (Default value = 255, all STs)</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Dictionary of NAT64 sesstion table entries</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="vpp_papi_provider.VppPapiProvider.nat66_add_del_interface">
+<code class="descname">nat66_add_del_interface</code><span class="sig-paren">(</span><em>sw_if_index</em>, <em>is_inside=1</em>, <em>is_add=1</em><span class="sig-paren">)</span><a class="headerlink" href="#vpp_papi_provider.VppPapiProvider.nat66_add_del_interface" title="Permalink to this definition">¶</a></dt>
+<dd><p>Enable/disable NAT66 feature on the interface
+:param sw_if_index: Index of the interface
+:param is_inside: 1 if inside, 0 if outside (Default value = 1)
+:param is_add: 1 if add, 0 if delete (Default value = 1)</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="vpp_papi_provider.VppPapiProvider.nat66_add_del_static_mapping">
+<code class="descname">nat66_add_del_static_mapping</code><span class="sig-paren">(</span><em>in_ip</em>, <em>out_ip</em>, <em>vrf_id=0</em>, <em>is_add=1</em><span class="sig-paren">)</span><a class="headerlink" href="#vpp_papi_provider.VppPapiProvider.nat66_add_del_static_mapping" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add/delete NAT66 static mapping</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>in_ip</strong> – Inside IPv6 address</li>
+<li><strong>out_ip</strong> – Outside IPv6 address</li>
+<li><strong>vrf_id</strong> – VRF ID (Default value = 0)</li>
+<li><strong>is_add</strong> – 1 if add, 0 if delete (Default value = 1)</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="vpp_papi_provider.VppPapiProvider.nat_det_add_del_map">
+<code class="descname">nat_det_add_del_map</code><span class="sig-paren">(</span><em>in_addr</em>, <em>in_plen</em>, <em>out_addr</em>, <em>out_plen</em>, <em>is_add=1</em><span class="sig-paren">)</span><a class="headerlink" href="#vpp_papi_provider.VppPapiProvider.nat_det_add_del_map" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add/delete deterministic NAT mapping</p>
+<p>:param is_add - 1 if add, 0 if delete
+:param in_addr - inside IP address
+:param in_plen - inside IP address prefix length
+:param out_addr - outside IP address
+:param out_plen - outside IP address prefix length</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="vpp_papi_provider.VppPapiProvider.nat_det_close_session_in">
+<code class="descname">nat_det_close_session_in</code><span class="sig-paren">(</span><em>in_addr</em>, <em>in_port</em>, <em>ext_addr</em>, <em>ext_port</em><span class="sig-paren">)</span><a class="headerlink" href="#vpp_papi_provider.VppPapiProvider.nat_det_close_session_in" title="Permalink to this definition">¶</a></dt>
+<dd><p>Close deterministic NAT session using inside address and port</p>
+<p>:param in_addr - inside IP address
+:param in_port - inside port
+:param ext_addr - external host IP address
+:param ext_port - external host port</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="vpp_papi_provider.VppPapiProvider.nat_det_forward">
+<code class="descname">nat_det_forward</code><span class="sig-paren">(</span><em>in_addr</em><span class="sig-paren">)</span><a class="headerlink" href="#vpp_papi_provider.VppPapiProvider.nat_det_forward" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get outside address and port range from inside address</p>
+<p>:param in_addr - inside IP address</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="vpp_papi_provider.VppPapiProvider.nat_det_map_dump">
+<code class="descname">nat_det_map_dump</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vpp_papi_provider.VppPapiProvider.nat_det_map_dump" title="Permalink to this definition">¶</a></dt>
+<dd><p>Dump deterministic NAT mappings</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Dictionary of deterministic NAT mappings</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="vpp_papi_provider.VppPapiProvider.nat_det_reverse">
+<code class="descname">nat_det_reverse</code><span class="sig-paren">(</span><em>out_addr</em>, <em>out_port</em><span class="sig-paren">)</span><a class="headerlink" href="#vpp_papi_provider.VppPapiProvider.nat_det_reverse" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get inside address from outside address and port</p>
+<p>:param out_addr - outside IP address
+:param out_port - outside port</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="vpp_papi_provider.VppPapiProvider.nat_det_session_dump">
+<code class="descname">nat_det_session_dump</code><span class="sig-paren">(</span><em>user_addr</em><span class="sig-paren">)</span><a class="headerlink" href="#vpp_papi_provider.VppPapiProvider.nat_det_session_dump" title="Permalink to this definition">¶</a></dt>
+<dd><p>Dump deterministic NAT sessions belonging to a user</p>
+<p>:param user_addr - inside IP address of the user
+:return: Dictionary of deterministic NAT sessions</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="vpp_papi_provider.VppPapiProvider.nat_ha_get_listener">
+<code class="descname">nat_ha_get_listener</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vpp_papi_provider.VppPapiProvider.nat_ha_get_listener" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get HA listener/local configuration</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="vpp_papi_provider.VppPapiProvider.nat_ha_resync">
+<code class="descname">nat_ha_resync</code><span class="sig-paren">(</span><em>want_resync_event=1</em><span class="sig-paren">)</span><a class="headerlink" href="#vpp_papi_provider.VppPapiProvider.nat_ha_resync" title="Permalink to this definition">¶</a></dt>
+<dd><p>Resync HA (resend existing sessions to new failover)
+:param want_resync_event: if non-zero resync completed event sent</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="vpp_papi_provider.VppPapiProvider.nat_ha_set_failover">
+<code class="descname">nat_ha_set_failover</code><span class="sig-paren">(</span><em>addr</em>, <em>port</em>, <em>refresh=10</em><span class="sig-paren">)</span><a class="headerlink" href="#vpp_papi_provider.VppPapiProvider.nat_ha_set_failover" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set HA failover (remote settings)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>addr</strong> – failover IP4 address</li>
+<li><strong>port</strong> – failvoer UDP port number</li>
+<li><strong>refresh</strong> – number of seconds after which to send session refresh</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="vpp_papi_provider.VppPapiProvider.nat_ha_set_listener">
+<code class="descname">nat_ha_set_listener</code><span class="sig-paren">(</span><em>addr</em>, <em>port</em>, <em>path_mtu=512</em><span class="sig-paren">)</span><a class="headerlink" href="#vpp_papi_provider.VppPapiProvider.nat_ha_set_listener" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set HA listener (local settings)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>addr</strong> – local IP4 address</li>
+<li><strong>port</strong> – local UDP port number</li>
+<li><strong>path_mtu</strong> – path MTU (Default value = 512)</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="vpp_papi_provider.VppPapiProvider.nat_set_mss_clamping">
+<code class="descname">nat_set_mss_clamping</code><span class="sig-paren">(</span><em>enable=0</em>, <em>mss_value=1500</em><span class="sig-paren">)</span><a class="headerlink" href="#vpp_papi_provider.VppPapiProvider.nat_set_mss_clamping" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set TCP MSS rewriting configuration</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>enable</strong> – disable(0)/enable(1) MSS rewriting feature</li>
+<li><strong>mss_value</strong> – MSS value to be used for MSS rewriting</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="vpp_papi_provider.VppPapiProvider.output_acl_set_interface">
+<code class="descname">output_acl_set_interface</code><span class="sig-paren">(</span><em>is_add</em>, <em>sw_if_index</em>, <em>ip4_table_index=4294967295</em>, <em>ip6_table_index=4294967295</em>, <em>l2_table_index=4294967295</em><span class="sig-paren">)</span><a class="headerlink" href="#vpp_papi_provider.VppPapiProvider.output_acl_set_interface" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>is_add</strong> – </li>
+<li><strong>sw_if_index</strong> – </li>
+<li><strong>ip4_table_index</strong> – (Default value = 0xFFFFFFFF)</li>
+<li><strong>ip6_table_index</strong> – (Default value = 0xFFFFFFFF)</li>
+<li><strong>l2_table_index</strong> – (Default value = 0xFFFFFFFF)</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="vpp_papi_provider.VppPapiProvider.p2p_ethernet_add">
+<code class="descname">p2p_ethernet_add</code><span class="sig-paren">(</span><em>sw_if_index</em>, <em>remote_mac</em>, <em>subif_id</em><span class="sig-paren">)</span><a class="headerlink" href="#vpp_papi_provider.VppPapiProvider.p2p_ethernet_add" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create p2p ethernet subinterface</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>sw_if_index</strong> – main (parent) interface</li>
+<li><strong>remote_mac</strong> – client (remote) mac address</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="vpp_papi_provider.VppPapiProvider.p2p_ethernet_del">
+<code class="descname">p2p_ethernet_del</code><span class="sig-paren">(</span><em>sw_if_index</em>, <em>remote_mac</em><span class="sig-paren">)</span><a class="headerlink" href="#vpp_papi_provider.VppPapiProvider.p2p_ethernet_del" title="Permalink to this definition">¶</a></dt>
+<dd><p>Delete p2p ethernet subinterface</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>sw_if_index</strong> – main (parent) interface</li>
+<li><strong>remote_mac</strong> – client (remote) mac address</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="vpp_papi_provider.VppPapiProvider.pipe_delete">
+<code class="descname">pipe_delete</code><span class="sig-paren">(</span><em>parent_sw_if_index</em><span class="sig-paren">)</span><a class="headerlink" href="#vpp_papi_provider.VppPapiProvider.pipe_delete" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="vpp_papi_provider.VppPapiProvider.policer_add_del">
+<code class="descname">policer_add_del</code><span class="sig-paren">(</span><em>name</em>, <em>cir</em>, <em>eir</em>, <em>cb</em>, <em>eb</em>, <em>is_add=1</em>, <em>rate_type=0</em>, <em>round_type=0</em>, <em>ptype=0</em>, <em>color_aware=0</em>, <em>conform_action_type=1</em>, <em>conform_dscp=0</em>, <em>exceed_action_type=0</em>, <em>exceed_dscp=0</em>, <em>violate_action_type=0</em>, <em>violate_dscp=0</em><span class="sig-paren">)</span><a class="headerlink" href="#vpp_papi_provider.VppPapiProvider.policer_add_del" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="vpp_papi_provider.VppPapiProvider.ppcli">
+<code class="descname">ppcli</code><span class="sig-paren">(</span><em>cli</em><span class="sig-paren">)</span><a class="headerlink" href="#vpp_papi_provider.VppPapiProvider.ppcli" title="Permalink to this definition">¶</a></dt>
+<dd><p>Helper method to print CLI command in case of info logging level.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>cli</strong> – CLI to execute</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">CLI output</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="vpp_papi_provider.VppPapiProvider.pppoe_add_del_session">
+<code class="descname">pppoe_add_del_session</code><span class="sig-paren">(</span><em>client_ip</em>, <em>client_mac</em>, <em>session_id=0</em>, <em>is_add=1</em>, <em>is_ipv6=0</em>, <em>decap_vrf_id=0</em><span class="sig-paren">)</span><a class="headerlink" href="#vpp_papi_provider.VppPapiProvider.pppoe_add_del_session" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>is_add</strong> – (Default value = 1)</li>
+<li><strong>is_ipv6</strong> – (Default value = 0)</li>
+<li><strong>client_ip</strong> – </li>
+<li><strong>session_id</strong> – (Default value = 0)</li>
+<li><strong>client_mac</strong> – </li>
+<li><strong>decap_vrf_id</strong> – (Default value = 0)</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="vpp_papi_provider.VppPapiProvider.proxy_arp_add_del">
+<code class="descname">proxy_arp_add_del</code><span class="sig-paren">(</span><em>low</em>, <em>hi</em>, <em>table_id=0</em>, <em>is_add=1</em><span class="sig-paren">)</span><a class="headerlink" href="#vpp_papi_provider.VppPapiProvider.proxy_arp_add_del" title="Permalink to this definition">¶</a></dt>
+<dd><p>Config Proxy Arp Range.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>low_address</strong> – Start address in the rnage to Proxy for</li>
+<li><strong>hi_address</strong> – End address in the rnage to Proxy for</li>
+<li><strong>vrf_id</strong> – The VRF/table in which to proxy</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="vpp_papi_provider.VppPapiProvider.proxy_arp_intfc_enable_disable">
+<code class="descname">proxy_arp_intfc_enable_disable</code><span class="sig-paren">(</span><em>sw_if_index</em>, <em>is_enable=1</em><span class="sig-paren">)</span><a class="headerlink" href="#vpp_papi_provider.VppPapiProvider.proxy_arp_intfc_enable_disable" title="Permalink to this definition">¶</a></dt>
+<dd><p>Enable/Disable an interface for proxy ARP requests</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>sw_if_index</strong> – Interface</li>
+<li><strong>enable_disable</strong> – Enable/Disable</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="vpp_papi_provider.VppPapiProvider.punt_socket_deregister">
+<code class="descname">punt_socket_deregister</code><span class="sig-paren">(</span><em>port</em>, <em>protocol=17</em>, <em>is_ip4=1</em><span class="sig-paren">)</span><a class="headerlink" href="#vpp_papi_provider.VppPapiProvider.punt_socket_deregister" title="Permalink to this definition">¶</a></dt>
+<dd><p>Unregister punt socket</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="vpp_papi_provider.VppPapiProvider.punt_socket_dump">
+<code class="descname">punt_socket_dump</code><span class="sig-paren">(</span><em>is_ip6=1</em><span class="sig-paren">)</span><a class="headerlink" href="#vpp_papi_provider.VppPapiProvider.punt_socket_dump" title="Permalink to this definition">¶</a></dt>
+<dd><p>Dump punt socket</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="vpp_papi_provider.VppPapiProvider.punt_socket_register">
+<code class="descname">punt_socket_register</code><span class="sig-paren">(</span><em>port</em>, <em>pathname</em>, <em>protocol=17</em>, <em>header_version=1</em>, <em>is_ip4=1</em><span class="sig-paren">)</span><a class="headerlink" href="#vpp_papi_provider.VppPapiProvider.punt_socket_register" title="Permalink to this definition">¶</a></dt>
+<dd><p>Register punt socket</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="vpp_papi_provider.VppPapiProvider.qos_egress_map_delete">
+<code class="descname">qos_egress_map_delete</code><span class="sig-paren">(</span><em>id</em><span class="sig-paren">)</span><a class="headerlink" href="#vpp_papi_provider.VppPapiProvider.qos_egress_map_delete" title="Permalink to this definition">¶</a></dt>
+<dd><p>QOS egress map delete</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="vpp_papi_provider.VppPapiProvider.qos_egress_map_update">
+<code class="descname">qos_egress_map_update</code><span class="sig-paren">(</span><em>id</em>, <em>outputs</em><span class="sig-paren">)</span><a class="headerlink" href="#vpp_papi_provider.VppPapiProvider.qos_egress_map_update" title="Permalink to this definition">¶</a></dt>
+<dd><p>QOS egress map update</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="vpp_papi_provider.VppPapiProvider.qos_mark_enable_disable">
+<code class="descname">qos_mark_enable_disable</code><span class="sig-paren">(</span><em>sw_if_index</em>, <em>output_source</em>, <em>map_id</em>, <em>enable</em><span class="sig-paren">)</span><a class="headerlink" href="#vpp_papi_provider.VppPapiProvider.qos_mark_enable_disable" title="Permalink to this definition">¶</a></dt>
+<dd><p>QOS Mark Enable/Disable</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="vpp_papi_provider.VppPapiProvider.register_hook">
+<code class="descname">register_hook</code><span class="sig-paren">(</span><em>hook</em><span class="sig-paren">)</span><a class="headerlink" href="#vpp_papi_provider.VppPapiProvider.register_hook" title="Permalink to this definition">¶</a></dt>
+<dd><p>Replace hook registration with new hook</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>hook</strong> – </td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="vpp_papi_provider.VppPapiProvider.session_enable_disable">
+<code class="descname">session_enable_disable</code><span class="sig-paren">(</span><em>is_enabled</em><span class="sig-paren">)</span><a class="headerlink" href="#vpp_papi_provider.VppPapiProvider.session_enable_disable" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="vpp_papi_provider.VppPapiProvider.set_ipfix_exporter">
+<code class="descname">set_ipfix_exporter</code><span class="sig-paren">(</span><em>collector_address</em>, <em>src_address</em>, <em>path_mtu</em>, <em>template_interval</em>, <em>vrf_id=0</em>, <em>collector_port=4739</em>, <em>udp_checksum=0</em><span class="sig-paren">)</span><a class="headerlink" href="#vpp_papi_provider.VppPapiProvider.set_ipfix_exporter" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="vpp_papi_provider.VppPapiProvider.sr_localsid_add_del">
+<code class="descname">sr_localsid_add_del</code><span class="sig-paren">(</span><em>localsid</em>, <em>behavior</em>, <em>nh_addr4</em>, <em>nh_addr6</em>, <em>is_del=0</em>, <em>end_psp=0</em>, <em>sw_if_index=4294967295</em>, <em>vlan_index=0</em>, <em>fib_table=0</em><span class="sig-paren">)</span><a class="headerlink" href="#vpp_papi_provider.VppPapiProvider.sr_localsid_add_del" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add/del IPv6 SR local-SID.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>localsid</strong> – </li>
+<li><strong>behavior</strong> – END=1; END.X=2; END.DX2=4; END.DX6=5;</li>
+<li><strong>behavior</strong> – END.DX4=6; END.DT6=7; END.DT4=8</li>
+<li><strong>nh_addr4</strong> – </li>
+<li><strong>nh_addr6</strong> – </li>
+<li><strong>is_del</strong> – (Default value = 0)</li>
+<li><strong>end_psp</strong> – (Default value = 0)</li>
+<li><strong>sw_if_index</strong> – (Default value = 0xFFFFFFFF)</li>
+<li><strong>vlan_index</strong> – (Default value = 0)</li>
+<li><strong>fib_table</strong> – (Default value = 0)</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="vpp_papi_provider.VppPapiProvider.sr_mpls_policy_add">
+<code class="descname">sr_mpls_policy_add</code><span class="sig-paren">(</span><em>bsid</em>, <em>weight</em>, <em>type</em>, <em>segments</em><span class="sig-paren">)</span><a class="headerlink" href="#vpp_papi_provider.VppPapiProvider.sr_mpls_policy_add" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="vpp_papi_provider.VppPapiProvider.sr_mpls_policy_del">
+<code class="descname">sr_mpls_policy_del</code><span class="sig-paren">(</span><em>bsid</em><span class="sig-paren">)</span><a class="headerlink" href="#vpp_papi_provider.VppPapiProvider.sr_mpls_policy_del" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="vpp_papi_provider.VppPapiProvider.sr_policy_add">
+<code class="descname">sr_policy_add</code><span class="sig-paren">(</span><em>bsid_addr</em>, <em>weight=1</em>, <em>is_encap=1</em>, <em>type=0</em>, <em>fib_table=0</em>, <em>n_segments=0</em>, <em>segments=[]</em><span class="sig-paren">)</span><a class="headerlink" href="#vpp_papi_provider.VppPapiProvider.sr_policy_add" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>bsid_addr</strong> – bindingSID of the SR Policy</li>
+<li><strong>weight</strong> – weight of the sid list. optional. (default: 1)</li>
+<li><strong>is_encap</strong> – (bool) whether SR policy should Encap or SRH insert             (default: Encap)</li>
+<li><strong>type</strong> – type/behavior of the SR policy. (default or spray)             (default: default)</li>
+<li><strong>fib_table</strong> – VRF where to install the FIB entry for the BSID             (default: 0)</li>
+<li><strong>n_segments</strong> – number of segments             (default: 0)</li>
+<li><strong>segments</strong> – a vector of IPv6 address composing the segment list             (default: [])</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="vpp_papi_provider.VppPapiProvider.sr_policy_del">
+<code class="descname">sr_policy_del</code><span class="sig-paren">(</span><em>bsid_addr</em>, <em>sr_policy_index=0</em><span class="sig-paren">)</span><a class="headerlink" href="#vpp_papi_provider.VppPapiProvider.sr_policy_del" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>bsid</strong> – bindingSID of the SR Policy</li>
+<li><strong>sr_policy_index</strong> – index of the sr policy (default: 0)</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="vpp_papi_provider.VppPapiProvider.sr_steering_add_del">
+<code class="descname">sr_steering_add_del</code><span class="sig-paren">(</span><em>is_del</em>, <em>bsid_addr</em>, <em>sr_policy_index</em>, <em>table_id</em>, <em>prefix_addr</em>, <em>mask_width</em>, <em>sw_if_index</em>, <em>traffic_type</em><span class="sig-paren">)</span><a class="headerlink" href="#vpp_papi_provider.VppPapiProvider.sr_steering_add_del" title="Permalink to this definition">¶</a></dt>
+<dd><p>Steer traffic L2 and L3 traffic through a given SR policy</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>is_del</strong> – delete or add</li>
+<li><strong>bsid_addr</strong> – bindingSID of the SR Policy (alt to sr_policy_index)</li>
+<li><strong>sr_policy</strong> – is the index of the SR Policy (alt to bsid)</li>
+<li><strong>table_id</strong> – is the VRF where to install the FIB entry for the BSID</li>
+<li><strong>prefix_addr</strong> – is the IPv4/v6 address for L3 traffic type</li>
+<li><strong>mask_width</strong> – is the mask for L3 traffic type</li>
+<li><strong>sw_if_index</strong> – is the incoming interface for L2 traffic</li>
+<li><strong>traffic_type</strong> – type of traffic (IPv4: 4, IPv6: 6, L2: 2)</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="vpp_papi_provider.VppPapiProvider.svs_enable_disable">
+<code class="descname">svs_enable_disable</code><span class="sig-paren">(</span><em>af</em>, <em>table_id</em>, <em>sw_if_index</em>, <em>is_enable=1</em><span class="sig-paren">)</span><a class="headerlink" href="#vpp_papi_provider.VppPapiProvider.svs_enable_disable" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="vpp_papi_provider.VppPapiProvider.svs_route_add_del">
+<code class="descname">svs_route_add_del</code><span class="sig-paren">(</span><em>table_id</em>, <em>prefix</em>, <em>src_table_id</em>, <em>is_add=1</em><span class="sig-paren">)</span><a class="headerlink" href="#vpp_papi_provider.VppPapiProvider.svs_route_add_del" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="vpp_papi_provider.VppPapiProvider.svs_table_add_del">
+<code class="descname">svs_table_add_del</code><span class="sig-paren">(</span><em>af</em>, <em>table_id</em>, <em>is_add=1</em><span class="sig-paren">)</span><a class="headerlink" href="#vpp_papi_provider.VppPapiProvider.svs_table_add_del" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="vpp_papi_provider.VppPapiProvider.sw_interface_set_mac_address">
+<code class="descname">sw_interface_set_mac_address</code><span class="sig-paren">(</span><em>sw_if_index</em>, <em>mac</em><span class="sig-paren">)</span><a class="headerlink" href="#vpp_papi_provider.VppPapiProvider.sw_interface_set_mac_address" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="vpp_papi_provider.VppPapiProvider.udp_encap_add">
+<code class="descname">udp_encap_add</code><span class="sig-paren">(</span><em>src_ip</em>, <em>dst_ip</em>, <em>src_port</em>, <em>dst_port</em>, <em>table_id=0</em><span class="sig-paren">)</span><a class="headerlink" href="#vpp_papi_provider.VppPapiProvider.udp_encap_add" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a GRE tunnel
+:param src_ip:
+:param dst_ip:
+:param src_port:
+:param dst_port:
+:param outer_fib_id:  (Default value = 0)</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="vpp_papi_provider.VppPapiProvider.vxlan_gbp_tunnel_add_del">
+<code class="descname">vxlan_gbp_tunnel_add_del</code><span class="sig-paren">(</span><em>src</em>, <em>dst</em>, <em>mcast_sw_if_index=4294967295</em>, <em>is_add=1</em>, <em>is_ipv6=0</em>, <em>encap_table_id=0</em>, <em>vni=0</em>, <em>instance=4294967295</em><span class="sig-paren">)</span><a class="headerlink" href="#vpp_papi_provider.VppPapiProvider.vxlan_gbp_tunnel_add_del" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>dst_addr</strong> – </li>
+<li><strong>src_addr</strong> – </li>
+<li><strong>is_add</strong> – (Default value = 1)</li>
+<li><strong>is_ipv6</strong> – (Default value = 0)</li>
+<li><strong>encap_table_id</strong> – (Default value = 0)</li>
+<li><strong>decap_next_index</strong> – (Default value = 0xFFFFFFFF)</li>
+<li><strong>mcast_sw_if_index</strong> – (Default value = 0xFFFFFFFF)</li>
+<li><strong>vni</strong> – (Default value = 0)</li>
+<li><strong>instance</strong> – (Default value = 0xFFFFFFFF)</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="vpp_papi_provider.VppPapiProvider.vxlan_gbp_tunnel_dump">
+<code class="descname">vxlan_gbp_tunnel_dump</code><span class="sig-paren">(</span><em>sw_if_index=4294967295</em><span class="sig-paren">)</span><a class="headerlink" href="#vpp_papi_provider.VppPapiProvider.vxlan_gbp_tunnel_dump" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="vpp_papi_provider.VppPapiProvider.vxlan_gpe_add_del_tunnel">
+<code class="descname">vxlan_gpe_add_del_tunnel</code><span class="sig-paren">(</span><em>src_addr</em>, <em>dst_addr</em>, <em>mcast_sw_if_index=4294967295</em>, <em>is_add=1</em>, <em>is_ipv6=0</em>, <em>encap_vrf_id=0</em>, <em>decap_vrf_id=0</em>, <em>protocol=3</em>, <em>vni=0</em><span class="sig-paren">)</span><a class="headerlink" href="#vpp_papi_provider.VppPapiProvider.vxlan_gpe_add_del_tunnel" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>local</strong> – </li>
+<li><strong>remote</strong> – </li>
+<li><strong>is_add</strong> – (Default value = 1)</li>
+<li><strong>is_ipv6</strong> – (Default value = 0)</li>
+<li><strong>encap_vrf_id</strong> – (Default value = 0)</li>
+<li><strong>decap_vrf_id</strong> – (Default value = 0)</li>
+<li><strong>mcast_sw_if_index</strong> – (Default value = 0xFFFFFFFF)</li>
+<li><strong>protocol</strong> – (Default value = 3)</li>
+<li><strong>vni</strong> – (Default value = 0)</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="vpp_papi_provider.VppPapiProvider.wait_for_event">
+<code class="descname">wait_for_event</code><span class="sig-paren">(</span><em>timeout</em>, <em>name=None</em><span class="sig-paren">)</span><a class="headerlink" href="#vpp_papi_provider.VppPapiProvider.wait_for_event" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wait for and return next event.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="vpp_papi_provider.VppPapiProvider.want_bfd_events">
+<code class="descname">want_bfd_events</code><span class="sig-paren">(</span><em>enable_disable=1</em><span class="sig-paren">)</span><a class="headerlink" href="#vpp_papi_provider.VppPapiProvider.want_bfd_events" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="vpp_papi_provider.VppPapiProvider.want_dhcp6_pd_reply_events">
+<code class="descname">want_dhcp6_pd_reply_events</code><span class="sig-paren">(</span><em>enable_disable=1</em><span class="sig-paren">)</span><a class="headerlink" href="#vpp_papi_provider.VppPapiProvider.want_dhcp6_pd_reply_events" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="vpp_papi_provider.VppPapiProvider.want_dhcp6_reply_events">
+<code class="descname">want_dhcp6_reply_events</code><span class="sig-paren">(</span><em>enable_disable=1</em><span class="sig-paren">)</span><a class="headerlink" href="#vpp_papi_provider.VppPapiProvider.want_dhcp6_reply_events" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="vpp_papi_provider.VppPapiProvider.want_igmp_events">
+<code class="descname">want_igmp_events</code><span class="sig-paren">(</span><em>enable=1</em><span class="sig-paren">)</span><a class="headerlink" href="#vpp_papi_provider.VppPapiProvider.want_igmp_events" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="vpp_papi_provider.VppPapiProvider.want_interface_events">
+<code class="descname">want_interface_events</code><span class="sig-paren">(</span><em>enable_disable=1</em><span class="sig-paren">)</span><a class="headerlink" href="#vpp_papi_provider.VppPapiProvider.want_interface_events" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="vpp_papi_provider.VppPapiProvider.want_ip4_arp_events">
+<code class="descname">want_ip4_arp_events</code><span class="sig-paren">(</span><em>enable_disable=1</em>, <em>ip='0.0.0.0'</em><span class="sig-paren">)</span><a class="headerlink" href="#vpp_papi_provider.VppPapiProvider.want_ip4_arp_events" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="vpp_papi_provider.VppPapiProvider.want_ip6_nd_events">
+<code class="descname">want_ip6_nd_events</code><span class="sig-paren">(</span><em>enable_disable=1</em>, <em>ip='::'</em><span class="sig-paren">)</span><a class="headerlink" href="#vpp_papi_provider.VppPapiProvider.want_ip6_nd_events" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="vpp_papi_provider.VppPapiProvider.want_ip6_ra_events">
+<code class="descname">want_ip6_ra_events</code><span class="sig-paren">(</span><em>enable_disable=1</em><span class="sig-paren">)</span><a class="headerlink" href="#vpp_papi_provider.VppPapiProvider.want_ip6_ra_events" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="vpp_papi_provider.VppPapiProvider.want_l2_macs_events">
+<code class="descname">want_l2_macs_events</code><span class="sig-paren">(</span><em>enable_disable=1</em>, <em>scan_delay=0</em>, <em>max_macs_in_event=0</em>, <em>learn_limit=0</em><span class="sig-paren">)</span><a class="headerlink" href="#vpp_papi_provider.VppPapiProvider.want_l2_macs_events" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="vpp_pg_interface.html" class="btn btn-neutral float-right" title="2.119. vpp_pg_interface module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="vpp_object.html" class="btn btn-neutral float-left" title="2.117. vpp_object module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2016, VPP team
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

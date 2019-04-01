@@ -46,7 +46,7 @@ l2_to_bvi (vlib_main_t * vlib_main,
     {
       vnet_hw_interface_t *hi =
 	vnet_get_sup_hw_interface (vnet_main, bvi_sw_if_index);
-      if (!eth_mac_equal (e0->dst_address, hi->hw_address))
+      if (!ethernet_mac_address_equal (e0->dst_address, hi->hw_address))
 	return TO_BVI_ERR_BAD_MAC;
     }
 
@@ -97,6 +97,11 @@ l2_to_bvi (vlib_main_t * vlib_main,
 void
 l2bvi_register_input_type (vlib_main_t * vm,
 			   ethernet_type_t type, u32 node_index);
+
+extern int l2_bvi_create (u32 instance, const mac_address_t * mac,
+			  u32 * sw_if_index);
+extern int l2_bvi_delete (u32 sw_if_index);
+
 #endif
 
 /*

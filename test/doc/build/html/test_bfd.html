@@ -1,0 +1,1234 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>2.22. test_bfd module &mdash; VPP test framework 0.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="2.23. test_bier module" href="test_bier.html" />
+    <link rel="prev" title="2.21. test_acl_plugin_macip module" href="test_acl_plugin_macip.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> VPP test framework
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="overview.html">1. VPP Test Framework</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">2. Module documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="bfd.html">2.1. bfd module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="debug.html">2.2. debug module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="debug_internal.html">2.3. debug_internal module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="discover_tests.html">2.4. discover_tests module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="framework.html">2.5. framework module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hook.html">2.6. hook module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ipfix.html">2.7. ipfix module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lisp.html">2.8. lisp module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="log.html">2.9. log module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="remote_test.html">2.10. remote_test module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run_tests.html">2.11. run_tests module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sanity_import_vpp_papi.html">2.12. sanity_import_vpp_papi module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sanity_run_vpp.html">2.13. sanity_run_vpp module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="scapy_handlers.html">2.14. scapy_handlers package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="template_bd.html">2.15. template_bd module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="template_ipsec.html">2.16. template_ipsec module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_abf.html">2.17. test_abf module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_acl_plugin.html">2.18. test_acl_plugin module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_acl_plugin_conns.html">2.19. test_acl_plugin_conns module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_acl_plugin_l2l3.html">2.20. test_acl_plugin_l2l3 module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_acl_plugin_macip.html">2.21. test_acl_plugin_macip module</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">2.22. test_bfd module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_bier.html">2.23. test_bier module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_bihash.html">2.24. test_bihash module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_bond.html">2.25. test_bond module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_cdp.html">2.26. test_cdp module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_classifier.html">2.27. test_classifier module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_classifier_ip6.html">2.28. test_classifier_ip6 module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_classify_l2_acl.html">2.29. test_classify_l2_acl module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_container.html">2.30. test_container module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_dhcp.html">2.31. test_dhcp module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_dhcp6.html">2.32. test_dhcp6 module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_dvr.html">2.33. test_dvr module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_fib.html">2.34. test_fib module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_flowprobe.html">2.35. test_flowprobe module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_gbp.html">2.36. test_gbp module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_geneve.html">2.37. test_geneve module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_gre.html">2.38. test_gre module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_gtpu.html">2.39. test_gtpu module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_igmp.html">2.40. test_igmp module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_interface_crud.html">2.41. test_interface_crud module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_ip4.html">2.42. test_ip4 module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_ip4_irb.html">2.43. test_ip4_irb module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_ip4_vrf_multi_instance.html">2.44. test_ip4_vrf_multi_instance module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_ip6.html">2.45. test_ip6 module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_ip6_vrf_multi_instance.html">2.46. test_ip6_vrf_multi_instance module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_ip_ecmp.html">2.47. test_ip_ecmp module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_ip_mcast.html">2.48. test_ip_mcast module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_ipip.html">2.49. test_ipip module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_ipsec_ah.html">2.50. test_ipsec_ah module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_ipsec_api.html">2.51. test_ipsec_api module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_ipsec_esp.html">2.52. test_ipsec_esp module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_ipsec_nat.html">2.53. test_ipsec_nat module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_ipsec_tun_if_esp.html">2.54. test_ipsec_tun_if_esp module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_l2_fib.html">2.55. test_l2_fib module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_l2_flood.html">2.56. test_l2_flood module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_l2bd.html">2.57. test_l2bd module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_l2bd_arp_term.html">2.58. test_l2bd_arp_term module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_l2bd_multi_instance.html">2.59. test_l2bd_multi_instance module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_l2xc.html">2.60. test_l2xc module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_l2xc_multi_instance.html">2.61. test_l2xc_multi_instance module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_lb.html">2.62. test_lb module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_lisp.html">2.63. test_lisp module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_map.html">2.64. test_map module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_memif.html">2.65. test_memif module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_mpls.html">2.66. test_mpls module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_mtu.html">2.67. test_mtu module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_nat.html">2.68. test_nat module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_neighbor.html">2.69. test_neighbor module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_p2p_ethernet.html">2.70. test_p2p_ethernet module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_ping.html">2.71. test_ping module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_pipe.html">2.72. test_pipe module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_pppoe.html">2.73. test_pppoe module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_punt.html">2.74. test_punt module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_qos.html">2.75. test_qos module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_reassembly.html">2.76. test_reassembly module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_sctp.html">2.77. test_sctp module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_session.html">2.78. test_session module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_sixrd.html">2.79. test_sixrd module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_span.html">2.80. test_span module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_srmpls.html">2.81. test_srmpls module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_srv6.html">2.82. test_srv6 module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_srv6_ad.html">2.83. test_srv6_ad module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_srv6_as.html">2.84. test_srv6_as module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_stats_client.html">2.85. test_stats_client module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_string.html">2.86. test_string module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_svs.html">2.87. test_svs module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_syslog.html">2.88. test_syslog module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_tcp.html">2.89. test_tcp module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_udp.html">2.90. test_udp module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_util.html">2.91. test_util module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_vapi.html">2.92. test_vapi module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_vcl.html">2.93. test_vcl module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_vhost.html">2.94. test_vhost module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_vom.html">2.95. test_vom module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_vtr.html">2.96. test_vtr module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_vxlan.html">2.97. test_vxlan module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_vxlan6.html">2.98. test_vxlan6 module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_vxlan_gbp.html">2.99. test_vxlan_gbp module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_vxlan_gpe.html">2.100. test_vxlan_gpe module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="util.html">2.101. util module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpp_bier.html">2.102. vpp_bier module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpp_bond_interface.html">2.103. vpp_bond_interface module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpp_bvi_interface.html">2.104. vpp_bvi_interface module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpp_gre_interface.html">2.105. vpp_gre_interface module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpp_igmp.html">2.106. vpp_igmp module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpp_interface.html">2.107. vpp_interface module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpp_ip.html">2.108. vpp_ip module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpp_ip_route.html">2.109. vpp_ip_route module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpp_ipsec.html">2.110. vpp_ipsec module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpp_ipsec_tun_interface.html">2.111. vpp_ipsec_tun_interface module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpp_l2.html">2.112. vpp_l2 module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpp_lo_interface.html">2.113. vpp_lo_interface module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpp_memif.html">2.114. vpp_memif module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpp_mpls_tunnel_interface.html">2.115. vpp_mpls_tunnel_interface module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpp_neighbor.html">2.116. vpp_neighbor module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpp_object.html">2.117. vpp_object module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpp_papi_provider.html">2.118. vpp_papi_provider module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpp_pg_interface.html">2.119. vpp_pg_interface module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpp_pppoe_interface.html">2.120. vpp_pppoe_interface module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpp_srv6.html">2.121. vpp_srv6 module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpp_sub_interface.html">2.122. vpp_sub_interface module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpp_tunnel_interface.html">2.123. vpp_tunnel_interface module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpp_udp_encap.html">2.124. vpp_udp_encap module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpp_vhost_interface.html">2.125. vpp_vhost_interface module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpp_vxlan_gbp_tunnel.html">2.126. vpp_vxlan_gbp_tunnel module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vrf.html">2.127. vrf module</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="indices.html">3. Indices and tables</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">VPP test framework</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="modules.html">2. Module documentation</a> &raquo;</li>
+        
+      <li>2.22. test_bfd module</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/test_bfd.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-test_bfd">
+<span id="test-bfd-module"></span><h1>2.22. test_bfd module<a class="headerlink" href="#module-test_bfd" title="Permalink to this headline">¶</a></h1>
+<p>BFD tests</p>
+<dl class="class">
+<dt id="test_bfd.AuthKeyFactory">
+<em class="property">class </em><code class="descclassname">test_bfd.</code><code class="descname">AuthKeyFactory</code><a class="headerlink" href="#test_bfd.AuthKeyFactory" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Factory class for creating auth keys with unique conf key ID</p>
+<dl class="method">
+<dt id="test_bfd.AuthKeyFactory.create_random_key">
+<code class="descname">create_random_key</code><span class="sig-paren">(</span><em>test</em>, <em>auth_type=4</em><span class="sig-paren">)</span><a class="headerlink" href="#test_bfd.AuthKeyFactory.create_random_key" title="Permalink to this definition">¶</a></dt>
+<dd><p>create a random key with unique conf key id</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="test_bfd.BFD4TestCase">
+<em class="property">class </em><code class="descclassname">test_bfd.</code><code class="descname">BFD4TestCase</code><span class="sig-paren">(</span><em>methodName='runTest'</em><span class="sig-paren">)</span><a class="headerlink" href="#test_bfd.BFD4TestCase" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="framework.html#framework.VppTestCase" title="framework.VppTestCase"><code class="xref py py-class docutils literal notranslate"><span class="pre">framework.VppTestCase</span></code></a></p>
+<p>Bidirectional Forwarding Detection (BFD)</p>
+<dl class="attribute">
+<dt id="test_bfd.BFD4TestCase.pg0">
+<code class="descname">pg0</code><em class="property"> = None</em><a class="headerlink" href="#test_bfd.BFD4TestCase.pg0" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="test_bfd.BFD4TestCase.setUp">
+<code class="descname">setUp</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_bfd.BFD4TestCase.setUp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Clear trace before running each test</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="test_bfd.BFD4TestCase.setUpClass">
+<em class="property">classmethod </em><code class="descname">setUpClass</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_bfd.BFD4TestCase.setUpClass" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform class setup before running the testcase
+Remove shared memory files, start vpp and connect the vpp-api</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_bfd.BFD4TestCase.tearDown">
+<code class="descname">tearDown</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_bfd.BFD4TestCase.tearDown" title="Permalink to this definition">¶</a></dt>
+<dd><p>Show various debug prints after each test</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="test_bfd.BFD4TestCase.tearDownClass">
+<em class="property">classmethod </em><code class="descname">tearDownClass</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_bfd.BFD4TestCase.tearDownClass" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform final cleanup after running all tests in this test-case</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_bfd.BFD4TestCase.test_admin_up_down">
+<code class="descname">test_admin_up_down</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_bfd.BFD4TestCase.test_admin_up_down" title="Permalink to this definition">¶</a></dt>
+<dd><p>put session admin-up and admin-down</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_bfd.BFD4TestCase.test_config_change_remote_demand">
+<code class="descname">test_config_change_remote_demand</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_bfd.BFD4TestCase.test_config_change_remote_demand" title="Permalink to this definition">¶</a></dt>
+<dd><p>configuration change while peer in demand mode</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_bfd.BFD4TestCase.test_conn_down">
+<code class="descname">test_conn_down</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_bfd.BFD4TestCase.test_conn_down" title="Permalink to this definition">¶</a></dt>
+<dd><p>verify session goes down after inactivity</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_bfd.BFD4TestCase.test_echo">
+<code class="descname">test_echo</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_bfd.BFD4TestCase.test_echo" title="Permalink to this definition">¶</a></dt>
+<dd><p>echo function</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_bfd.BFD4TestCase.test_echo_fail">
+<code class="descname">test_echo_fail</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_bfd.BFD4TestCase.test_echo_fail" title="Permalink to this definition">¶</a></dt>
+<dd><p>session goes down if echo function fails</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_bfd.BFD4TestCase.test_echo_looped_back">
+<code class="descname">test_echo_looped_back</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_bfd.BFD4TestCase.test_echo_looped_back" title="Permalink to this definition">¶</a></dt>
+<dd><p>echo packets looped back</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_bfd.BFD4TestCase.test_echo_source_removed">
+<code class="descname">test_echo_source_removed</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_bfd.BFD4TestCase.test_echo_source_removed" title="Permalink to this definition">¶</a></dt>
+<dd><p>echo function stops if echo source is removed</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_bfd.BFD4TestCase.test_echo_stop">
+<code class="descname">test_echo_stop</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_bfd.BFD4TestCase.test_echo_stop" title="Permalink to this definition">¶</a></dt>
+<dd><p>echo function stops if peer sets required min echo rx zero</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_bfd.BFD4TestCase.test_hold_up">
+<code class="descname">test_hold_up</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_bfd.BFD4TestCase.test_hold_up" title="Permalink to this definition">¶</a></dt>
+<dd><p>hold BFD session up</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_bfd.BFD4TestCase.test_immediate_remote_min_rx_reduction">
+<code class="descname">test_immediate_remote_min_rx_reduction</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_bfd.BFD4TestCase.test_immediate_remote_min_rx_reduction" title="Permalink to this definition">¶</a></dt>
+<dd><p>immediately honor remote required min rx reduction</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_bfd.BFD4TestCase.test_intf_deleted">
+<code class="descname">test_intf_deleted</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_bfd.BFD4TestCase.test_intf_deleted" title="Permalink to this definition">¶</a></dt>
+<dd><p>interface with bfd session deleted</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_bfd.BFD4TestCase.test_invalid_echo_checksum">
+<code class="descname">test_invalid_echo_checksum</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_bfd.BFD4TestCase.test_invalid_echo_checksum" title="Permalink to this definition">¶</a></dt>
+<dd><p>echo packets with invalid checksum don’t keep a session up</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_bfd.BFD4TestCase.test_large_required_min_rx">
+<code class="descname">test_large_required_min_rx</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_bfd.BFD4TestCase.test_large_required_min_rx" title="Permalink to this definition">¶</a></dt>
+<dd><p>large remote required min rx interval</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_bfd.BFD4TestCase.test_modify_detect_mult">
+<code class="descname">test_modify_detect_mult</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_bfd.BFD4TestCase.test_modify_detect_mult" title="Permalink to this definition">¶</a></dt>
+<dd><p>modify detect multiplier</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_bfd.BFD4TestCase.test_modify_req_min_rx_double">
+<code class="descname">test_modify_req_min_rx_double</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_bfd.BFD4TestCase.test_modify_req_min_rx_double" title="Permalink to this definition">¶</a></dt>
+<dd><p>modify session - double required min rx</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_bfd.BFD4TestCase.test_modify_req_min_rx_halve">
+<code class="descname">test_modify_req_min_rx_halve</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_bfd.BFD4TestCase.test_modify_req_min_rx_halve" title="Permalink to this definition">¶</a></dt>
+<dd><p>modify session - halve required min rx</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_bfd.BFD4TestCase.test_no_periodic_if_remote_demand">
+<code class="descname">test_no_periodic_if_remote_demand</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_bfd.BFD4TestCase.test_no_periodic_if_remote_demand" title="Permalink to this definition">¶</a></dt>
+<dd><p>no periodic frames outside poll sequence if remote demand set</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_bfd.BFD4TestCase.test_poll_response">
+<code class="descname">test_poll_response</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_bfd.BFD4TestCase.test_poll_response" title="Permalink to this definition">¶</a></dt>
+<dd><p>test correct response to control frame with poll bit set</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_bfd.BFD4TestCase.test_queued_poll">
+<code class="descname">test_queued_poll</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_bfd.BFD4TestCase.test_queued_poll" title="Permalink to this definition">¶</a></dt>
+<dd><p>test poll sequence queueing</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="test_bfd.BFD4TestCase.test_session">
+<code class="descname">test_session</code><em class="property"> = None</em><a class="headerlink" href="#test_bfd.BFD4TestCase.test_session" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="test_bfd.BFD4TestCase.test_session_down">
+<code class="descname">test_session_down</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_bfd.BFD4TestCase.test_session_down" title="Permalink to this definition">¶</a></dt>
+<dd><p>bring BFD session down</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_bfd.BFD4TestCase.test_session_up">
+<code class="descname">test_session_up</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_bfd.BFD4TestCase.test_session_up" title="Permalink to this definition">¶</a></dt>
+<dd><p>bring BFD session up</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_bfd.BFD4TestCase.test_session_up_by_ip">
+<code class="descname">test_session_up_by_ip</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_bfd.BFD4TestCase.test_session_up_by_ip" title="Permalink to this definition">¶</a></dt>
+<dd><p>bring BFD session up - first frame looked up by address pair</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_bfd.BFD4TestCase.test_slow_timer">
+<code class="descname">test_slow_timer</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_bfd.BFD4TestCase.test_slow_timer" title="Permalink to this definition">¶</a></dt>
+<dd><p>verify slow periodic control frames while session down</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_bfd.BFD4TestCase.test_stale_echo">
+<code class="descname">test_stale_echo</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_bfd.BFD4TestCase.test_stale_echo" title="Permalink to this definition">¶</a></dt>
+<dd><p>stale echo packets don’t keep a session up</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_bfd.BFD4TestCase.test_zero_remote_min_rx">
+<code class="descname">test_zero_remote_min_rx</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_bfd.BFD4TestCase.test_zero_remote_min_rx" title="Permalink to this definition">¶</a></dt>
+<dd><p>no packets when zero remote required min rx interval</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="test_bfd.BFD4TestCase.vpp_clock_offset">
+<code class="descname">vpp_clock_offset</code><em class="property"> = None</em><a class="headerlink" href="#test_bfd.BFD4TestCase.vpp_clock_offset" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="test_bfd.BFD4TestCase.vpp_session">
+<code class="descname">vpp_session</code><em class="property"> = None</em><a class="headerlink" href="#test_bfd.BFD4TestCase.vpp_session" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="test_bfd.BFD6TestCase">
+<em class="property">class </em><code class="descclassname">test_bfd.</code><code class="descname">BFD6TestCase</code><span class="sig-paren">(</span><em>methodName='runTest'</em><span class="sig-paren">)</span><a class="headerlink" href="#test_bfd.BFD6TestCase" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="framework.html#framework.VppTestCase" title="framework.VppTestCase"><code class="xref py py-class docutils literal notranslate"><span class="pre">framework.VppTestCase</span></code></a></p>
+<p>Bidirectional Forwarding Detection (BFD) (IPv6)</p>
+<dl class="attribute">
+<dt id="test_bfd.BFD6TestCase.pg0">
+<code class="descname">pg0</code><em class="property"> = None</em><a class="headerlink" href="#test_bfd.BFD6TestCase.pg0" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="test_bfd.BFD6TestCase.setUp">
+<code class="descname">setUp</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_bfd.BFD6TestCase.setUp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Clear trace before running each test</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="test_bfd.BFD6TestCase.setUpClass">
+<em class="property">classmethod </em><code class="descname">setUpClass</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_bfd.BFD6TestCase.setUpClass" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform class setup before running the testcase
+Remove shared memory files, start vpp and connect the vpp-api</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_bfd.BFD6TestCase.tearDown">
+<code class="descname">tearDown</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_bfd.BFD6TestCase.tearDown" title="Permalink to this definition">¶</a></dt>
+<dd><p>Show various debug prints after each test</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="test_bfd.BFD6TestCase.tearDownClass">
+<em class="property">classmethod </em><code class="descname">tearDownClass</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_bfd.BFD6TestCase.tearDownClass" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform final cleanup after running all tests in this test-case</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_bfd.BFD6TestCase.test_echo">
+<code class="descname">test_echo</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_bfd.BFD6TestCase.test_echo" title="Permalink to this definition">¶</a></dt>
+<dd><p>echo function</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_bfd.BFD6TestCase.test_echo_looped_back">
+<code class="descname">test_echo_looped_back</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_bfd.BFD6TestCase.test_echo_looped_back" title="Permalink to this definition">¶</a></dt>
+<dd><p>echo packets looped back</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_bfd.BFD6TestCase.test_hold_up">
+<code class="descname">test_hold_up</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_bfd.BFD6TestCase.test_hold_up" title="Permalink to this definition">¶</a></dt>
+<dd><p>hold BFD session up</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_bfd.BFD6TestCase.test_intf_deleted">
+<code class="descname">test_intf_deleted</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_bfd.BFD6TestCase.test_intf_deleted" title="Permalink to this definition">¶</a></dt>
+<dd><p>interface with bfd session deleted</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="test_bfd.BFD6TestCase.test_session">
+<code class="descname">test_session</code><em class="property"> = None</em><a class="headerlink" href="#test_bfd.BFD6TestCase.test_session" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="test_bfd.BFD6TestCase.test_session_up">
+<code class="descname">test_session_up</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_bfd.BFD6TestCase.test_session_up" title="Permalink to this definition">¶</a></dt>
+<dd><p>bring BFD session up</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_bfd.BFD6TestCase.test_session_up_by_ip">
+<code class="descname">test_session_up_by_ip</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_bfd.BFD6TestCase.test_session_up_by_ip" title="Permalink to this definition">¶</a></dt>
+<dd><p>bring BFD session up - first frame looked up by address pair</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="test_bfd.BFD6TestCase.vpp_clock_offset">
+<code class="descname">vpp_clock_offset</code><em class="property"> = None</em><a class="headerlink" href="#test_bfd.BFD6TestCase.vpp_clock_offset" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="test_bfd.BFD6TestCase.vpp_session">
+<code class="descname">vpp_session</code><em class="property"> = None</em><a class="headerlink" href="#test_bfd.BFD6TestCase.vpp_session" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="test_bfd.BFDAPITestCase">
+<em class="property">class </em><code class="descclassname">test_bfd.</code><code class="descname">BFDAPITestCase</code><span class="sig-paren">(</span><em>methodName='runTest'</em><span class="sig-paren">)</span><a class="headerlink" href="#test_bfd.BFDAPITestCase" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="framework.html#framework.VppTestCase" title="framework.VppTestCase"><code class="xref py py-class docutils literal notranslate"><span class="pre">framework.VppTestCase</span></code></a></p>
+<p>Bidirectional Forwarding Detection (BFD) - API</p>
+<dl class="attribute">
+<dt id="test_bfd.BFDAPITestCase.pg0">
+<code class="descname">pg0</code><em class="property"> = None</em><a class="headerlink" href="#test_bfd.BFDAPITestCase.pg0" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="test_bfd.BFDAPITestCase.pg1">
+<code class="descname">pg1</code><em class="property"> = None</em><a class="headerlink" href="#test_bfd.BFDAPITestCase.pg1" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="test_bfd.BFDAPITestCase.setUp">
+<code class="descname">setUp</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_bfd.BFDAPITestCase.setUp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Clear trace before running each test</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="test_bfd.BFDAPITestCase.setUpClass">
+<em class="property">classmethod </em><code class="descname">setUpClass</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_bfd.BFDAPITestCase.setUpClass" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform class setup before running the testcase
+Remove shared memory files, start vpp and connect the vpp-api</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="test_bfd.BFDAPITestCase.tearDownClass">
+<em class="property">classmethod </em><code class="descname">tearDownClass</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_bfd.BFDAPITestCase.tearDownClass" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform final cleanup after running all tests in this test-case</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_bfd.BFDAPITestCase.test_activate_auth">
+<code class="descname">test_activate_auth</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_bfd.BFDAPITestCase.test_activate_auth" title="Permalink to this definition">¶</a></dt>
+<dd><p>activate SHA1 authentication</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_bfd.BFDAPITestCase.test_add_auth_nonexistent_key">
+<code class="descname">test_add_auth_nonexistent_key</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_bfd.BFDAPITestCase.test_add_auth_nonexistent_key" title="Permalink to this definition">¶</a></dt>
+<dd><p>create BFD session using non-existent SHA1 (negative case)</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_bfd.BFDAPITestCase.test_add_bfd">
+<code class="descname">test_add_bfd</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_bfd.BFDAPITestCase.test_add_bfd" title="Permalink to this definition">¶</a></dt>
+<dd><p>create a BFD session</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_bfd.BFDAPITestCase.test_add_bfd6">
+<code class="descname">test_add_bfd6</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_bfd.BFDAPITestCase.test_add_bfd6" title="Permalink to this definition">¶</a></dt>
+<dd><p>create IPv6 BFD session</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_bfd.BFDAPITestCase.test_add_bfd_sha1">
+<code class="descname">test_add_bfd_sha1</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_bfd.BFDAPITestCase.test_add_bfd_sha1" title="Permalink to this definition">¶</a></dt>
+<dd><p>create a BFD session (SHA1)</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_bfd.BFDAPITestCase.test_add_sha1_keys">
+<code class="descname">test_add_sha1_keys</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_bfd.BFDAPITestCase.test_add_sha1_keys" title="Permalink to this definition">¶</a></dt>
+<dd><p>add SHA1 keys</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_bfd.BFDAPITestCase.test_change_key">
+<code class="descname">test_change_key</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_bfd.BFDAPITestCase.test_change_key" title="Permalink to this definition">¶</a></dt>
+<dd><p>change SHA1 key</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_bfd.BFDAPITestCase.test_deactivate_auth">
+<code class="descname">test_deactivate_auth</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_bfd.BFDAPITestCase.test_deactivate_auth" title="Permalink to this definition">¶</a></dt>
+<dd><p>deactivate SHA1 authentication</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_bfd.BFDAPITestCase.test_double_add">
+<code class="descname">test_double_add</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_bfd.BFDAPITestCase.test_double_add" title="Permalink to this definition">¶</a></dt>
+<dd><p>create the same BFD session twice (negative case)</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_bfd.BFDAPITestCase.test_double_add_sha1">
+<code class="descname">test_double_add_sha1</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_bfd.BFDAPITestCase.test_double_add_sha1" title="Permalink to this definition">¶</a></dt>
+<dd><p>create the same BFD session twice (negative case) (SHA1)</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_bfd.BFDAPITestCase.test_mod_bfd">
+<code class="descname">test_mod_bfd</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_bfd.BFDAPITestCase.test_mod_bfd" title="Permalink to this definition">¶</a></dt>
+<dd><p>modify BFD session parameters</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_bfd.BFDAPITestCase.test_set_del_udp_echo_source">
+<code class="descname">test_set_del_udp_echo_source</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_bfd.BFDAPITestCase.test_set_del_udp_echo_source" title="Permalink to this definition">¶</a></dt>
+<dd><p>set/del udp echo source</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_bfd.BFDAPITestCase.test_shared_sha1_key">
+<code class="descname">test_shared_sha1_key</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_bfd.BFDAPITestCase.test_shared_sha1_key" title="Permalink to this definition">¶</a></dt>
+<dd><p>share single SHA1 key between multiple BFD sessions</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="test_bfd.BFDAuthOnOffTestCase">
+<em class="property">class </em><code class="descclassname">test_bfd.</code><code class="descname">BFDAuthOnOffTestCase</code><span class="sig-paren">(</span><em>methodName='runTest'</em><span class="sig-paren">)</span><a class="headerlink" href="#test_bfd.BFDAuthOnOffTestCase" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="framework.html#framework.VppTestCase" title="framework.VppTestCase"><code class="xref py py-class docutils literal notranslate"><span class="pre">framework.VppTestCase</span></code></a></p>
+<p>Bidirectional Forwarding Detection (BFD) (changing auth)</p>
+<dl class="attribute">
+<dt id="test_bfd.BFDAuthOnOffTestCase.pg0">
+<code class="descname">pg0</code><em class="property"> = None</em><a class="headerlink" href="#test_bfd.BFDAuthOnOffTestCase.pg0" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="test_bfd.BFDAuthOnOffTestCase.setUp">
+<code class="descname">setUp</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_bfd.BFDAuthOnOffTestCase.setUp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Clear trace before running each test</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="test_bfd.BFDAuthOnOffTestCase.setUpClass">
+<em class="property">classmethod </em><code class="descname">setUpClass</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_bfd.BFDAuthOnOffTestCase.setUpClass" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform class setup before running the testcase
+Remove shared memory files, start vpp and connect the vpp-api</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_bfd.BFDAuthOnOffTestCase.tearDown">
+<code class="descname">tearDown</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_bfd.BFDAuthOnOffTestCase.tearDown" title="Permalink to this definition">¶</a></dt>
+<dd><p>Show various debug prints after each test</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="test_bfd.BFDAuthOnOffTestCase.tearDownClass">
+<em class="property">classmethod </em><code class="descname">tearDownClass</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_bfd.BFDAuthOnOffTestCase.tearDownClass" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform final cleanup after running all tests in this test-case</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_bfd.BFDAuthOnOffTestCase.test_auth_change_key_delayed">
+<code class="descname">test_auth_change_key_delayed</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_bfd.BFDAuthOnOffTestCase.test_auth_change_key_delayed" title="Permalink to this definition">¶</a></dt>
+<dd><p>change auth key without disturbing session state (delayed)</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_bfd.BFDAuthOnOffTestCase.test_auth_change_key_immediate">
+<code class="descname">test_auth_change_key_immediate</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_bfd.BFDAuthOnOffTestCase.test_auth_change_key_immediate" title="Permalink to this definition">¶</a></dt>
+<dd><p>change auth key without disturbing session state (immediate)</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_bfd.BFDAuthOnOffTestCase.test_auth_off_delayed">
+<code class="descname">test_auth_off_delayed</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_bfd.BFDAuthOnOffTestCase.test_auth_off_delayed" title="Permalink to this definition">¶</a></dt>
+<dd><p>turn auth off without disturbing session state (delayed)</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_bfd.BFDAuthOnOffTestCase.test_auth_off_immediate">
+<code class="descname">test_auth_off_immediate</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_bfd.BFDAuthOnOffTestCase.test_auth_off_immediate" title="Permalink to this definition">¶</a></dt>
+<dd><p>turn auth off without disturbing session state (immediate)</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_bfd.BFDAuthOnOffTestCase.test_auth_on_delayed">
+<code class="descname">test_auth_on_delayed</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_bfd.BFDAuthOnOffTestCase.test_auth_on_delayed" title="Permalink to this definition">¶</a></dt>
+<dd><p>turn auth on without disturbing session state (delayed)</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_bfd.BFDAuthOnOffTestCase.test_auth_on_immediate">
+<code class="descname">test_auth_on_immediate</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_bfd.BFDAuthOnOffTestCase.test_auth_on_immediate" title="Permalink to this definition">¶</a></dt>
+<dd><p>turn auth on without disturbing session state (immediate)</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="test_bfd.BFDAuthOnOffTestCase.test_session">
+<code class="descname">test_session</code><em class="property"> = None</em><a class="headerlink" href="#test_bfd.BFDAuthOnOffTestCase.test_session" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="test_bfd.BFDAuthOnOffTestCase.vpp_session">
+<code class="descname">vpp_session</code><em class="property"> = None</em><a class="headerlink" href="#test_bfd.BFDAuthOnOffTestCase.vpp_session" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="test_bfd.BFDCLITestCase">
+<em class="property">class </em><code class="descclassname">test_bfd.</code><code class="descname">BFDCLITestCase</code><span class="sig-paren">(</span><em>methodName='runTest'</em><span class="sig-paren">)</span><a class="headerlink" href="#test_bfd.BFDCLITestCase" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="framework.html#framework.VppTestCase" title="framework.VppTestCase"><code class="xref py py-class docutils literal notranslate"><span class="pre">framework.VppTestCase</span></code></a></p>
+<p>Bidirectional Forwarding Detection (BFD) (CLI)</p>
+<dl class="method">
+<dt id="test_bfd.BFDCLITestCase.cli_verify_no_response">
+<code class="descname">cli_verify_no_response</code><span class="sig-paren">(</span><em>cli</em><span class="sig-paren">)</span><a class="headerlink" href="#test_bfd.BFDCLITestCase.cli_verify_no_response" title="Permalink to this definition">¶</a></dt>
+<dd><p>execute a CLI, asserting that the response is empty</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_bfd.BFDCLITestCase.cli_verify_response">
+<code class="descname">cli_verify_response</code><span class="sig-paren">(</span><em>cli</em>, <em>expected</em><span class="sig-paren">)</span><a class="headerlink" href="#test_bfd.BFDCLITestCase.cli_verify_response" title="Permalink to this definition">¶</a></dt>
+<dd><p>execute a CLI, asserting that the response matches expectation</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="test_bfd.BFDCLITestCase.pg0">
+<code class="descname">pg0</code><em class="property"> = None</em><a class="headerlink" href="#test_bfd.BFDCLITestCase.pg0" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="test_bfd.BFDCLITestCase.setUp">
+<code class="descname">setUp</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_bfd.BFDCLITestCase.setUp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Clear trace before running each test</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="test_bfd.BFDCLITestCase.setUpClass">
+<em class="property">classmethod </em><code class="descname">setUpClass</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_bfd.BFDCLITestCase.setUpClass" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform class setup before running the testcase
+Remove shared memory files, start vpp and connect the vpp-api</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_bfd.BFDCLITestCase.tearDown">
+<code class="descname">tearDown</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_bfd.BFDCLITestCase.tearDown" title="Permalink to this definition">¶</a></dt>
+<dd><p>Show various debug prints after each test</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="test_bfd.BFDCLITestCase.tearDownClass">
+<em class="property">classmethod </em><code class="descname">tearDownClass</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_bfd.BFDCLITestCase.tearDownClass" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform final cleanup after running all tests in this test-case</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_bfd.BFDCLITestCase.test_add_mod_del_bfd_udp">
+<code class="descname">test_add_mod_del_bfd_udp</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_bfd.BFDCLITestCase.test_add_mod_del_bfd_udp" title="Permalink to this definition">¶</a></dt>
+<dd><p>create/modify/delete IPv4 BFD UDP session</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_bfd.BFDCLITestCase.test_add_mod_del_bfd_udp6">
+<code class="descname">test_add_mod_del_bfd_udp6</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_bfd.BFDCLITestCase.test_add_mod_del_bfd_udp6" title="Permalink to this definition">¶</a></dt>
+<dd><p>create/modify/delete IPv6 BFD UDP session</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_bfd.BFDCLITestCase.test_add_mod_del_bfd_udp6_auth">
+<code class="descname">test_add_mod_del_bfd_udp6_auth</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_bfd.BFDCLITestCase.test_add_mod_del_bfd_udp6_auth" title="Permalink to this definition">¶</a></dt>
+<dd><p>create/modify/delete IPv6 BFD UDP session (authenticated)</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_bfd.BFDCLITestCase.test_add_mod_del_bfd_udp_auth">
+<code class="descname">test_add_mod_del_bfd_udp_auth</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_bfd.BFDCLITestCase.test_add_mod_del_bfd_udp_auth" title="Permalink to this definition">¶</a></dt>
+<dd><p>create/modify/delete IPv4 BFD UDP session (authenticated)</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_bfd.BFDCLITestCase.test_admin_up_down">
+<code class="descname">test_admin_up_down</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_bfd.BFDCLITestCase.test_admin_up_down" title="Permalink to this definition">¶</a></dt>
+<dd><p>put session admin-up and admin-down</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_bfd.BFDCLITestCase.test_auth_on_off">
+<code class="descname">test_auth_on_off</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_bfd.BFDCLITestCase.test_auth_on_off" title="Permalink to this definition">¶</a></dt>
+<dd><p>turn authentication on and off</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_bfd.BFDCLITestCase.test_auth_on_off_delayed">
+<code class="descname">test_auth_on_off_delayed</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_bfd.BFDCLITestCase.test_auth_on_off_delayed" title="Permalink to this definition">¶</a></dt>
+<dd><p>turn authentication on and off (delayed)</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_bfd.BFDCLITestCase.test_set_del_meticulous_sha1_key">
+<code class="descname">test_set_del_meticulous_sha1_key</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_bfd.BFDCLITestCase.test_set_del_meticulous_sha1_key" title="Permalink to this definition">¶</a></dt>
+<dd><p>set/delete meticulous SHA1 auth key</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_bfd.BFDCLITestCase.test_set_del_sha1_key">
+<code class="descname">test_set_del_sha1_key</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_bfd.BFDCLITestCase.test_set_del_sha1_key" title="Permalink to this definition">¶</a></dt>
+<dd><p>set/delete SHA1 auth key</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_bfd.BFDCLITestCase.test_set_del_udp_echo_source">
+<code class="descname">test_set_del_udp_echo_source</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_bfd.BFDCLITestCase.test_set_del_udp_echo_source" title="Permalink to this definition">¶</a></dt>
+<dd><p>set/del udp echo source</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_bfd.BFDCLITestCase.test_show">
+<code class="descname">test_show</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_bfd.BFDCLITestCase.test_show" title="Permalink to this definition">¶</a></dt>
+<dd><p>show commands</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="test_bfd.BFDFIBTestCase">
+<em class="property">class </em><code class="descclassname">test_bfd.</code><code class="descname">BFDFIBTestCase</code><span class="sig-paren">(</span><em>methodName='runTest'</em><span class="sig-paren">)</span><a class="headerlink" href="#test_bfd.BFDFIBTestCase" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="framework.html#framework.VppTestCase" title="framework.VppTestCase"><code class="xref py py-class docutils literal notranslate"><span class="pre">framework.VppTestCase</span></code></a></p>
+<p>BFD-FIB interactions (IPv6)</p>
+<dl class="staticmethod">
+<dt id="test_bfd.BFDFIBTestCase.pkt_is_not_data_traffic">
+<em class="property">static </em><code class="descname">pkt_is_not_data_traffic</code><span class="sig-paren">(</span><em>p</em><span class="sig-paren">)</span><a class="headerlink" href="#test_bfd.BFDFIBTestCase.pkt_is_not_data_traffic" title="Permalink to this definition">¶</a></dt>
+<dd><p>not data traffic implies BFD or the usual IPv6 ND/RA</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_bfd.BFDFIBTestCase.setUp">
+<code class="descname">setUp</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_bfd.BFDFIBTestCase.setUp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Clear trace before running each test</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="test_bfd.BFDFIBTestCase.setUpClass">
+<em class="property">classmethod </em><code class="descname">setUpClass</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_bfd.BFDFIBTestCase.setUpClass" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform class setup before running the testcase
+Remove shared memory files, start vpp and connect the vpp-api</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_bfd.BFDFIBTestCase.tearDown">
+<code class="descname">tearDown</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_bfd.BFDFIBTestCase.tearDown" title="Permalink to this definition">¶</a></dt>
+<dd><p>Show various debug prints after each test</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="test_bfd.BFDFIBTestCase.tearDownClass">
+<em class="property">classmethod </em><code class="descname">tearDownClass</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_bfd.BFDFIBTestCase.tearDownClass" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform final cleanup after running all tests in this test-case</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="test_bfd.BFDFIBTestCase.test_session">
+<code class="descname">test_session</code><em class="property"> = None</em><a class="headerlink" href="#test_bfd.BFDFIBTestCase.test_session" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="test_bfd.BFDFIBTestCase.test_session_with_fib">
+<code class="descname">test_session_with_fib</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_bfd.BFDFIBTestCase.test_session_with_fib" title="Permalink to this definition">¶</a></dt>
+<dd><p>BFD-FIB interactions</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="test_bfd.BFDFIBTestCase.vpp_session">
+<code class="descname">vpp_session</code><em class="property"> = None</em><a class="headerlink" href="#test_bfd.BFDFIBTestCase.vpp_session" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="test_bfd.BFDSHA1TestCase">
+<em class="property">class </em><code class="descclassname">test_bfd.</code><code class="descname">BFDSHA1TestCase</code><span class="sig-paren">(</span><em>methodName='runTest'</em><span class="sig-paren">)</span><a class="headerlink" href="#test_bfd.BFDSHA1TestCase" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="framework.html#framework.VppTestCase" title="framework.VppTestCase"><code class="xref py py-class docutils literal notranslate"><span class="pre">framework.VppTestCase</span></code></a></p>
+<p>Bidirectional Forwarding Detection (BFD) (SHA1 auth)</p>
+<dl class="method">
+<dt id="test_bfd.BFDSHA1TestCase.execute_rogue_session_scenario">
+<code class="descname">execute_rogue_session_scenario</code><span class="sig-paren">(</span><em>vpp_bfd_udp_session</em>, <em>legitimate_test_session</em>, <em>rogue_test_session</em>, <em>rogue_bfd_values=None</em><span class="sig-paren">)</span><a class="headerlink" href="#test_bfd.BFDSHA1TestCase.execute_rogue_session_scenario" title="Permalink to this definition">¶</a></dt>
+<dd><p>execute a rogue session interaction scenario</p>
+<ol class="arabic simple">
+<li>create vpp session, add config</li>
+<li>bring the legitimate session up</li>
+<li>copy the bfd values from legitimate session to rogue session</li>
+<li>apply rogue_bfd_values to rogue session</li>
+<li>set rogue session state to down</li>
+<li>send message to take the session down from the rogue session</li>
+<li>assert that the legitimate session is unaffected</li>
+</ol>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="test_bfd.BFDSHA1TestCase.pg0">
+<code class="descname">pg0</code><em class="property"> = None</em><a class="headerlink" href="#test_bfd.BFDSHA1TestCase.pg0" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="test_bfd.BFDSHA1TestCase.setUp">
+<code class="descname">setUp</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_bfd.BFDSHA1TestCase.setUp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Clear trace before running each test</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="test_bfd.BFDSHA1TestCase.setUpClass">
+<em class="property">classmethod </em><code class="descname">setUpClass</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_bfd.BFDSHA1TestCase.setUpClass" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform class setup before running the testcase
+Remove shared memory files, start vpp and connect the vpp-api</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_bfd.BFDSHA1TestCase.tearDown">
+<code class="descname">tearDown</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_bfd.BFDSHA1TestCase.tearDown" title="Permalink to this definition">¶</a></dt>
+<dd><p>Show various debug prints after each test</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="test_bfd.BFDSHA1TestCase.tearDownClass">
+<em class="property">classmethod </em><code class="descname">tearDownClass</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_bfd.BFDSHA1TestCase.tearDownClass" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform final cleanup after running all tests in this test-case</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_bfd.BFDSHA1TestCase.test_hold_up">
+<code class="descname">test_hold_up</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_bfd.BFDSHA1TestCase.test_hold_up" title="Permalink to this definition">¶</a></dt>
+<dd><p>hold BFD session up</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_bfd.BFDSHA1TestCase.test_hold_up_meticulous">
+<code class="descname">test_hold_up_meticulous</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_bfd.BFDSHA1TestCase.test_hold_up_meticulous" title="Permalink to this definition">¶</a></dt>
+<dd><p>hold BFD session up - meticulous auth</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_bfd.BFDSHA1TestCase.test_mismatch_auth">
+<code class="descname">test_mismatch_auth</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_bfd.BFDSHA1TestCase.test_mismatch_auth" title="Permalink to this definition">¶</a></dt>
+<dd><p>session is not brought down by unauthenticated msg</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_bfd.BFDSHA1TestCase.test_mismatch_bfd_key_id">
+<code class="descname">test_mismatch_bfd_key_id</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_bfd.BFDSHA1TestCase.test_mismatch_bfd_key_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>session is not brought down by msg with non-existent key-id</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_bfd.BFDSHA1TestCase.test_mismatched_auth_type">
+<code class="descname">test_mismatched_auth_type</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_bfd.BFDSHA1TestCase.test_mismatched_auth_type" title="Permalink to this definition">¶</a></dt>
+<dd><p>session is not brought down by msg with wrong auth type</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_bfd.BFDSHA1TestCase.test_restart">
+<code class="descname">test_restart</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_bfd.BFDSHA1TestCase.test_restart" title="Permalink to this definition">¶</a></dt>
+<dd><p>simulate remote peer restart and resynchronization</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_bfd.BFDSHA1TestCase.test_send_bad_seq_number">
+<code class="descname">test_send_bad_seq_number</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_bfd.BFDSHA1TestCase.test_send_bad_seq_number" title="Permalink to this definition">¶</a></dt>
+<dd><p>session is not kept alive by msgs with bad sequence numbers</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="test_bfd.BFDSHA1TestCase.test_session">
+<code class="descname">test_session</code><em class="property"> = None</em><a class="headerlink" href="#test_bfd.BFDSHA1TestCase.test_session" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="test_bfd.BFDSHA1TestCase.test_session_up">
+<code class="descname">test_session_up</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_bfd.BFDSHA1TestCase.test_session_up" title="Permalink to this definition">¶</a></dt>
+<dd><p>bring BFD session up</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="test_bfd.BFDSHA1TestCase.vpp_clock_offset">
+<code class="descname">vpp_clock_offset</code><em class="property"> = None</em><a class="headerlink" href="#test_bfd.BFDSHA1TestCase.vpp_clock_offset" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="test_bfd.BFDSHA1TestCase.vpp_session">
+<code class="descname">vpp_session</code><em class="property"> = None</em><a class="headerlink" href="#test_bfd.BFDSHA1TestCase.vpp_session" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="test_bfd.BFDTestSession">
+<em class="property">class </em><code class="descclassname">test_bfd.</code><code class="descname">BFDTestSession</code><span class="sig-paren">(</span><em>test</em>, <em>interface</em>, <em>af</em>, <em>detect_mult=3</em>, <em>sha1_key=None</em>, <em>bfd_key_id=None</em>, <em>our_seq_number=None</em><span class="sig-paren">)</span><a class="headerlink" href="#test_bfd.BFDTestSession" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>BFD session as seen from test framework side</p>
+<dl class="method">
+<dt id="test_bfd.BFDTestSession.create_packet">
+<code class="descname">create_packet</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_bfd.BFDTestSession.create_packet" title="Permalink to this definition">¶</a></dt>
+<dd><p>create a BFD packet, reflecting the current state of session</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_bfd.BFDTestSession.fill_packet_fields">
+<code class="descname">fill_packet_fields</code><span class="sig-paren">(</span><em>packet</em><span class="sig-paren">)</span><a class="headerlink" href="#test_bfd.BFDTestSession.fill_packet_fields" title="Permalink to this definition">¶</a></dt>
+<dd><p>set packet fields with known values in packet</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_bfd.BFDTestSession.inc_seq_num">
+<code class="descname">inc_seq_num</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_bfd.BFDTestSession.inc_seq_num" title="Permalink to this definition">¶</a></dt>
+<dd><p>increment sequence number, wrapping if needed</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_bfd.BFDTestSession.send_packet">
+<code class="descname">send_packet</code><span class="sig-paren">(</span><em>packet=None</em>, <em>interface=None</em><span class="sig-paren">)</span><a class="headerlink" href="#test_bfd.BFDTestSession.send_packet" title="Permalink to this definition">¶</a></dt>
+<dd><p>send packet on interface, creating the packet if needed</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_bfd.BFDTestSession.update">
+<code class="descname">update</code><span class="sig-paren">(</span><em>my_discriminator=None</em>, <em>your_discriminator=None</em>, <em>desired_min_tx=None</em>, <em>required_min_rx=None</em>, <em>required_min_echo_rx=None</em>, <em>detect_mult=None</em>, <em>diag=None</em>, <em>state=None</em>, <em>auth_type=None</em><span class="sig-paren">)</span><a class="headerlink" href="#test_bfd.BFDTestSession.update" title="Permalink to this definition">¶</a></dt>
+<dd><p>update BFD parameters associated with session</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_bfd.BFDTestSession.verify_bfd">
+<code class="descname">verify_bfd</code><span class="sig-paren">(</span><em>packet</em><span class="sig-paren">)</span><a class="headerlink" href="#test_bfd.BFDTestSession.verify_bfd" title="Permalink to this definition">¶</a></dt>
+<dd><p>Verify correctness of BFD layer.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="test_bfd.BFDTestSession.verify_sha1_auth">
+<code class="descname">verify_sha1_auth</code><span class="sig-paren">(</span><em>packet</em><span class="sig-paren">)</span><a class="headerlink" href="#test_bfd.BFDTestSession.verify_sha1_auth" title="Permalink to this definition">¶</a></dt>
+<dd><p>Verify correctness of authentication in BFD layer.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="test_bfd.bfd_session_down">
+<code class="descclassname">test_bfd.</code><code class="descname">bfd_session_down</code><span class="sig-paren">(</span><em>test</em><span class="sig-paren">)</span><a class="headerlink" href="#test_bfd.bfd_session_down" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bring BFD session down</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="test_bfd.bfd_session_up">
+<code class="descclassname">test_bfd.</code><code class="descname">bfd_session_up</code><span class="sig-paren">(</span><em>test</em><span class="sig-paren">)</span><a class="headerlink" href="#test_bfd.bfd_session_up" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bring BFD session up</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="test_bfd.getrandbits">
+<code class="descclassname">test_bfd.</code><code class="descname">getrandbits</code><span class="sig-paren">(</span><em>k</em><span class="sig-paren">)</span> &#x2192; x.  Generates an int with k random bits.<a class="headerlink" href="#test_bfd.getrandbits" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="test_bfd.verify_bfd_session_config">
+<code class="descclassname">test_bfd.</code><code class="descname">verify_bfd_session_config</code><span class="sig-paren">(</span><em>test</em>, <em>session</em>, <em>state=None</em><span class="sig-paren">)</span><a class="headerlink" href="#test_bfd.verify_bfd_session_config" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="test_bfd.verify_event">
+<code class="descclassname">test_bfd.</code><code class="descname">verify_event</code><span class="sig-paren">(</span><em>test</em>, <em>event</em>, <em>expected_state</em><span class="sig-paren">)</span><a class="headerlink" href="#test_bfd.verify_event" title="Permalink to this definition">¶</a></dt>
+<dd><p>Verify correctness of event values.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="test_bfd.verify_ip">
+<code class="descclassname">test_bfd.</code><code class="descname">verify_ip</code><span class="sig-paren">(</span><em>test</em>, <em>packet</em><span class="sig-paren">)</span><a class="headerlink" href="#test_bfd.verify_ip" title="Permalink to this definition">¶</a></dt>
+<dd><p>Verify correctness of IP layer.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="test_bfd.verify_udp">
+<code class="descclassname">test_bfd.</code><code class="descname">verify_udp</code><span class="sig-paren">(</span><em>test</em>, <em>packet</em><span class="sig-paren">)</span><a class="headerlink" href="#test_bfd.verify_udp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Verify correctness of UDP layer.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="test_bfd.wait_for_bfd_packet">
+<code class="descclassname">test_bfd.</code><code class="descname">wait_for_bfd_packet</code><span class="sig-paren">(</span><em>test</em>, <em>timeout=1</em>, <em>pcap_time_min=None</em><span class="sig-paren">)</span><a class="headerlink" href="#test_bfd.wait_for_bfd_packet" title="Permalink to this definition">¶</a></dt>
+<dd><p>wait for BFD packet and verify its correctness</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>timeout</strong> – how long to wait</li>
+<li><strong>pcap_time_min</strong> – ignore packets with pcap timestamp lower than this</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">tuple (packet, time spent waiting for packet)</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="test_bier.html" class="btn btn-neutral float-right" title="2.23. test_bier module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="test_acl_plugin_macip.html" class="btn btn-neutral float-left" title="2.21. test_acl_plugin_macip module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2016, VPP team
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

@@ -149,7 +149,7 @@ else ifeq ($(OS_ID),darwin)
 	done
 	@set -e; \
 	for py in $(DOC_MAC_PY_DEPENDS); do \
-		python3.6 -c "import $${py}" >/dev/null 2>&1 || (\
+		python -c "import $${py}" >/dev/null 2>&1 || (\
 			echo "Python package '$${py}' not found, please install it."; \
 			false; \
 		); \

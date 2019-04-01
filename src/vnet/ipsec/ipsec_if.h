@@ -33,12 +33,15 @@ typedef struct
   u32 input_sa_index;
   u32 output_sa_index;
   u32 hw_if_index;
+  u32 sw_if_index;
+  vnet_hw_interface_flags_t flags;
   u32 show_instance;
 } ipsec_tunnel_if_t;
 
 typedef struct
 {
   u8 is_add;
+  u8 is_ip6;
   u8 esn;
   u8 anti_replay;
   ip46_address_t local_ip, remote_ip;
@@ -59,6 +62,35 @@ typedef struct
   u8 udp_encap;
   u32 tx_table_id;
 } ipsec_add_del_tunnel_args_t;
+
+/* *INDENT-OFF* */
+typedef CLIB_PACKED
+(struct {
+  /*
+   * Key fields: remote ip and spi on incoming packet
+   * all fields in NET byte order
+   */
+  union {
+    struct {
+      u32 remote_ip;
+      u32 spi;
+    };
+    u64 as_u64;
+  };
+}) ipsec4_tunnel_key_t;
+/* *INDENT-ON* */
+
+/* *INDENT-OFF* */
+typedef CLIB_PACKED
+(struct {
+  /*
+   * Key fields: remote ip and spi on incoming packet
+   * all fields in NET byte order
+   */
+  ip6_address_t remote_ip;
+  u32 spi;
+}) ipsec6_tunnel_key_t;
+/* *INDENT-ON* */
 
 typedef struct
 {

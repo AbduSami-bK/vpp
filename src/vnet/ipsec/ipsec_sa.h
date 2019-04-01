@@ -101,13 +101,20 @@ typedef struct
   fib_node_t node;
   u32 id;
   u32 spi;
+  u32 stat_index;
   ipsec_protocol_t protocol;
 
   ipsec_crypto_alg_t crypto_alg;
   ipsec_key_t crypto_key;
+  u8 crypto_iv_size;
+  u8 crypto_block_size;
+  vnet_crypto_op_type_t crypto_enc_op_type;
+  vnet_crypto_op_type_t crypto_dec_op_type;
 
   ipsec_integ_alg_t integ_alg;
   ipsec_key_t integ_key;
+  vnet_crypto_op_type_t integ_op_type;
+  u8 integ_trunc_size;
 
   u8 use_esn;
   u8 use_anti_replay;
@@ -131,10 +138,13 @@ typedef struct
   u32 last_seq;
   u32 last_seq_hi;
   u64 replay_window;
-
-  /* lifetime data */
-  u64 total_data_size;
 } ipsec_sa_t;
+
+/**
+ * @brief
+ * SA packet & bytes counters
+ */
+extern vlib_combined_counter_main_t ipsec_sa_counters;
 
 extern void ipsec_mk_key (ipsec_key_t * key, const u8 * data, u8 len);
 
@@ -152,6 +162,10 @@ extern int ipsec_sa_add (u32 id,
 			 u32 * sa_index);
 extern u32 ipsec_sa_del (u32 id);
 extern void ipsec_sa_stack (ipsec_sa_t * sa);
+extern void ipsec_sa_set_crypto_alg (ipsec_sa_t * sa,
+				     ipsec_crypto_alg_t crypto_alg);
+extern void ipsec_sa_set_integ_alg (ipsec_sa_t * sa,
+				    ipsec_integ_alg_t integ_alg);
 
 extern u8 ipsec_is_sa_used (u32 sa_index);
 extern int ipsec_set_sa_key (u32 id,

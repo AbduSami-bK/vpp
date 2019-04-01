@@ -19,8 +19,8 @@
 #include <assert.h>
 
 #include <vnet/ethernet/ethernet.h>
+#include <dpdk/buffer.h>
 #include <dpdk/device/dpdk.h>
-
 #include <dpdk/device/dpdk_priv.h>
 #include <vppinfra/error.h>
 
@@ -127,11 +127,9 @@ dpdk_validate_rte_mbuf (vlib_main_t * vm, vlib_buffer_t * b,
       mb->pkt_len = b->current_length;
       mb->data_off = VLIB_BUFFER_PRE_DATA_SIZE + b->current_data;
       first_mb->nb_segs++;
-      if (PREDICT_FALSE (b->n_add_refs))
-	{
-	  rte_mbuf_refcnt_update (mb, b->n_add_refs);
-	  b->n_add_refs = 0;
-	}
+      if (PREDICT_FALSE (b->ref_count > 1))
+	mb->pool =
+	  dpdk_no_cache_mempool_by_buffer_pool_index[b->buffer_pool_index];
     }
 }
 
@@ -168,6 +166,7 @@ static_always_inline
 	    queue_id = (queue_id + 1) % xd->tx_q_used;
 	}
 
+#if 0
       if (PREDICT_FALSE (xd->flags & DPDK_DEVICE_FLAG_HQOS))	/* HQoS ON */
 	{
 	  /* no wrap, transmit in one burst */
@@ -180,7 +179,9 @@ static_always_inline
 	  n_sent = rte_ring_sp_enqueue_burst (hqos->swq, (void **) mb,
 					      n_left, 0);
 	}
-      else if (PREDICT_TRUE (xd->flags & DPDK_DEVICE_FLAG_PMD))
+      else
+#endif
+      if (PREDICT_TRUE (xd->flags & DPDK_DEVICE_FLAG_PMD))
 	{
 	  /* no wrap, transmit in one burst */
 	  n_sent = rte_eth_tx_burst (xd->port_id, queue_id, mb, n_left);
@@ -270,7 +271,6 @@ VNET_DEVICE_CLASS_TX_FN (dpdk_device_class) (vlib_main_t * vm,
   dpdk_device_t *xd = vec_elt_at_index (dm->devices, rd->dev_instance);
   u32 n_packets = f->n_vectors;
   u32 n_left;
-  u32 *from;
   u32 thread_index = vm->thread_index;
   int queue_id = thread_index;
   u32 tx_pkts = 0, all_or_flags = 0;
@@ -279,33 +279,13 @@ VNET_DEVICE_CLASS_TX_FN (dpdk_device_class) (vlib_main_t * vm,
   struct rte_mbuf **mb;
   vlib_buffer_t *b[4];
 
-  from = vlib_frame_vector_args (f);
-
   ASSERT (n_packets <= VLIB_FRAME_SIZE);
-
-  /* TX PCAP tracing */
-  if (PREDICT_FALSE (dm->pcap[VLIB_TX].pcap_enable))
-    {
-      n_left = n_packets;
-      while (n_left > 0)
-	{
-	  u32 bi0 = from[0];
-	  vlib_buffer_t *b0 = vlib_get_buffer (vm, bi0);
-	  if (dm->pcap[VLIB_TX].pcap_sw_if_index == 0 ||
-	      dm->pcap[VLIB_TX].pcap_sw_if_index
-	      == vnet_buffer (b0)->sw_if_index[VLIB_TX])
-	    pcap_add_buffer (&dm->pcap[VLIB_TX].pcap_main, vm, bi0, 512);
-	  from++;
-	  n_left--;
-	}
-    }
 
   /* calculate rte_mbuf pointers out of buffer indices */
   vlib_get_buffers_with_offset (vm, vlib_frame_vector_args (f),
 				(void **) ptd->mbufs, n_packets,
 				-(i32) sizeof (struct rte_mbuf));
 
-  from = vlib_frame_vector_args (f);
   n_left = n_packets;
   mb = ptd->mbufs;
 

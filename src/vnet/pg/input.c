@@ -1199,6 +1199,7 @@ pg_stream_fill_replay (pg_main_t * pg, pg_stream_t * s, u32 n_alloc)
   u32 *buffers;
   vlib_main_t *vm = vlib_get_main ();
   vnet_main_t *vnm = vnet_get_main ();
+  u32 buf_sz = vlib_buffer_get_default_data_size (vm);
   vnet_interface_main_t *im = &vnm->interface_main;
   vnet_sw_interface_t *si;
 
@@ -1216,8 +1217,7 @@ pg_stream_fill_replay (pg_main_t * pg, pg_stream_t * s, u32 n_alloc)
       u8 *d0;
 
       d0 = vec_elt (s->replay_packet_templates, i);
-      buffer_alloc_request += (vec_len (d0) + (VLIB_BUFFER_DATA_SIZE - 1))
-	/ VLIB_BUFFER_DATA_SIZE;
+      buffer_alloc_request += (vec_len (d0) + (buf_sz - 1)) / buf_sz;
 
       i = ((i + 1) == l) ? 0 : i + 1;
       n_left--;
@@ -1261,7 +1261,7 @@ pg_stream_fill_replay (pg_main_t * pg, pg_stream_t * s, u32 n_alloc)
       /* Copy the data */
       while (bytes_to_copy)
 	{
-	  bytes_this_chunk = clib_min (bytes_to_copy, VLIB_BUFFER_DATA_SIZE);
+	  bytes_this_chunk = clib_min (bytes_to_copy, buf_sz);
 	  ASSERT (current_buffer_index < vec_len (buffers));
 	  b = vlib_get_buffer (vm, buffers[current_buffer_index]);
 	  clib_memcpy_fast (b->data, d0 + data_offset, bytes_this_chunk);
@@ -1450,16 +1450,14 @@ format_pg_input_trace (u8 * s, va_list * va)
 
 static void
 pg_input_trace (pg_main_t * pg,
-		vlib_node_runtime_t * node,
-		pg_stream_t * s, u32 * buffers, u32 n_buffers)
+		vlib_node_runtime_t * node, u32 stream_index, u32 next_index,
+		u32 * buffers, u32 n_buffers)
 {
   vlib_main_t *vm = vlib_get_main ();
-  u32 *b, n_left, stream_index, next_index;
+  u32 *b, n_left;
 
   n_left = n_buffers;
   b = buffers;
-  stream_index = s - pg->streams;
-  next_index = s->next_index;
 
   while (n_left >= 2)
     {
@@ -1591,13 +1589,12 @@ pg_generate_packets (vlib_node_runtime_t * node,
       head = clib_fifo_head (bi0->buffer_fifo);
 
       if (head + n_this_frame <= end)
-	clib_memcpy_fast (to_next, head, n_this_frame * sizeof (u32));
+	vlib_buffer_copy_indices (to_next, head, n_this_frame);
       else
 	{
 	  u32 n = end - head;
-	  clib_memcpy_fast (to_next + 0, head, n * sizeof (u32));
-	  clib_memcpy_fast (to_next + n, start,
-			    (n_this_frame - n) * sizeof (u32));
+	  vlib_buffer_copy_indices (to_next + 0, head, n);
+	  vlib_buffer_copy_indices (to_next + n, start, n_this_frame - n);
 	}
 
       if (s->replay_packet_templates == 0)
@@ -1623,7 +1620,7 @@ pg_generate_packets (vlib_node_runtime_t * node,
       if (n_trace > 0)
 	{
 	  u32 n = clib_min (n_trace, n_this_frame);
-	  pg_input_trace (pg, node, s, to_next, n);
+	  pg_input_trace (pg, node, s - pg->streams, next_index, to_next, n);
 	  vlib_set_trace_count (vm, node, n_trace - n);
 	}
       n_packets_to_generate -= n_this_frame;
@@ -1634,7 +1631,7 @@ pg_generate_packets (vlib_node_runtime_t * node,
 	  int i;
 	  vlib_buffer_t *b;
 
-	  for (i = 0; i < VLIB_FRAME_SIZE - n_left; i++)
+	  for (i = 0; i < n_this_frame; i++)
 	    {
 	      b = vlib_get_buffer (vm, to_next[i]);
 	      ASSERT ((b->flags & VLIB_BUFFER_NEXT_PRESENT) == 0 ||

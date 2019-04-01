@@ -1,10 +1,150 @@
 import socket
 import unittest
 from scapy.layers.ipsec import ESP
+from scapy.layers.inet import UDP
 
 from framework import VppTestRunner
-from template_ipsec import IpsecTraTests, IpsecTunTests
-from template_ipsec import TemplateIpsec, IpsecTcpTests
+from template_ipsec import IpsecTra46Tests, IpsecTun46Tests, TemplateIpsec, \
+    IpsecTcpTests, IpsecTun4Tests, IpsecTra4Tests, config_tra_params
+from vpp_ipsec import VppIpsecSpd, VppIpsecSpdEntry, VppIpsecSA,\
+        VppIpsecSpdItfBinding
+from vpp_ip_route import VppIpRoute, VppRoutePath
+from vpp_ip import DpoProto
+from vpp_papi import VppEnum
+
+
+def config_esp_tun(test, params):
+    addr_type = params.addr_type
+    scapy_tun_sa_id = params.scapy_tun_sa_id
+    scapy_tun_spi = params.scapy_tun_spi
+    vpp_tun_sa_id = params.vpp_tun_sa_id
+    vpp_tun_spi = params.vpp_tun_spi
+    auth_algo_vpp_id = params.auth_algo_vpp_id
+    auth_key = params.auth_key
+    crypt_algo_vpp_id = params.crypt_algo_vpp_id
+    crypt_key = params.crypt_key
+    remote_tun_if_host = params.remote_tun_if_host
+    addr_any = params.addr_any
+    addr_bcast = params.addr_bcast
+    e = VppEnum.vl_api_ipsec_spd_action_t
+
+    params.tun_sa_in = VppIpsecSA(test, scapy_tun_sa_id, scapy_tun_spi,
+                                  auth_algo_vpp_id, auth_key,
+                                  crypt_algo_vpp_id, crypt_key,
+                                  test.vpp_esp_protocol,
+                                  test.tun_if.local_addr[addr_type],
+                                  test.tun_if.remote_addr[addr_type])
+    params.tun_sa_in.add_vpp_config()
+    params.tun_sa_out = VppIpsecSA(test, vpp_tun_sa_id, vpp_tun_spi,
+                                   auth_algo_vpp_id, auth_key,
+                                   crypt_algo_vpp_id, crypt_key,
+                                   test.vpp_esp_protocol,
+                                   test.tun_if.remote_addr[addr_type],
+                                   test.tun_if.local_addr[addr_type])
+    params.tun_sa_out.add_vpp_config()
+
+    params.spd_policy_in_any = VppIpsecSpdEntry(test, test.tun_spd,
+                                                scapy_tun_sa_id,
+                                                addr_any, addr_bcast,
+                                                addr_any, addr_bcast,
+                                                socket.IPPROTO_ESP)
+    params.spd_policy_in_any.add_vpp_config()
+    params.spd_policy_out_any = VppIpsecSpdEntry(test, test.tun_spd,
+                                                 scapy_tun_sa_id,
+                                                 addr_any, addr_bcast,
+                                                 addr_any, addr_bcast,
+                                                 socket.IPPROTO_ESP,
+                                                 is_outbound=0)
+    params.spd_policy_out_any.add_vpp_config()
+
+    VppIpsecSpdEntry(test, test.tun_spd, vpp_tun_sa_id,
+                     remote_tun_if_host, remote_tun_if_host,
+                     test.pg1.remote_addr[addr_type],
+                     test.pg1.remote_addr[addr_type],
+                     0,
+                     priority=10,
+                     policy=e.IPSEC_API_SPD_ACTION_PROTECT,
+                     is_outbound=0).add_vpp_config()
+    VppIpsecSpdEntry(test, test.tun_spd, scapy_tun_sa_id,
+                     test.pg1.remote_addr[addr_type],
+                     test.pg1.remote_addr[addr_type],
+                     remote_tun_if_host, remote_tun_if_host,
+                     0,
+                     policy=e.IPSEC_API_SPD_ACTION_PROTECT,
+                     priority=10).add_vpp_config()
+
+    VppIpsecSpdEntry(test, test.tun_spd, vpp_tun_sa_id,
+                     remote_tun_if_host, remote_tun_if_host,
+                     test.pg0.local_addr[addr_type],
+                     test.pg0.local_addr[addr_type],
+                     0,
+                     priority=20,
+                     policy=e.IPSEC_API_SPD_ACTION_PROTECT,
+                     is_outbound=0).add_vpp_config()
+    VppIpsecSpdEntry(test, test.tun_spd, scapy_tun_sa_id,
+                     test.pg0.local_addr[addr_type],
+                     test.pg0.local_addr[addr_type],
+                     remote_tun_if_host, remote_tun_if_host,
+                     0,
+                     policy=e.IPSEC_API_SPD_ACTION_PROTECT,
+                     priority=20).add_vpp_config()
+
+
+def config_esp_tra(test, params):
+    addr_type = params.addr_type
+    scapy_tra_sa_id = params.scapy_tra_sa_id
+    scapy_tra_spi = params.scapy_tra_spi
+    vpp_tra_sa_id = params.vpp_tra_sa_id
+    vpp_tra_spi = params.vpp_tra_spi
+    auth_algo_vpp_id = params.auth_algo_vpp_id
+    auth_key = params.auth_key
+    crypt_algo_vpp_id = params.crypt_algo_vpp_id
+    crypt_key = params.crypt_key
+    addr_any = params.addr_any
+    addr_bcast = params.addr_bcast
+    flags = (VppEnum.vl_api_ipsec_sad_flags_t.
+             IPSEC_API_SAD_FLAG_USE_ANTI_REPLAY)
+    e = VppEnum.vl_api_ipsec_spd_action_t
+    flags = params.flags | flags
+
+    params.tra_sa_in = VppIpsecSA(test, scapy_tra_sa_id, scapy_tra_spi,
+                                  auth_algo_vpp_id, auth_key,
+                                  crypt_algo_vpp_id, crypt_key,
+                                  test.vpp_esp_protocol,
+                                  flags=flags)
+    params.tra_sa_in.add_vpp_config()
+    params.tra_sa_out = VppIpsecSA(test, vpp_tra_sa_id, vpp_tra_spi,
+                                   auth_algo_vpp_id, auth_key,
+                                   crypt_algo_vpp_id, crypt_key,
+                                   test.vpp_esp_protocol,
+                                   flags=flags)
+    params.tra_sa_out.add_vpp_config()
+
+    VppIpsecSpdEntry(test, test.tra_spd, vpp_tra_sa_id,
+                     addr_any, addr_bcast,
+                     addr_any, addr_bcast,
+                     socket.IPPROTO_ESP).add_vpp_config()
+    VppIpsecSpdEntry(test, test.tra_spd, vpp_tra_sa_id,
+                     addr_any, addr_bcast,
+                     addr_any, addr_bcast,
+                     socket.IPPROTO_ESP,
+                     is_outbound=0).add_vpp_config()
+
+    VppIpsecSpdEntry(test, test.tra_spd, vpp_tra_sa_id,
+                     test.tra_if.local_addr[addr_type],
+                     test.tra_if.local_addr[addr_type],
+                     test.tra_if.remote_addr[addr_type],
+                     test.tra_if.remote_addr[addr_type],
+                     0, priority=10,
+                     policy=e.IPSEC_API_SPD_ACTION_PROTECT,
+                     is_outbound=0).add_vpp_config()
+    VppIpsecSpdEntry(test, test.tra_spd, scapy_tra_sa_id,
+                     test.tra_if.local_addr[addr_type],
+                     test.tra_if.local_addr[addr_type],
+                     test.tra_if.remote_addr[addr_type],
+                     test.tra_if.remote_addr[addr_type],
+                     0, policy=e.IPSEC_API_SPD_ACTION_PROTECT,
+                     priority=10).add_vpp_config()
 
 
 class TemplateIpsecEsp(TemplateIpsec):
@@ -38,144 +178,47 @@ class TemplateIpsecEsp(TemplateIpsec):
      ---             ---           ---
     """
 
-    encryption_type = ESP
+    def setUp(self):
+        super(TemplateIpsecEsp, self).setUp()
+        self.encryption_type = ESP
+        self.tun_if = self.pg0
+        self.tra_if = self.pg2
+        self.logger.info(self.vapi.ppcli("show int addr"))
 
-    @classmethod
-    def setUpClass(cls):
-        super(TemplateIpsecEsp, cls).setUpClass()
-        cls.tun_if = cls.pg0
-        cls.tra_if = cls.pg2
-        cls.logger.info(cls.vapi.ppcli("show int addr"))
-        cls.vapi.ipsec_spd_add_del(cls.tra_spd_id)
-        cls.vapi.ipsec_interface_add_del_spd(cls.tra_spd_id,
-                                             cls.tra_if.sw_if_index)
-        for _, p in cls.params.items():
-            cls.config_esp_tra(p)
-            cls.configure_sa_tra(p)
-        cls.logger.info(cls.vapi.ppcli("show ipsec"))
-        cls.vapi.ipsec_spd_add_del(cls.tun_spd_id)
-        cls.vapi.ipsec_interface_add_del_spd(cls.tun_spd_id,
-                                             cls.tun_if.sw_if_index)
-        for _, p in cls.params.items():
-            cls.config_esp_tun(p)
-        cls.logger.info(cls.vapi.ppcli("show ipsec"))
-        for _, p in cls.params.items():
-            src = socket.inet_pton(p.addr_type, p.remote_tun_if_host)
-            cls.vapi.ip_add_del_route(
-                src, p.addr_len, cls.tun_if.remote_addr_n[p.addr_type],
-                is_ipv6=p.is_ipv6)
+        self.tra_spd = VppIpsecSpd(self, self.tra_spd_id)
+        self.tra_spd.add_vpp_config()
+        VppIpsecSpdItfBinding(self, self.tra_spd,
+                              self.tra_if).add_vpp_config()
 
-    @classmethod
-    def config_esp_tun(cls, params):
-        addr_type = params.addr_type
-        is_ipv6 = params.is_ipv6
-        scapy_tun_sa_id = params.scapy_tun_sa_id
-        scapy_tun_spi = params.scapy_tun_spi
-        vpp_tun_sa_id = params.vpp_tun_sa_id
-        vpp_tun_spi = params.vpp_tun_spi
-        auth_algo_vpp_id = params.auth_algo_vpp_id
-        auth_key = params.auth_key
-        crypt_algo_vpp_id = params.crypt_algo_vpp_id
-        crypt_key = params.crypt_key
-        remote_tun_if_host = params.remote_tun_if_host
-        addr_any = params.addr_any
-        addr_bcast = params.addr_bcast
-        cls.vapi.ipsec_sad_add_del_entry(scapy_tun_sa_id, scapy_tun_spi,
-                                         auth_algo_vpp_id, auth_key,
-                                         crypt_algo_vpp_id, crypt_key,
-                                         cls.vpp_esp_protocol,
-                                         cls.tun_if.local_addr_n[addr_type],
-                                         cls.tun_if.remote_addr_n[addr_type],
-                                         is_tunnel=1, is_tunnel_ipv6=is_ipv6)
-        cls.vapi.ipsec_sad_add_del_entry(vpp_tun_sa_id, vpp_tun_spi,
-                                         auth_algo_vpp_id, auth_key,
-                                         crypt_algo_vpp_id, crypt_key,
-                                         cls.vpp_esp_protocol,
-                                         cls.tun_if.remote_addr_n[addr_type],
-                                         cls.tun_if.local_addr_n[addr_type],
-                                         is_tunnel=1, is_tunnel_ipv6=is_ipv6)
-        l_startaddr = r_startaddr = socket.inet_pton(addr_type, addr_any)
-        l_stopaddr = r_stopaddr = socket.inet_pton(addr_type, addr_bcast)
-        cls.vapi.ipsec_spd_add_del_entry(cls.tun_spd_id, scapy_tun_sa_id,
-                                         l_startaddr, l_stopaddr, r_startaddr,
-                                         r_stopaddr, is_ipv6=is_ipv6,
-                                         protocol=socket.IPPROTO_ESP)
-        cls.vapi.ipsec_spd_add_del_entry(cls.tun_spd_id, scapy_tun_sa_id,
-                                         l_startaddr, l_stopaddr, r_startaddr,
-                                         r_stopaddr, is_outbound=0,
-                                         protocol=socket.IPPROTO_ESP,
-                                         is_ipv6=is_ipv6)
-        l_startaddr = l_stopaddr = socket.inet_pton(addr_type,
-                                                    remote_tun_if_host)
-        r_startaddr = r_stopaddr = cls.pg1.remote_addr_n[addr_type]
-        cls.vapi.ipsec_spd_add_del_entry(cls.tun_spd_id, vpp_tun_sa_id,
-                                         l_startaddr, l_stopaddr, r_startaddr,
-                                         r_stopaddr, priority=10, policy=3,
-                                         is_ipv6=is_ipv6, is_outbound=0)
-        cls.vapi.ipsec_spd_add_del_entry(cls.tun_spd_id, scapy_tun_sa_id,
-                                         r_startaddr, r_stopaddr, l_startaddr,
-                                         l_stopaddr, priority=10, policy=3,
-                                         is_ipv6=is_ipv6)
-        l_startaddr = l_stopaddr = socket.inet_pton(addr_type,
-                                                    remote_tun_if_host)
-        r_startaddr = r_stopaddr = cls.pg0.local_addr_n[addr_type]
-        cls.vapi.ipsec_spd_add_del_entry(cls.tun_spd_id, vpp_tun_sa_id,
-                                         l_startaddr, l_stopaddr, r_startaddr,
-                                         r_stopaddr, priority=20, policy=3,
-                                         is_outbound=0, is_ipv6=is_ipv6)
-        cls.vapi.ipsec_spd_add_del_entry(cls.tun_spd_id, scapy_tun_sa_id,
-                                         r_startaddr, r_stopaddr, l_startaddr,
-                                         l_stopaddr, priority=20, policy=3,
-                                         is_ipv6=is_ipv6)
+        for _, p in self.params.items():
+            config_esp_tra(self, p)
+            config_tra_params(p, self.encryption_type)
+        self.logger.info(self.vapi.ppcli("show ipsec"))
 
-    @classmethod
-    def config_esp_tra(cls, params):
-        addr_type = params.addr_type
-        is_ipv6 = params.is_ipv6
-        scapy_tra_sa_id = params.scapy_tra_sa_id
-        scapy_tra_spi = params.scapy_tra_spi
-        vpp_tra_sa_id = params.vpp_tra_sa_id
-        vpp_tra_spi = params.vpp_tra_spi
-        auth_algo_vpp_id = params.auth_algo_vpp_id
-        auth_key = params.auth_key
-        crypt_algo_vpp_id = params.crypt_algo_vpp_id
-        crypt_key = params.crypt_key
-        addr_any = params.addr_any
-        addr_bcast = params.addr_bcast
-        cls.vapi.ipsec_sad_add_del_entry(scapy_tra_sa_id, scapy_tra_spi,
-                                         auth_algo_vpp_id, auth_key,
-                                         crypt_algo_vpp_id, crypt_key,
-                                         cls.vpp_esp_protocol, is_tunnel=0,
-                                         use_anti_replay=1)
-        cls.vapi.ipsec_sad_add_del_entry(vpp_tra_sa_id, vpp_tra_spi,
-                                         auth_algo_vpp_id, auth_key,
-                                         crypt_algo_vpp_id, crypt_key,
-                                         cls.vpp_esp_protocol, is_tunnel=0,
-                                         use_anti_replay=1)
-        l_startaddr = r_startaddr = socket.inet_pton(addr_type, addr_any)
-        l_stopaddr = r_stopaddr = socket.inet_pton(addr_type, addr_bcast)
-        cls.vapi.ipsec_spd_add_del_entry(cls.tra_spd_id, vpp_tra_sa_id,
-                                         l_startaddr, l_stopaddr, r_startaddr,
-                                         r_stopaddr, is_ipv6=is_ipv6,
-                                         protocol=socket.IPPROTO_ESP)
-        cls.vapi.ipsec_spd_add_del_entry(cls.tra_spd_id, vpp_tra_sa_id,
-                                         l_startaddr, l_stopaddr, r_startaddr,
-                                         r_stopaddr, is_outbound=0,
-                                         is_ipv6=is_ipv6,
-                                         protocol=socket.IPPROTO_ESP)
-        l_startaddr = l_stopaddr = cls.tra_if.local_addr_n[addr_type]
-        r_startaddr = r_stopaddr = cls.tra_if.remote_addr_n[addr_type]
-        cls.vapi.ipsec_spd_add_del_entry(cls.tra_spd_id, vpp_tra_sa_id,
-                                         l_startaddr, l_stopaddr, r_startaddr,
-                                         r_stopaddr, priority=10, policy=3,
-                                         is_outbound=0, is_ipv6=is_ipv6)
-        cls.vapi.ipsec_spd_add_del_entry(cls.tra_spd_id, scapy_tra_sa_id,
-                                         l_startaddr, l_stopaddr, r_startaddr,
-                                         r_stopaddr, priority=10, policy=3,
-                                         is_ipv6=is_ipv6)
+        self.tun_spd = VppIpsecSpd(self, self.tun_spd_id)
+        self.tun_spd.add_vpp_config()
+        VppIpsecSpdItfBinding(self, self.tun_spd,
+                              self.tun_if).add_vpp_config()
+
+        for _, p in self.params.items():
+            config_esp_tun(self, p)
+        self.logger.info(self.vapi.ppcli("show ipsec"))
+
+        for _, p in self.params.items():
+            d = DpoProto.DPO_PROTO_IP6 if p.is_ipv6 else DpoProto.DPO_PROTO_IP4
+            VppIpRoute(self,  p.remote_tun_if_host, p.addr_len,
+                       [VppRoutePath(self.tun_if.remote_addr[p.addr_type],
+                                     0xffffffff,
+                                     proto=d)],
+                       is_ip6=p.is_ipv6).add_vpp_config()
+
+    def tearDown(self):
+        super(TemplateIpsecEsp, self).tearDown()
+        if not self.vpp_dead:
+            self.vapi.cli("show hardware")
 
 
-class TestIpsecEsp1(TemplateIpsecEsp, IpsecTraTests, IpsecTunTests):
+class TestIpsecEsp1(TemplateIpsecEsp, IpsecTra46Tests, IpsecTun46Tests):
     """ Ipsec ESP - TUN & TRA tests """
     tra4_encrypt_node_name = "esp4-encrypt"
     tra4_decrypt_node_name = "esp4-decrypt"
@@ -189,6 +232,59 @@ class TestIpsecEsp1(TemplateIpsecEsp, IpsecTraTests, IpsecTunTests):
 
 class TestIpsecEsp2(TemplateIpsecEsp, IpsecTcpTests):
     """ Ipsec ESP - TCP tests """
+    pass
+
+
+class TemplateIpsecEspUdp(TemplateIpsec):
+    """
+    UDP encapped ESP
+    """
+    def setUp(self):
+        super(TemplateIpsecEspUdp, self).setUp()
+        self.encryption_type = ESP
+        self.tun_if = self.pg0
+        self.tra_if = self.pg2
+        self.logger.info(self.vapi.ppcli("show int addr"))
+
+        p = self.ipv4_params
+        p.flags = (VppEnum.vl_api_ipsec_sad_flags_t.
+                   IPSEC_API_SAD_FLAG_UDP_ENCAP)
+        p.nat_header = UDP(sport=5454, dport=4500)
+
+        self.tra_spd = VppIpsecSpd(self, self.tra_spd_id)
+        self.tra_spd.add_vpp_config()
+        VppIpsecSpdItfBinding(self, self.tra_spd,
+                              self.tra_if).add_vpp_config()
+
+        config_esp_tra(self, p)
+        config_tra_params(p, self.encryption_type)
+
+        self.tun_spd = VppIpsecSpd(self, self.tun_spd_id)
+        self.tun_spd.add_vpp_config()
+        VppIpsecSpdItfBinding(self, self.tun_spd,
+                              self.tun_if).add_vpp_config()
+
+        config_esp_tun(self, p)
+        self.logger.info(self.vapi.ppcli("show ipsec"))
+
+        d = DpoProto.DPO_PROTO_IP4
+        VppIpRoute(self,  p.remote_tun_if_host, p.addr_len,
+                   [VppRoutePath(self.tun_if.remote_addr[p.addr_type],
+                                 0xffffffff,
+                                 proto=d)]).add_vpp_config()
+
+    def tearDown(self):
+        super(TemplateIpsecEspUdp, self).tearDown()
+        if not self.vpp_dead:
+            self.vapi.cli("show hardware")
+
+
+class TestIpsecEspUdp(TemplateIpsecEspUdp, IpsecTra4Tests, IpsecTun4Tests):
+    """ Ipsec NAT-T ESP UDP tests """
+    tra4_encrypt_node_name = "esp4-encrypt"
+    tra4_decrypt_node_name = "esp4-decrypt"
+    tun4_encrypt_node_name = "esp4-encrypt"
+    tun4_decrypt_node_name = "esp4-decrypt"
     pass
 
 

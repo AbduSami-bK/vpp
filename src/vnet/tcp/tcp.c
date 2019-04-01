@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 Cisco and/or its affiliates.
+ * Copyright (c) 2016-2019 Cisco and/or its affiliates.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at:
@@ -224,6 +224,7 @@ tcp_connection_cleanup (tcp_connection_t * tc)
 	tcp_add_del_adjacency (tc, 0);
 
       vec_free (tc->snd_sacks);
+      vec_free (tc->snd_sacks_fl);
 
       /* Poison the entry */
       if (CLIB_DEBUG > 0)
@@ -349,7 +350,7 @@ tcp_connection_close (tcp_connection_t * tc)
       tcp_timer_update (tc, TCP_TIMER_WAITCLOSE, TCP_FINWAIT1_TIME);
       break;
     case TCP_STATE_ESTABLISHED:
-      if (!session_tx_fifo_max_dequeue (&tc->connection))
+      if (!transport_max_tx_dequeue (&tc->connection))
 	tcp_send_fin (tc);
       else
 	tc->flags |= TCP_CONN_FINPNDG;
@@ -360,7 +361,7 @@ tcp_connection_close (tcp_connection_t * tc)
       tcp_timer_set (tc, TCP_TIMER_WAITCLOSE, TCP_FINWAIT1_TIME);
       break;
     case TCP_STATE_CLOSE_WAIT:
-      if (!session_tx_fifo_max_dequeue (&tc->connection))
+      if (!transport_max_tx_dequeue (&tc->connection))
 	{
 	  tcp_send_fin (tc);
 	  tcp_connection_timers_reset (tc);
@@ -810,15 +811,14 @@ format_tcp_congestion (u8 * s, va_list * args)
   u32 indent = format_get_indent (s);
 
   s = format (s, "%U ", format_tcp_congestion_status, tc);
-  s = format (s, "cwnd %u ssthresh %u rtx_bytes %u bytes_acked %u\n",
-	      tc->cwnd, tc->ssthresh, tc->snd_rxt_bytes, tc->bytes_acked);
-  s = format (s, "%Ucc space %u prev_ssthresh %u snd_congestion %u"
-	      " dupack %u\n", format_white_space, indent,
-	      tcp_available_cc_snd_space (tc), tc->prev_ssthresh,
-	      tc->snd_congestion - tc->iss, tc->rcv_dupacks);
-  s = format (s, "%Utsecr %u tsecr_last_ack %u limited_transmit %u\n",
-	      format_white_space, indent, tc->rcv_opts.tsecr,
-	      tc->tsecr_last_ack, tc->limited_transmit - tc->iss);
+  s = format (s, "algo %s cwnd %u ssthresh %u bytes_acked %u\n",
+	      tc->cc_algo->name, tc->cwnd, tc->ssthresh, tc->bytes_acked);
+  s = format (s, "%Ucc space %u prev_cwnd %u prev_ssthresh %u rtx_bytes %u\n",
+	      format_white_space, indent, tcp_available_cc_snd_space (tc),
+	      tc->prev_cwnd, tc->prev_ssthresh, tc->snd_rxt_bytes);
+  s = format (s, "%Usnd_congestion %u dupack %u limited_transmit %u\n",
+	      format_white_space, indent, tc->snd_congestion - tc->iss,
+	      tc->rcv_dupacks, tc->limited_transmit - tc->iss);
   return s;
 }
 
@@ -837,12 +837,15 @@ format_tcp_vars (u8 * s, va_list * args)
 	      tc->snd_wnd, tc->rcv_wnd, tc->rcv_wscale);
   s = format (s, "snd_wl1 %u snd_wl2 %u\n", tc->snd_wl1 - tc->irs,
 	      tc->snd_wl2 - tc->iss);
-  s = format (s, " flight size %u out space %u rcv_wnd_av %u\n",
+  s = format (s, " flight size %u out space %u rcv_wnd_av %u",
 	      tcp_flight_size (tc), tcp_available_output_snd_space (tc),
 	      tcp_rcv_wnd_available (tc));
-  s = format (s, " tsval_recent %u tsval_recent_age %u\n", tc->tsval_recent,
+  s = format (s, " tsval_recent %u\n", tc->tsval_recent);
+  s = format (s, " tsecr %u tsecr_last_ack %u tsval_recent_age %u",
+	      tc->rcv_opts.tsecr, tc->tsecr_last_ack,
 	      tcp_time_now () - tc->tsval_recent_age);
-  s = format (s, " rto %u rto_boff %u srtt %u us %.3f rttvar %u rtt_ts %x",
+  s = format (s, " snd_mss %u\n", tc->snd_mss);
+  s = format (s, " rto %u rto_boff %u srtt %u us %.3f rttvar %u rtt_ts %.4f",
 	      tc->rto, tc->rto_boff, tc->srtt, tc->mrtt_us * 1000, tc->rttvar,
 	      tc->rtt_ts);
   s = format (s, " rtt_seq %u\n", tc->rtt_seq - tc->iss);
@@ -922,8 +925,12 @@ static u8 *
 format_tcp_listener_session (u8 * s, va_list * args)
 {
   u32 tci = va_arg (*args, u32);
+  u32 verbose = va_arg (*args, u32);
   tcp_connection_t *tc = tcp_listener_get (tci);
-  return format (s, "%U", format_tcp_connection_id, tc);
+  s = format (s, "%-50U", format_tcp_connection_id, tc);
+  if (verbose)
+    s = format (s, "%-15U", format_tcp_state, tc->state);
+  return s;
 }
 
 static u8 *
@@ -1151,13 +1158,6 @@ tcp_update_time (f64 now, u8 thread_index)
   tcp_flush_frames_to_output (wrk);
 }
 
-static u32
-tcp_session_push_header (transport_connection_t * tconn, vlib_buffer_t * b)
-{
-  tcp_connection_t *tc = (tcp_connection_t *) tconn;
-  return tcp_push_header (tc, b);
-}
-
 static void
 tcp_session_flush_data (transport_connection_t * tconn)
 {
@@ -1165,19 +1165,19 @@ tcp_session_flush_data (transport_connection_t * tconn)
   if (tc->flags & TCP_CONN_PSH_PENDING)
     return;
   tc->flags |= TCP_CONN_PSH_PENDING;
-  tc->psh_seq = tc->snd_una_max + transport_max_tx_dequeue (tconn) - 1;
+  tc->psh_seq = tc->snd_una + transport_max_tx_dequeue (tconn) - 1;
 }
 
 /* *INDENT-OFF* */
 const static transport_proto_vft_t tcp_proto = {
   .enable = vnet_tcp_enable_disable,
-  .bind = tcp_session_bind,
-  .unbind = tcp_session_unbind,
+  .start_listen = tcp_session_bind,
+  .stop_listen = tcp_session_unbind,
   .push_header = tcp_session_push_header,
   .get_connection = tcp_session_get_transport,
   .get_listener = tcp_session_get_listener,
   .get_half_open = tcp_half_open_session_get_transport,
-  .open = tcp_session_open,
+  .connect = tcp_session_open,
   .close = tcp_session_close,
   .cleanup = tcp_session_cleanup,
   .send_mss = tcp_session_send_mss,
@@ -1242,11 +1242,13 @@ tcp_timer_establish_handler (u32 conn_index)
   if (PREDICT_FALSE (tc == 0))
     return;
   ASSERT (tc->state == TCP_STATE_SYN_RCVD);
+  tc->timers[TCP_TIMER_ESTABLISH] = TCP_TIMER_HANDLE_INVALID;
+  tcp_connection_set_state (tc, TCP_STATE_CLOSED);
   /* Start cleanup. App wasn't notified yet so use delete notify as
    * opposed to delete to cleanup session layer state. */
+  tcp_connection_timers_reset (tc);
   session_transport_delete_notify (&tc->connection);
-  tc->timers[TCP_TIMER_ESTABLISH] = TCP_TIMER_HANDLE_INVALID;
-  tcp_connection_cleanup (tc);
+  tcp_timer_update (tc, TCP_TIMER_WAITCLOSE, TCP_CLEANUP_TIME);
 }
 
 static void
@@ -1295,7 +1297,7 @@ tcp_timer_waitclose_handler (u32 conn_index)
        * and switch to LAST_ACK. */
       tcp_cong_recovery_off (tc);
       /* Make sure we don't try to send unsent data */
-      tc->snd_una_max = tc->snd_nxt = tc->snd_una;
+      tc->snd_nxt = tc->snd_una;
       tcp_send_fin (tc);
       tcp_connection_set_state (tc, TCP_STATE_LAST_ACK);
 
@@ -1474,7 +1476,7 @@ tcp_main_enable (vlib_main_t * vm)
   tcp_initialize_timer_wheels (tm);
   tcp_initialize_iss_seed (tm);
 
-  tm->bytes_per_buffer = VLIB_BUFFER_DATA_SIZE;
+  tm->bytes_per_buffer = vlib_buffer_get_default_data_size (vm);
 
   return error;
 }
@@ -1533,6 +1535,7 @@ tcp_init (vlib_main_t * vm)
   tcp_api_reference ();
   tm->tx_pacing = 1;
   tm->cc_algo = TCP_CC_NEWRENO;
+  tm->default_mtu = 1460;
   return 0;
 }
 
@@ -1594,6 +1597,8 @@ tcp_config_fn (vlib_main_t * vm, unformat_input_t * input)
 	;
       else if (unformat (input, "max-rx-fifo %U", unformat_memory_size,
 			 &tm->max_rx_fifo))
+	;
+      else if (unformat (input, "mtu %d", &tm->default_mtu))
 	;
       else if (unformat (input, "no-tx-pacing"))
 	tm->tx_pacing = 0;

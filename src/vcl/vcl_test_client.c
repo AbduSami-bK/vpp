@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017-2018 Cisco and/or its affiliates.
+ * Copyright (c) 2017-2019 Cisco and/or its affiliates.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at:
@@ -1007,12 +1007,12 @@ main (int argc, char **argv)
 
   if (vcm->proto == VPPCOM_PROTO_TLS)
     {
+      vtinf ("Adding tls certs ...");
       vppcom_session_tls_add_cert (ctrl->fd, vcl_test_crt_rsa,
 				   vcl_test_crt_rsa_len);
       vppcom_session_tls_add_key (ctrl->fd, vcl_test_key_rsa,
 				  vcl_test_key_rsa_len);
     }
-
 
   vtinf ("Connecting to server...");
   rv = vppcom_session_connect (ctrl->fd, &vcm->server_endpt);

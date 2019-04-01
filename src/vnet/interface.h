@@ -131,7 +131,7 @@ static void __vnet_interface_function_deinit_##tag##_##f (void)         \
 {                                                                       \
  vnet_main_t * vnm = vnet_get_main();                                   \
  _vnet_interface_function_list_elt_t *next;                             \
- if (vnm->tag##_functions[p]->fp == (void *) &f)                        \
+ if (vnm->tag##_functions[p]->fp == f)                                  \
     {                                                                   \
       vnm->tag##_functions[p] =                                         \
         vnm->tag##_functions[p]->next_interface_function;               \
@@ -140,7 +140,7 @@ static void __vnet_interface_function_deinit_##tag##_##f (void)         \
   next = vnm->tag##_functions[p];                                       \
   while (next->next_interface_function)                                 \
     {                                                                   \
-      if (next->next_interface_function->fp == (void *) &f)             \
+      if (next->next_interface_function->fp == f)                       \
         {                                                               \
           next->next_interface_function =                               \
             next->next_interface_function->next_interface_function;     \
@@ -301,31 +301,6 @@ CLIB_MARCH_SFX (devclass##_tx_fn_multiarch_register) (void)		\
   devclass.tx_fn_registrations = r;					\
 }									\
 uword CLIB_CPU_OPTIMIZED CLIB_MARCH_SFX (devclass##_tx_fn)
-
-#define VLIB_DEVICE_TX_FUNCTION_CLONE_TEMPLATE(arch, fn, tgt)		\
-  uword									\
-  __attribute__ ((flatten))						\
-  __attribute__ ((target (tgt)))					\
-  CLIB_CPU_OPTIMIZED							\
-  fn ## _ ## arch ( vlib_main_t * vm,					\
-                   vlib_node_runtime_t * node,				\
-                   vlib_frame_t * frame)				\
-  { return fn (vm, node, frame); }
-
-#define VLIB_DEVICE_TX_FUNCTION_MULTIARCH_CLONE(fn)			\
-  foreach_march_variant(VLIB_DEVICE_TX_FUNCTION_CLONE_TEMPLATE, fn)
-
-#if CLIB_DEBUG > 0
-#define VLIB_MULTIARCH_CLONE_AND_SELECT_FN(fn,...)
-#define VLIB_DEVICE_TX_FUNCTION_MULTIARCH(dev, fn)
-#else
-#define VLIB_DEVICE_TX_FUNCTION_MULTIARCH(dev, fn)			\
-  VLIB_DEVICE_TX_FUNCTION_MULTIARCH_CLONE(fn)				\
-  CLIB_MULTIARCH_SELECT_FN(fn, static inline)				\
-  static void __attribute__((__constructor__))				\
-  __vlib_device_tx_function_multiarch_select_##dev (void)		\
-  { dev.tx_function = fn ## _multiarch_select(); }
-#endif
 
 /**
  * Link Type: A description of the protocol of packets on the link.
@@ -497,6 +472,9 @@ typedef enum vnet_hw_interface_flags_t_
 
   /* tx checksum offload */
   VNET_HW_INTERFACE_FLAG_SUPPORTS_TX_L4_CKSUM_OFFLOAD = (1 << 17),
+
+  /* gso */
+  VNET_HW_INTERFACE_FLAG_SUPPORTS_GSO = (1 << 18),
 } vnet_hw_interface_flags_t;
 
 #define VNET_HW_INTERFACE_FLAG_DUPLEX_SHIFT 1
@@ -774,7 +752,8 @@ typedef enum
   _(RX_NO_BUF, rx-no-buf, if)			\
   _(RX_MISS, rx-miss, if)			\
   _(RX_ERROR, rx-error, if)			\
-  _(TX_ERROR, tx-error, if)
+  _(TX_ERROR, tx-error, if)         \
+  _(MPLS, mpls, if)
 
 #define foreach_combined_interface_counter_name	\
   _(RX, rx, if)					\
@@ -809,6 +788,12 @@ typedef struct
   u32 output_node_index;
   u32 tx_node_index;
 } vnet_hw_interface_nodes_t;
+
+typedef struct
+{
+  u32 *split_buffers;
+  u32 padding[14];
+} vnet_interface_per_thread_data_t;
 
 typedef struct
 {
@@ -848,6 +833,12 @@ typedef struct
   u32 pcap_pkts_to_capture;
   uword *pcap_drop_filter_hash;
 
+  /* per-thread data */
+  vnet_interface_per_thread_data_t *per_thread_data;
+
+  /* enable GSO processing in packet path if this count is > 0 */
+  u32 gso_interface_count;
+
   /* feature_arc_index */
   u8 output_feature_arc_index;
 } vnet_interface_main_t;
@@ -870,6 +861,10 @@ vnet_interface_counter_unlock (vnet_interface_main_t * im)
 void vnet_pcap_drop_trace_filter_add_del (u32 error_index, int is_add);
 
 int vnet_interface_name_renumber (u32 sw_if_index, u32 new_show_dev_instance);
+
+uword vnet_interface_output_node (vlib_main_t * vm,
+				  vlib_node_runtime_t * node,
+				  vlib_frame_t * frame);
 
 #endif /* included_vnet_interface_h */
 

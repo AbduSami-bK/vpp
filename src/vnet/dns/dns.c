@@ -2684,7 +2684,7 @@ test_dns_expire_command_fn (vlib_main_t * vm,
 			    vlib_cli_command_t * cmd)
 {
   dns_main_t *dm = &dns_main;
-  u8 *name;
+  u8 *name = 0;
   uword *p;
   clib_error_t *e;
   dns_cache_entry_t *ep;
@@ -2694,6 +2694,8 @@ test_dns_expire_command_fn (vlib_main_t * vm,
       vec_add1 (name, 0);
       _vec_len (name) -= 1;
     }
+  else
+    return clib_error_return (0, "no name provided");
 
   dns_cache_lock (dm);
 
@@ -2810,7 +2812,6 @@ vnet_send_dns4_reply (dns_main_t * dm, dns_pending_request_t * pr,
    * In the resolution-required / deferred case, resetting a freshly-allocated
    * buffer won't hurt. We hope.
    */
-  b0->flags &= VLIB_BUFFER_NON_DEFAULT_FREELIST;
   b0->flags |= (VNET_BUFFER_F_LOCALLY_ORIGINATED
 		| VLIB_BUFFER_TOTAL_LENGTH_VALID);
   b0->current_data = 0;

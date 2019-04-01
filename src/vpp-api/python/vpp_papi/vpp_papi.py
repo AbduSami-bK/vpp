@@ -21,6 +21,7 @@ import os
 import logging
 import collections
 import struct
+import functools
 import json
 import threading
 import fnmatch
@@ -38,17 +39,23 @@ else:
     import queue as queue
 
 
+def metaclass(metaclass):
+    @functools.wraps(metaclass)
+    def wrapper(cls):
+        return metaclass(cls.__name__, cls.__bases__, cls.__dict__.copy())
+
+    return wrapper
+
+
 class VppEnumType(type):
     def __getattr__(cls, name):
         t = vpp_get_type(name)
         return t.enum
 
 
-# Python3
-# class VppEnum(metaclass=VppEnumType):
-#    pass
+@metaclass(VppEnumType)
 class VppEnum(object):
-    __metaclass__ = VppEnumType
+    pass
 
 
 def vpp_atexit(vpp_weakref):
@@ -88,6 +95,7 @@ class FuncWrapper(object):
     def __init__(self, func):
         self._func = func
         self.__name__ = func.__name__
+        self.__doc__ = func.__doc__
 
     def __call__(self, **kwargs):
         return self._func(**kwargs)
@@ -410,6 +418,8 @@ class VPP(object):
         f.__doc__ = ", ".join(["%s %s" %
                                (msg.fieldtypes[j], k)
                                for j, k in enumerate(msg.fields)])
+        f.msg = msg
+
         return f
 
     def _register_functions(self, do_async=False):
@@ -418,7 +428,7 @@ class VPP(object):
         self._api = VppApiDynamicMethodHolder()
         for name, msg in vpp_iterator(self.messages):
             n = name + '_' + msg.crc[2:]
-            i = self.transport.get_msg_index(n.encode())
+            i = self.transport.get_msg_index(n.encode('utf-8'))
             if i > 0:
                 self.id_msgdef[i] = msg
                 self.id_names[i] = name
@@ -438,9 +448,10 @@ class VPP(object):
 
     def connect_internal(self, name, msg_handler, chroot_prefix, rx_qlen,
                          do_async):
-        pfx = chroot_prefix.encode() if chroot_prefix else None
+        pfx = chroot_prefix.encode('utf-8') if chroot_prefix else None
 
-        rv = self.transport.connect(name.encode(), pfx, msg_handler, rx_qlen)
+        rv = self.transport.connect(name.encode('utf-8'), pfx,
+                                    msg_handler, rx_qlen)
         if rv != 0:
             raise VPPIOError(2, 'Connect failed')
         self.vpp_dictionary_maxid = self.transport.msg_table_max_index()
@@ -449,7 +460,7 @@ class VPP(object):
         # Initialise control ping
         crc = self.messages['control_ping'].crc
         self.control_ping_index = self.transport.get_msg_index(
-            ('control_ping' + '_' + crc[2:]).encode())
+            ('control_ping' + '_' + crc[2:]).encode('utf-8'))
         self.control_ping_msgdef = self.messages['control_ping']
         if self.async_thread:
             self.event_thread = threading.Thread(

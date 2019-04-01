@@ -1,0 +1,762 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>2.107. vpp_interface module &mdash; VPP test framework 0.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="2.108. vpp_ip module" href="vpp_ip.html" />
+    <link rel="prev" title="2.106. vpp_igmp module" href="vpp_igmp.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> VPP test framework
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="overview.html">1. VPP Test Framework</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">2. Module documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="bfd.html">2.1. bfd module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="debug.html">2.2. debug module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="debug_internal.html">2.3. debug_internal module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="discover_tests.html">2.4. discover_tests module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="framework.html">2.5. framework module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hook.html">2.6. hook module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ipfix.html">2.7. ipfix module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lisp.html">2.8. lisp module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="log.html">2.9. log module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="remote_test.html">2.10. remote_test module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run_tests.html">2.11. run_tests module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sanity_import_vpp_papi.html">2.12. sanity_import_vpp_papi module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sanity_run_vpp.html">2.13. sanity_run_vpp module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="scapy_handlers.html">2.14. scapy_handlers package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="template_bd.html">2.15. template_bd module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="template_ipsec.html">2.16. template_ipsec module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_abf.html">2.17. test_abf module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_acl_plugin.html">2.18. test_acl_plugin module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_acl_plugin_conns.html">2.19. test_acl_plugin_conns module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_acl_plugin_l2l3.html">2.20. test_acl_plugin_l2l3 module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_acl_plugin_macip.html">2.21. test_acl_plugin_macip module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_bfd.html">2.22. test_bfd module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_bier.html">2.23. test_bier module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_bihash.html">2.24. test_bihash module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_bond.html">2.25. test_bond module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_cdp.html">2.26. test_cdp module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_classifier.html">2.27. test_classifier module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_classifier_ip6.html">2.28. test_classifier_ip6 module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_classify_l2_acl.html">2.29. test_classify_l2_acl module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_container.html">2.30. test_container module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_dhcp.html">2.31. test_dhcp module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_dhcp6.html">2.32. test_dhcp6 module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_dvr.html">2.33. test_dvr module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_fib.html">2.34. test_fib module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_flowprobe.html">2.35. test_flowprobe module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_gbp.html">2.36. test_gbp module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_geneve.html">2.37. test_geneve module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_gre.html">2.38. test_gre module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_gtpu.html">2.39. test_gtpu module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_igmp.html">2.40. test_igmp module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_interface_crud.html">2.41. test_interface_crud module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_ip4.html">2.42. test_ip4 module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_ip4_irb.html">2.43. test_ip4_irb module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_ip4_vrf_multi_instance.html">2.44. test_ip4_vrf_multi_instance module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_ip6.html">2.45. test_ip6 module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_ip6_vrf_multi_instance.html">2.46. test_ip6_vrf_multi_instance module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_ip_ecmp.html">2.47. test_ip_ecmp module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_ip_mcast.html">2.48. test_ip_mcast module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_ipip.html">2.49. test_ipip module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_ipsec_ah.html">2.50. test_ipsec_ah module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_ipsec_api.html">2.51. test_ipsec_api module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_ipsec_esp.html">2.52. test_ipsec_esp module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_ipsec_nat.html">2.53. test_ipsec_nat module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_ipsec_tun_if_esp.html">2.54. test_ipsec_tun_if_esp module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_l2_fib.html">2.55. test_l2_fib module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_l2_flood.html">2.56. test_l2_flood module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_l2bd.html">2.57. test_l2bd module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_l2bd_arp_term.html">2.58. test_l2bd_arp_term module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_l2bd_multi_instance.html">2.59. test_l2bd_multi_instance module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_l2xc.html">2.60. test_l2xc module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_l2xc_multi_instance.html">2.61. test_l2xc_multi_instance module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_lb.html">2.62. test_lb module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_lisp.html">2.63. test_lisp module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_map.html">2.64. test_map module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_memif.html">2.65. test_memif module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_mpls.html">2.66. test_mpls module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_mtu.html">2.67. test_mtu module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_nat.html">2.68. test_nat module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_neighbor.html">2.69. test_neighbor module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_p2p_ethernet.html">2.70. test_p2p_ethernet module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_ping.html">2.71. test_ping module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_pipe.html">2.72. test_pipe module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_pppoe.html">2.73. test_pppoe module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_punt.html">2.74. test_punt module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_qos.html">2.75. test_qos module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_reassembly.html">2.76. test_reassembly module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_sctp.html">2.77. test_sctp module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_session.html">2.78. test_session module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_sixrd.html">2.79. test_sixrd module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_span.html">2.80. test_span module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_srmpls.html">2.81. test_srmpls module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_srv6.html">2.82. test_srv6 module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_srv6_ad.html">2.83. test_srv6_ad module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_srv6_as.html">2.84. test_srv6_as module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_stats_client.html">2.85. test_stats_client module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_string.html">2.86. test_string module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_svs.html">2.87. test_svs module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_syslog.html">2.88. test_syslog module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_tcp.html">2.89. test_tcp module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_udp.html">2.90. test_udp module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_util.html">2.91. test_util module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_vapi.html">2.92. test_vapi module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_vcl.html">2.93. test_vcl module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_vhost.html">2.94. test_vhost module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_vom.html">2.95. test_vom module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_vtr.html">2.96. test_vtr module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_vxlan.html">2.97. test_vxlan module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_vxlan6.html">2.98. test_vxlan6 module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_vxlan_gbp.html">2.99. test_vxlan_gbp module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_vxlan_gpe.html">2.100. test_vxlan_gpe module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="util.html">2.101. util module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpp_bier.html">2.102. vpp_bier module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpp_bond_interface.html">2.103. vpp_bond_interface module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpp_bvi_interface.html">2.104. vpp_bvi_interface module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpp_gre_interface.html">2.105. vpp_gre_interface module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpp_igmp.html">2.106. vpp_igmp module</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">2.107. vpp_interface module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpp_ip.html">2.108. vpp_ip module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpp_ip_route.html">2.109. vpp_ip_route module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpp_ipsec.html">2.110. vpp_ipsec module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpp_ipsec_tun_interface.html">2.111. vpp_ipsec_tun_interface module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpp_l2.html">2.112. vpp_l2 module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpp_lo_interface.html">2.113. vpp_lo_interface module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpp_memif.html">2.114. vpp_memif module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpp_mpls_tunnel_interface.html">2.115. vpp_mpls_tunnel_interface module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpp_neighbor.html">2.116. vpp_neighbor module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpp_object.html">2.117. vpp_object module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpp_papi_provider.html">2.118. vpp_papi_provider module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpp_pg_interface.html">2.119. vpp_pg_interface module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpp_pppoe_interface.html">2.120. vpp_pppoe_interface module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpp_srv6.html">2.121. vpp_srv6 module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpp_sub_interface.html">2.122. vpp_sub_interface module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpp_tunnel_interface.html">2.123. vpp_tunnel_interface module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpp_udp_encap.html">2.124. vpp_udp_encap module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpp_vhost_interface.html">2.125. vpp_vhost_interface module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpp_vxlan_gbp_tunnel.html">2.126. vpp_vxlan_gbp_tunnel module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vrf.html">2.127. vrf module</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="indices.html">3. Indices and tables</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">VPP test framework</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="modules.html">2. Module documentation</a> &raquo;</li>
+        
+      <li>2.107. vpp_interface module</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/vpp_interface.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-vpp_interface">
+<span id="vpp-interface-module"></span><h1>2.107. vpp_interface module<a class="headerlink" href="#module-vpp_interface" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="vpp_interface.VppInterface">
+<em class="property">class </em><code class="descclassname">vpp_interface.</code><code class="descname">VppInterface</code><span class="sig-paren">(</span><em>test</em><span class="sig-paren">)</span><a class="headerlink" href="#vpp_interface.VppInterface" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Generic VPP interface.</p>
+<dl class="method">
+<dt id="vpp_interface.VppInterface.add_sub_if">
+<code class="descname">add_sub_if</code><span class="sig-paren">(</span><em>sub_if</em><span class="sig-paren">)</span><a class="headerlink" href="#vpp_interface.VppInterface.add_sub_if" title="Permalink to this definition">¶</a></dt>
+<dd><p>Register a sub-interface with this interface.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>sub_if</strong> – sub-interface</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="vpp_interface.VppInterface.admin_down">
+<code class="descname">admin_down</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vpp_interface.VppInterface.admin_down" title="Permalink to this definition">¶</a></dt>
+<dd><p>Put interface ADMIN-down.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="vpp_interface.VppInterface.admin_up">
+<code class="descname">admin_up</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vpp_interface.VppInterface.admin_up" title="Permalink to this definition">¶</a></dt>
+<dd><p>Put interface ADMIN-UP.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="vpp_interface.VppInterface.assert_interface_state">
+<code class="descname">assert_interface_state</code><span class="sig-paren">(</span><em>admin_up_down</em>, <em>link_up_down</em>, <em>expect_event=False</em><span class="sig-paren">)</span><a class="headerlink" href="#vpp_interface.VppInterface.assert_interface_state" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="vpp_interface.VppInterface.config_ip4">
+<code class="descname">config_ip4</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vpp_interface.VppInterface.config_ip4" title="Permalink to this definition">¶</a></dt>
+<dd><p>Configure IPv4 address on the VPP interface.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="vpp_interface.VppInterface.config_ip6">
+<code class="descname">config_ip6</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vpp_interface.VppInterface.config_ip6" title="Permalink to this definition">¶</a></dt>
+<dd><p>Configure IPv6 address on the VPP interface.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="vpp_interface.VppInterface.configure_ipv4_neighbors">
+<code class="descname">configure_ipv4_neighbors</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vpp_interface.VppInterface.configure_ipv4_neighbors" title="Permalink to this definition">¶</a></dt>
+<dd><p>For every remote host assign neighbor’s MAC to IPv4 addresses.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>vrf_id</strong> – The FIB table / VRF ID. (Default value = 0)</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="vpp_interface.VppInterface.configure_ipv6_neighbors">
+<code class="descname">configure_ipv6_neighbors</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vpp_interface.VppInterface.configure_ipv6_neighbors" title="Permalink to this definition">¶</a></dt>
+<dd><p>For every remote host assign neighbor’s MAC to IPv6 addresses.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>vrf_id</strong> – The FIB table / VRF ID. (Default value = 0)</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="vpp_interface.VppInterface.disable_ipv6_ra">
+<code class="descname">disable_ipv6_ra</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vpp_interface.VppInterface.disable_ipv6_ra" title="Permalink to this definition">¶</a></dt>
+<dd><p>Configure IPv6 RA suppress on the VPP interface.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="vpp_interface.VppInterface.disable_mpls">
+<code class="descname">disable_mpls</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vpp_interface.VppInterface.disable_mpls" title="Permalink to this definition">¶</a></dt>
+<dd><p>Enable MPLS on the VPP interface.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="vpp_interface.VppInterface.dump">
+<code class="descname">dump</code><a class="headerlink" href="#vpp_interface.VppInterface.dump" title="Permalink to this definition">¶</a></dt>
+<dd><p>RAW result of sw_interface_dump for this interface.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="vpp_interface.VppInterface.enable_mpls">
+<code class="descname">enable_mpls</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vpp_interface.VppInterface.enable_mpls" title="Permalink to this definition">¶</a></dt>
+<dd><p>Enable MPLS on the VPP interface.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="vpp_interface.VppInterface.generate_remote_hosts">
+<code class="descname">generate_remote_hosts</code><span class="sig-paren">(</span><em>count=1</em><span class="sig-paren">)</span><a class="headerlink" href="#vpp_interface.VppInterface.generate_remote_hosts" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate and add remote hosts for the interface.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>count</strong> (<em>int</em>) – Number of generated remote hosts.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="vpp_interface.VppInterface.get_interface_config_from_dump">
+<code class="descname">get_interface_config_from_dump</code><span class="sig-paren">(</span><em>dump</em><span class="sig-paren">)</span><a class="headerlink" href="#vpp_interface.VppInterface.get_interface_config_from_dump" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="vpp_interface.VppInterface.get_rx_stats">
+<code class="descname">get_rx_stats</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vpp_interface.VppInterface.get_rx_stats" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="vpp_interface.VppInterface.get_tx_stats">
+<code class="descname">get_tx_stats</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vpp_interface.VppInterface.get_tx_stats" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="vpp_interface.VppInterface.host_by_ip4">
+<code class="descname">host_by_ip4</code><span class="sig-paren">(</span><em>ip</em><span class="sig-paren">)</span><a class="headerlink" href="#vpp_interface.VppInterface.host_by_ip4" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>ip</strong> – IPv4 address to find host by.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Host object assigned to interface.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="vpp_interface.VppInterface.host_by_ip6">
+<code class="descname">host_by_ip6</code><span class="sig-paren">(</span><em>ip</em><span class="sig-paren">)</span><a class="headerlink" href="#vpp_interface.VppInterface.host_by_ip6" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>ip</strong> – IPv6 address to find host by.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Host object assigned to interface.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="vpp_interface.VppInterface.host_by_mac">
+<code class="descname">host_by_mac</code><span class="sig-paren">(</span><em>mac</em><span class="sig-paren">)</span><a class="headerlink" href="#vpp_interface.VppInterface.host_by_mac" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>mac</strong> – MAC address to find host by.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Host object assigned to interface.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="vpp_interface.VppInterface.ip6_disable">
+<code class="descname">ip6_disable</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vpp_interface.VppInterface.ip6_disable" title="Permalink to this definition">¶</a></dt>
+<dd><p>Put interface ADMIN-DOWN.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="vpp_interface.VppInterface.ip6_enable">
+<code class="descname">ip6_enable</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vpp_interface.VppInterface.ip6_enable" title="Permalink to this definition">¶</a></dt>
+<dd><p>IPv6 Enable interface</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="vpp_interface.VppInterface.ip6_ra_config">
+<code class="descname">ip6_ra_config</code><span class="sig-paren">(</span><em>no=0</em>, <em>suppress=0</em>, <em>send_unicast=0</em><span class="sig-paren">)</span><a class="headerlink" href="#vpp_interface.VppInterface.ip6_ra_config" title="Permalink to this definition">¶</a></dt>
+<dd><p>Configure IPv6 RA suppress on the VPP interface.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="vpp_interface.VppInterface.ip6_ra_prefix">
+<code class="descname">ip6_ra_prefix</code><span class="sig-paren">(</span><em>address</em>, <em>address_length</em>, <em>is_no=0</em>, <em>off_link=0</em>, <em>no_autoconfig=0</em>, <em>use_default=0</em><span class="sig-paren">)</span><a class="headerlink" href="#vpp_interface.VppInterface.ip6_ra_prefix" title="Permalink to this definition">¶</a></dt>
+<dd><p>Configure IPv6 RA suppress on the VPP interface.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="vpp_interface.VppInterface.is_interface_config_in_dump">
+<code class="descname">is_interface_config_in_dump</code><span class="sig-paren">(</span><em>dump</em><span class="sig-paren">)</span><a class="headerlink" href="#vpp_interface.VppInterface.is_interface_config_in_dump" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="vpp_interface.VppInterface.is_ip4_entry_in_fib_dump">
+<code class="descname">is_ip4_entry_in_fib_dump</code><span class="sig-paren">(</span><em>dump</em><span class="sig-paren">)</span><a class="headerlink" href="#vpp_interface.VppInterface.is_ip4_entry_in_fib_dump" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="vpp_interface.VppInterface.link_down">
+<code class="descname">link_down</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vpp_interface.VppInterface.link_down" title="Permalink to this definition">¶</a></dt>
+<dd><p>Put interface link-state-down.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="vpp_interface.VppInterface.link_up">
+<code class="descname">link_up</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vpp_interface.VppInterface.link_up" title="Permalink to this definition">¶</a></dt>
+<dd><p>Put interface link-state-UP.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="vpp_interface.VppInterface.local_addr">
+<code class="descname">local_addr</code><a class="headerlink" href="#vpp_interface.VppInterface.local_addr" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="vpp_interface.VppInterface.local_addr_n">
+<code class="descname">local_addr_n</code><a class="headerlink" href="#vpp_interface.VppInterface.local_addr_n" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="vpp_interface.VppInterface.local_ip4">
+<code class="descname">local_ip4</code><a class="headerlink" href="#vpp_interface.VppInterface.local_ip4" title="Permalink to this definition">¶</a></dt>
+<dd><p>Local IPv4 address on VPP interface (string).</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="vpp_interface.VppInterface.local_ip4n">
+<code class="descname">local_ip4n</code><a class="headerlink" href="#vpp_interface.VppInterface.local_ip4n" title="Permalink to this definition">¶</a></dt>
+<dd><p>Local IPv4 address - raw, suitable as API parameter.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="vpp_interface.VppInterface.local_ip6">
+<code class="descname">local_ip6</code><a class="headerlink" href="#vpp_interface.VppInterface.local_ip6" title="Permalink to this definition">¶</a></dt>
+<dd><p>Local IPv6 address on VPP interface (string).</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="vpp_interface.VppInterface.local_ip6_ll">
+<code class="descname">local_ip6_ll</code><a class="headerlink" href="#vpp_interface.VppInterface.local_ip6_ll" title="Permalink to this definition">¶</a></dt>
+<dd><p>Local IPv6 link-local address on VPP interface (string).</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="vpp_interface.VppInterface.local_ip6n">
+<code class="descname">local_ip6n</code><a class="headerlink" href="#vpp_interface.VppInterface.local_ip6n" title="Permalink to this definition">¶</a></dt>
+<dd><p>Local IPv6 address - raw, suitable as API parameter.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="vpp_interface.VppInterface.local_ip6n_ll">
+<code class="descname">local_ip6n_ll</code><a class="headerlink" href="#vpp_interface.VppInterface.local_ip6n_ll" title="Permalink to this definition">¶</a></dt>
+<dd><p>Local IPv6 link-local address - raw, suitable as API parameter.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="vpp_interface.VppInterface.local_mac">
+<code class="descname">local_mac</code><a class="headerlink" href="#vpp_interface.VppInterface.local_mac" title="Permalink to this definition">¶</a></dt>
+<dd><p>MAC-address of the VPP interface.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="vpp_interface.VppInterface.name">
+<code class="descname">name</code><a class="headerlink" href="#vpp_interface.VppInterface.name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Name of the interface.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="vpp_interface.VppInterface.query_vpp_config">
+<code class="descname">query_vpp_config</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vpp_interface.VppInterface.query_vpp_config" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="vpp_interface.VppInterface.remote_addr">
+<code class="descname">remote_addr</code><a class="headerlink" href="#vpp_interface.VppInterface.remote_addr" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="vpp_interface.VppInterface.remote_addr_n">
+<code class="descname">remote_addr_n</code><a class="headerlink" href="#vpp_interface.VppInterface.remote_addr_n" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="vpp_interface.VppInterface.remote_hosts">
+<code class="descname">remote_hosts</code><a class="headerlink" href="#vpp_interface.VppInterface.remote_hosts" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remote hosts list</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="vpp_interface.VppInterface.remote_ip4">
+<code class="descname">remote_ip4</code><a class="headerlink" href="#vpp_interface.VppInterface.remote_ip4" title="Permalink to this definition">¶</a></dt>
+<dd><p>IPv4 address of remote peer “connected” to this interface.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="vpp_interface.VppInterface.remote_ip4n">
+<code class="descname">remote_ip4n</code><a class="headerlink" href="#vpp_interface.VppInterface.remote_ip4n" title="Permalink to this definition">¶</a></dt>
+<dd><p>IPv4 address of remote peer - raw, suitable as API parameter.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="vpp_interface.VppInterface.remote_ip6">
+<code class="descname">remote_ip6</code><a class="headerlink" href="#vpp_interface.VppInterface.remote_ip6" title="Permalink to this definition">¶</a></dt>
+<dd><p>IPv6 address of remote peer “connected” to this interface.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="vpp_interface.VppInterface.remote_ip6_ll">
+<code class="descname">remote_ip6_ll</code><a class="headerlink" href="#vpp_interface.VppInterface.remote_ip6_ll" title="Permalink to this definition">¶</a></dt>
+<dd><p>Link-local IPv6 address of remote peer
+“connected” to this interface.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="vpp_interface.VppInterface.remote_ip6n">
+<code class="descname">remote_ip6n</code><a class="headerlink" href="#vpp_interface.VppInterface.remote_ip6n" title="Permalink to this definition">¶</a></dt>
+<dd><p>IPv6 address of remote peer - raw, suitable as API parameter</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="vpp_interface.VppInterface.remote_ip6n_ll">
+<code class="descname">remote_ip6n_ll</code><a class="headerlink" href="#vpp_interface.VppInterface.remote_ip6n_ll" title="Permalink to this definition">¶</a></dt>
+<dd><p>Link-local IPv6 address of remote peer
+- raw, suitable as API parameter</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="vpp_interface.VppInterface.remote_mac">
+<code class="descname">remote_mac</code><a class="headerlink" href="#vpp_interface.VppInterface.remote_mac" title="Permalink to this definition">¶</a></dt>
+<dd><p>MAC-address of the remote interface “connected” to this interface</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="vpp_interface.VppInterface.set_mac">
+<code class="descname">set_mac</code><span class="sig-paren">(</span><em>mac</em><span class="sig-paren">)</span><a class="headerlink" href="#vpp_interface.VppInterface.set_mac" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="vpp_interface.VppInterface.set_proxy_arp">
+<code class="descname">set_proxy_arp</code><span class="sig-paren">(</span><em>enable=1</em><span class="sig-paren">)</span><a class="headerlink" href="#vpp_interface.VppInterface.set_proxy_arp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the interface to enable/disable Proxy ARP</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="vpp_interface.VppInterface.set_sw_if_index">
+<code class="descname">set_sw_if_index</code><span class="sig-paren">(</span><em>sw_if_index</em><span class="sig-paren">)</span><a class="headerlink" href="#vpp_interface.VppInterface.set_sw_if_index" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="vpp_interface.VppInterface.set_table_ip4">
+<code class="descname">set_table_ip4</code><span class="sig-paren">(</span><em>table_id</em><span class="sig-paren">)</span><a class="headerlink" href="#vpp_interface.VppInterface.set_table_ip4" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the interface in a IPv4 Table.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Must be called before configuring IP4 addresses.</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="vpp_interface.VppInterface.set_table_ip6">
+<code class="descname">set_table_ip6</code><span class="sig-paren">(</span><em>table_id</em><span class="sig-paren">)</span><a class="headerlink" href="#vpp_interface.VppInterface.set_table_ip6" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the interface in a IPv6 Table.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Must be called before configuring IP6 addresses.</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="vpp_interface.VppInterface.set_unnumbered">
+<code class="descname">set_unnumbered</code><span class="sig-paren">(</span><em>ip_sw_if_index</em><span class="sig-paren">)</span><a class="headerlink" href="#vpp_interface.VppInterface.set_unnumbered" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the interface to unnumbered via ip_sw_if_index</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="vpp_interface.VppInterface.sw_if_index">
+<code class="descname">sw_if_index</code><a class="headerlink" href="#vpp_interface.VppInterface.sw_if_index" title="Permalink to this definition">¶</a></dt>
+<dd><p>Interface index assigned by VPP.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="vpp_interface.VppInterface.test">
+<code class="descname">test</code><a class="headerlink" href="#vpp_interface.VppInterface.test" title="Permalink to this definition">¶</a></dt>
+<dd><p>Test case creating this interface.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="vpp_interface.VppInterface.unconfig">
+<code class="descname">unconfig</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vpp_interface.VppInterface.unconfig" title="Permalink to this definition">¶</a></dt>
+<dd><p>Unconfigure IPv6 and IPv4 address on the VPP interface.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="vpp_interface.VppInterface.unconfig_ip4">
+<code class="descname">unconfig_ip4</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vpp_interface.VppInterface.unconfig_ip4" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove IPv4 address on the VPP interface.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="vpp_interface.VppInterface.unconfig_ip6">
+<code class="descname">unconfig_ip6</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vpp_interface.VppInterface.unconfig_ip6" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove IPv6 address on the VPP interface.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="vpp_interface.VppInterface.unset_unnumbered">
+<code class="descname">unset_unnumbered</code><span class="sig-paren">(</span><em>ip_sw_if_index</em><span class="sig-paren">)</span><a class="headerlink" href="#vpp_interface.VppInterface.unset_unnumbered" title="Permalink to this definition">¶</a></dt>
+<dd><p>Unset the interface to unnumbered via ip_sw_if_index</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="vpp_ip.html" class="btn btn-neutral float-right" title="2.108. vpp_ip module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="vpp_igmp.html" class="btn btn-neutral float-left" title="2.106. vpp_igmp module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2016, VPP team
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

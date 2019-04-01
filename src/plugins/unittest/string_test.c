@@ -442,8 +442,6 @@ test_clib_strncmp (vlib_main_t * vm, unformat_input_t * input)
   v_indicator = strncmp (s1, "Every moment is a fresh beginning", s1len);
   if (v_indicator != 0)
     return -1;
-  if (v_indicator != indicator)
-    return -1;
 
   /* s1 > s2, 0 is expected since comparison is no more than n character */
   indicator = clib_strncmp (s1, "Every moment is a fresh begin",
@@ -454,8 +452,6 @@ test_clib_strncmp (vlib_main_t * vm, unformat_input_t * input)
   v_indicator = strncmp (s1, "Every moment is a fresh begin",
 			 sizeof ("Every moment is a fresh begin") - 1);
   if (v_indicator != 0)
-    return -1;
-  if (v_indicator != indicator)
     return -1;
 
   /* s1 < s2, < 0 is expected */
@@ -499,8 +495,6 @@ test_clib_strncmp (vlib_main_t * vm, unformat_input_t * input)
   /* verify it against strncmp */
   v_indicator = strncmp (s1, "Every moment is a fresh beginning", s1len + 1);
   if (v_indicator != 0)
-    return -1;
-  if (v_indicator != indicator)
     return -1;
 
   /* unterminated s1 */
@@ -750,6 +744,8 @@ test_clib_strncpy (vlib_main_t * vm, unformat_input_t * input)
     return -1;
 
   /* Verify it against strncpy */
+#if __GNUC__ < 8
+  /* GCC 8 debian flunks this one at compile time */
   strncpy (dst, src, strlen (src));
 
   /* This better not fail but check anyhow */
@@ -758,6 +754,7 @@ test_clib_strncpy (vlib_main_t * vm, unformat_input_t * input)
     return -1;
   if (indicator != 0)
     return -1;
+#endif
 
   /* limited copy -- strlen src > n, copy up to n */
   err = clib_strncpy (dst, "The price of greatness is responsibility.", 10);
@@ -791,12 +788,15 @@ test_clib_strncpy (vlib_main_t * vm, unformat_input_t * input)
   if (indicator != 0)
     return -1;
   /* Verify it against strncpy */
+#if __GNUC__ < 8
+  /* GCC 8 debian flunks this one at compile time */
   strncpy (dst, src, strlen (src));
   if (strcmp_s (dst, clib_strnlen (dst, sizeof (dst)), src, &indicator) !=
       EOK)
     return -1;
   if (indicator != 0)
     return -1;
+#endif
 
   /* zero length copy */
   clib_strncpy (old_dst, dst, clib_strnlen (dst, sizeof (dst)));
@@ -1046,6 +1046,8 @@ test_strncat_s (vlib_main_t * vm, unformat_input_t * input)
   if (indicator != 0)
     return -1;
   /* verify it against strncat */
+#if __GNUC__ < 8
+  /* GCC 8 debian flunks this one at compile time */
   strcpy_s (dst, sizeof (dst), s1);
   strncat (dst, s2, 13);
   if (strcmp_s (dst, s1size - 1, "Two things are infinite: the universe ",
@@ -1053,6 +1055,7 @@ test_strncat_s (vlib_main_t * vm, unformat_input_t * input)
     return -1;
   if (indicator != 0)
     return -1;
+#endif
 
   /* negative stuff */
   err = strncat_s (0, 0, 0, 1);
@@ -1169,6 +1172,8 @@ test_clib_strncat (vlib_main_t * vm, unformat_input_t * input)
   if (indicator != 0)
     return -1;
   /* verify it against strncat */
+#if __GNUC__ < 8
+  /* GCC 8 debian flunks this one at compile time */
   strcpy_s (dst, sizeof (dst), s1);
   strncat (dst, s2, 13);
   if (strcmp_s (dst, s1size - 1, "Two things are infinite: the universe ",
@@ -1176,6 +1181,7 @@ test_clib_strncat (vlib_main_t * vm, unformat_input_t * input)
     return -1;
   if (indicator != 0)
     return -1;
+#endif
 
   /* negative stuff */
   err = clib_strncat (0, 0, 1);

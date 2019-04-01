@@ -214,6 +214,19 @@ nat_reass_ip4_t *nat_ip4_reass_find (ip4_address_t src,
 				     u16 frag_id, u8 proto);
 
 /**
+ * @brief Create reassembly.
+ *
+ * @param src Source IPv4 address.
+ * @param dst Destination IPv4 address.
+ * @param frag_id Fragment ID.
+ * @param proto L4 protocol.
+ *
+ * @returns Reassembly data or 0 on failure.
+ */
+nat_reass_ip4_t *nat_ip4_reass_create (ip4_address_t src, ip4_address_t dst,
+				       u16 frag_id, u8 proto);
+
+/**
  * @brief Find or create reassembly.
  *
  * @param src Source IPv4 address.
@@ -240,8 +253,8 @@ nat_reass_ip4_t *nat_ip4_reass_find_or_create (ip4_address_t src,
  *
  * @returns 0 on success, non-zero value otherwise.
  */
-int nat_ip4_reass_add_fragment (nat_reass_ip4_t * reass, u32 bi,
-				u32 ** bi_to_drop);
+int nat_ip4_reass_add_fragment (u32 thread_index, nat_reass_ip4_t * reass,
+				u32 bi, u32 ** bi_to_drop);
 
 /**
  * @brief Get cached fragments.
@@ -291,8 +304,8 @@ nat_reass_ip6_t *nat_ip6_reass_find_or_create (ip6_address_t src,
  *
  * @returns 0 on success, non-zero value otherwise.
  */
-int nat_ip6_reass_add_fragment (nat_reass_ip6_t * reass, u32 bi,
-				u32 ** bi_to_drop);
+int nat_ip6_reass_add_fragment (u32 thread_index, nat_reass_ip6_t * reass,
+				u32 bi, u32 ** bi_to_drop);
 
 /**
  * @brief Get cached fragments.
