@@ -58,7 +58,7 @@ vlib_error_get_code (vlib_error_t e)
 always_inline vlib_error_t
 vlib_error_set (u32 node_index, u32 code)
 {
-  ASSERT (node_index < (1 << 10));
+  ASSERT (node_index < (1 << 14));
   ASSERT (code < (1 << 6));
   return (node_index << 6) | code;
 }

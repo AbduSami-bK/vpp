@@ -11,6 +11,20 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+add_compile_definitions(RTE_SCHED_COLLECT_STATS)
+
+##############################################################################
+# macros
+##############################################################################
+macro(dpdk_find_library var name)
+  find_library(${var} NAMES ${name} ${ARGN})
+if (NOT ${var})
+  message(WARNING "-- ${name} library not found - dpdk_plugin disabled")
+  return()
+endif()
+    message(STATUS "DPDK plugin needs ${name} library - found at ${${var}}")
+endmacro()
+
 ##############################################################################
 # Find lib and include files
 ##############################################################################
