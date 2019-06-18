@@ -48,8 +48,8 @@ typedef struct
 
 typedef struct
 {
-  /* Required for pool_get_aligned  */
-  CLIB_CACHE_LINE_ALIGN_MARK (cacheline0);
+  /* Rewrite string */
+  u8 *rewrite;
 
   /* pppoe session_id in HOST byte order */
   u16 session_id;
@@ -76,7 +76,7 @@ typedef struct
 _(DROP, "error-drop")                  \
 _(IP4_INPUT, "ip4-input")              \
 _(IP6_INPUT, "ip6-input" )             \
-_(CP_INPUT, "pppoe-cp-dispatch" )      \
+_(CP_INPUT, "pppoe-tap-dispatch" )     \
 
 typedef enum
 {
@@ -102,8 +102,8 @@ typedef enum
 /*
  * The size of pppoe session table
  */
-#define PPPOE_NUM_BUCKETS (64 * 1024)
-#define PPPOE_MEMORY_SIZE (8<<20)
+#define PPPOE_NUM_BUCKETS (128 * 1024)
+#define PPPOE_MEMORY_SIZE (16<<20)
 
 /* *INDENT-OFF* */
 /*
@@ -150,13 +150,10 @@ typedef struct
 
 typedef struct
 {
-  /* Vector of encap session instances, */
+  /* For DP: vector of encap session instances, */
   pppoe_session_t *sessions;
 
   /* For CP:  vector of CP path */
-    BVT (clib_bihash) link_table;
-
-  /* For DP:  vector of DP path */
     BVT (clib_bihash) session_table;
 
   /* Free vlib hw_if_indices */
@@ -166,7 +163,7 @@ typedef struct
   u32 *session_index_by_sw_if_index;
 
   /* used for pppoe cp path */
-  u32 cp_if_index;
+  u32 tap_if_index;
 
   /* API message ID base */
   u16 msg_id_base;
@@ -180,7 +177,10 @@ typedef struct
 extern pppoe_main_t pppoe_main;
 
 extern vlib_node_registration_t pppoe_input_node;
-extern vlib_node_registration_t pppoe_cp_dispatch_node;
+extern vlib_node_registration_t pppoe_encap_node;
+extern vlib_node_registration_t pppoe_tap_dispatch_node;
+
+u8 *format_pppoe_encap_trace (u8 * s, va_list * args);
 
 typedef struct
 {
@@ -201,7 +201,7 @@ typedef struct
 {
   u8 is_add;
   u32 client_if_index;
-  u32 cp_if_index;
+  u32 tap_if_index;
 } vnet_pppoe_add_del_tap_args_t;
 
 always_inline u64
@@ -232,46 +232,8 @@ pppoe_make_key (u8 * mac_address, u16 session_id)
   return temp;
 }
 
-/**
- * Perform learning on one packet based on the mac table lookup result.
- * */
 static_always_inline void
-pppoe_learn_process (BVT (clib_bihash) * table,
-		     u32 sw_if_index0,
-		     pppoe_entry_key_t * key0,
-		     pppoe_entry_key_t * cached_key,
-		     u32 * bucket0, pppoe_entry_result_t * result0)
-{
-  /* Check mac table lookup result */
-  if (PREDICT_TRUE (result0->fields.sw_if_index == sw_if_index0))
-    {
-      /*
-       * The entry was in the table, and the sw_if_index matched, the normal case
-       */
-      return;
-    }
-  else if (result0->fields.sw_if_index == ~0)
-    {
-      /* The entry was not in table, so add it  */
-      result0->fields.sw_if_index = sw_if_index0;
-      result0->fields.session_index = ~0;
-      cached_key->raw = ~0;	/* invalidate the cache */
-    }
-  else
-    {
-      /* The entry was in the table, but with the wrong sw_if_index mapping (mac move) */
-      result0->fields.sw_if_index = sw_if_index0;
-    }
-
-  /* Update the entry */
-  BVT (clib_bihash_kv) kv;
-  kv.key = key0->raw;
-  kv.value = result0->raw;
-  BV (clib_bihash_add_del) (table, &kv, 1 /* is_add */ );
-}
-
-static_always_inline void
-pppoe_lookup_1 (BVT (clib_bihash) * table,
+pppoe_lookup_1 (BVT (clib_bihash) * session_table,
 		pppoe_entry_key_t * cached_key,
 		pppoe_entry_result_t * cached_result,
 		u8 * mac0,
@@ -295,7 +257,7 @@ pppoe_lookup_1 (BVT (clib_bihash) * table,
 
       kv.key = key0->raw;
       kv.value = ~0ULL;
-      BV (clib_bihash_search_inline) (table, &kv);
+      BV (clib_bihash_search_inline) (session_table, &kv);
       result0->raw = kv.value;
 
       /* Update one-entry cache */
@@ -305,7 +267,7 @@ pppoe_lookup_1 (BVT (clib_bihash) * table,
 }
 
 static_always_inline void
-pppoe_update_1 (BVT (clib_bihash) * table,
+pppoe_update_1 (BVT (clib_bihash) * session_table,
 		u8 * mac0,
 		u16 session_id0,
 		pppoe_entry_key_t * key0,
@@ -319,7 +281,7 @@ pppoe_update_1 (BVT (clib_bihash) * table,
   BVT (clib_bihash_kv) kv;
   kv.key = key0->raw;
   kv.value = result0->raw;
-  BV (clib_bihash_add_del) (table, &kv, 1 /* is_add */ );
+  BV (clib_bihash_add_del) (session_table, &kv, 1 /* is_add */ );
 
 }
 #endif /* _PPPOE_H */
